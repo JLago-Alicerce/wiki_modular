@@ -3,37 +3,15 @@
 
 import sys
 import yaml
-import re
-import unicodedata
 from pathlib import Path
-
-def normalize_slug(text: str) -> str:
-    """
-    Convierte el texto a un slug:
-      - Normaliza a NFKD (elimina acentos/diacríticos).
-      - Convierte a ASCII descartando caracteres no mapeables.
-      - Elimina todo lo que no sea alfanumérico, espacio o guion.
-      - Reemplaza secuencias de espacios o guiones por un solo "_".
-      - Convierte a minúsculas.
-    """
-    # 1) Normalizar Unicode y pasar a ASCII
-    normalized = unicodedata.normalize('NFKD', text)
-    ascii_text = normalized.encode('ascii', 'ignore').decode('ascii')
-
-    # 2) Mantener solo letras, números, espacios y guiones
-    cleaned = re.sub(r'[^A-Za-z0-9\s-]', '', ascii_text)
-
-    # 3) Reemplazar secuencias de espacios o guiones por "_"
-    underscored = re.sub(r'[\s-]+', '_', cleaned).strip('_')
-
-    return underscored.lower()
+from limpiar_slug import limpiar_slug
 
 def generate_map_from_markdown(md_path: Path, yaml_path: Path) -> None:
     """
     Lee un archivo Markdown y genera un YAML con sus encabezados (H1 a H5):
       - h_level: nivel de encabezado (1–5)
       - titulo: texto crudo del encabezado
-      - ruta: slug generado con normalize_slug() + ".md"
+      - ruta: slug generado con limpiar_slug() + ".md"
       - start_line: número de línea donde aparece el encabezado
       - end_line: línea anterior al comienzo del siguiente encabezado
     """
@@ -50,7 +28,7 @@ def generate_map_from_markdown(md_path: Path, yaml_path: Path) -> None:
             level = len(line) - len(line.lstrip("#"))
             if 1 <= level <= 5:
                 raw_title = line[level:].strip()
-                slug = normalize_slug(raw_title)
+                slug = limpiar_slug(raw_title)
                 ruta = f"{slug}.md"
                 mapa.append({
                     "h_level": level,

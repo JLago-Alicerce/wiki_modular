@@ -6,22 +6,8 @@ import yaml
 import logging
 import argparse
 from pathlib import Path
+from limpiar_slug import limpiar_slug
 
-def normalize_slug(text: str) -> str:
-    """
-    Convierte el texto a un slug:
-      - Normaliza a NFKD (elimina acentos/diacríticos).
-      - Convierte a ASCII descartando caracteres no mapeables.
-      - Elimina todo lo que no sea alfanumérico, espacio o guion.
-      - Reemplaza secuencias de espacios o guiones por un solo "_".
-      - Convierte a minúsculas.
-    """
-    import re, unicodedata
-    normalized = unicodedata.normalize('NFKD', text)
-    ascii_text = normalized.encode('ascii', 'ignore').decode('ascii')
-    cleaned = re.sub(r'[^A-Za-z0-9\s-]', '', ascii_text)
-    underscored = re.sub(r'[\s-]+', '_', cleaned).strip('_')
-    return underscored.lower()
 
 def generar_indice(input_file: Path, output_file: Path) -> dict:
     """
@@ -29,7 +15,7 @@ def generar_indice(input_file: Path, output_file: Path) -> dict:
     construye un índice maestro (index_PlataformaBBDD.yaml) con:
       - id: número secuencial según orden en lista
       - titulo: texto original
-      - slug: slug generado con normalize_slug()
+      - slug: slug generado con limpiar_slug()
       - subtemas: (vacío por defecto; se puede completar manualmente)
     """
     if not input_file.exists():
@@ -55,7 +41,7 @@ def generar_indice(input_file: Path, output_file: Path) -> dict:
             continue
 
         titulo = bloque["titulo"]
-        slug = normalize_slug(titulo)
+        slug = limpiar_slug(titulo)
         index_data["secciones"].append({
             "id": idx,
             "titulo": titulo,
@@ -82,6 +68,7 @@ def main():
     parser.add_argument("--input", type=str, default="_fuentes/mapa_encabezados.yaml", help="Archivo de entrada (mapa de encabezados).")
     parser.add_argument("--output", type=str, default="index_PlataformaBBDD.yaml", help="Archivo de salida (índice).")
     parser.add_argument("--log-level", type=str, default="INFO", choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"])
+    parser.add_argument("--precheck", action="store_true", help="Ejecutar verificación previa de consistencia")
     args = parser.parse_args()
 
     logging.basicConfig(level=args.log_level)
@@ -92,6 +79,13 @@ def main():
     if resultado["bloques_incluidos"] == 0:
         logging.warning("No se incluyeron secciones en el índice; revisa el YAML de entrada.")
         sys.exit(1)
+
+    if args.precheck:
+        from subprocess import call
+        rc = call(["python3", "scripts/verificar_pre_ingesta.py", str(input_path), str(output_path)])
+        if rc != 0:
+            logging.error("Verificación previa falló")
+            sys.exit(rc)
 
 if __name__ == "__main__":
     main()
