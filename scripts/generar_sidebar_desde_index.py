@@ -4,7 +4,8 @@
 """
 generar_sidebar_desde_index.py
 ------------------------------
-Genera el archivo 'wiki/_sidebar.md' para Docsify a partir de 'index_PlataformaBBDD.yaml'.
+Genera el archivo '_sidebar.md' en la raíz del proyecto para Docsify a partir de
+'index_PlataformaBBDD.yaml'.
 Esta versión es tolerante a la ausencia del campo 'id' y del campo 'slug' en cada sección.
 """
 
@@ -147,7 +148,7 @@ def build_sidebar_lines(data: Dict[str, Any]) -> List[str]:
         sec_id   = seccion.get("id", "")
 
         # Nombre de archivo de la sección: "<id>_<slug>.md" o "<slug>.md" si no hay id
-        filename = f"{sec_id + '_' if sec_id else ''}{slugify(sec_title)}.md"
+        filename = f"{sec_id + '_' if sec_id else ''}{sec_slug}.md"
         lines.append(f"* [{sec_title}]({filename})")
 
         # Procesar subtemas (si existen)
