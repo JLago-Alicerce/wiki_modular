@@ -130,10 +130,11 @@ def build_sidebar_lines(data: Dict[str, Any]) -> List[str]:
         sec_title = seccion["titulo"]
         # Si falta 'slug', generarlo desde 'titulo'
         sec_slug = seccion.get("slug", slugify(sec_title))
-        sec_id   = seccion.get("id", "")
+        sec_id   = seccion.get("id")
 
         # Nombre de archivo de la sección: "<id>_<slug>.md" o "<slug>.md" si no hay id
-        filename = f"{sec_id + '_' if sec_id else ''}{sec_slug}.md"
+        prefix = f"{sec_id}_" if sec_id is not None else ""
+        filename = f"{prefix}{sec_slug}.md"
         lines.append(f"* [{sec_title}]({filename})")
 
         # Procesar subtemas (si existen)
