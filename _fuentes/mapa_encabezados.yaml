@@ -1,0 +1,236 @@
+- end_line: 112
+  h_level: 1
+  ruta: 1_objeto_del_documento.md
+  start_line: 105
+  titulo: 1. Objeto del documento
+- end_line: 120
+  h_level: 1
+  ruta: 2_descripcion_del_sistema_actual.md
+  start_line: 113
+  titulo: 2. Descripción del sistema actual
+- end_line: 124
+  h_level: 2
+  ruta: 21_nucleo_hostdb2_masql20171hostdb2.md
+  start_line: 121
+  titulo: 2.1. Núcleo HOSTDB2 (~MASQL20171\\HOSTDB2~)
+- end_line: 128
+  h_level: 3
+  ruta: 22_plataforma_necor_clasica_masql20142sql20142.md
+  start_line: 125
+  titulo: '**2.2. Plataforma Necor@ clásica (~MASQL20142\\SQL20142~)**'
+- end_line: 136
+  h_level: 3
+  ruta: 23_plataforma_necor_extendida_masql20142necoranet.md
+  start_line: 129
+  titulo: '**2.3. Plataforma Necor@ extendida (~MASQL20142\\NECORANET~)**'
+- end_line: 140
+  h_level: 3
+  ruta: 24_clientes_internacionales_sql_server_2022.md
+  start_line: 137
+  titulo: '**2.4. Clientes internacionales (SQL Server 2022)**'
+- end_line: 160
+  h_level: 3
+  ruta: 25_servicios_intermedios_maservf9.md
+  start_line: 141
+  titulo: '**2.5. Servicios intermedios (MASERVF9)**'
+- end_line: 168
+  h_level: 3
+  ruta: 26_flujos_de_carga_y_extraccion.md
+  start_line: 161
+  titulo: '**2.6. Flujos de carga y extracción**'
+- end_line: 170
+  h_level: 1
+  ruta: 3_detalle_tecnico_por_servidorinstancia.md
+  start_line: 169
+  titulo: 3. Detalle técnico por servidor/instancia
+- end_line: 174
+  h_level: 2
+  ruta: 31_masql20171hostdb2.md
+  start_line: 171
+  titulo: 3.1. MASQL20171\\HOSTDB2
+- end_line: 194
+  h_level: 3
+  ruta: 311_caracteristicas_generales.md
+  start_line: 175
+  titulo: 3.1.1. Características generales
+- end_line: 208
+  h_level: 3
+  ruta: 312_contenido_migrado.md
+  start_line: 195
+  titulo: 3.1.2. Contenido migrado
+- end_line: 226
+  h_level: 3
+  ruta: 313_v6_y_creacion_de_v62.md
+  start_line: 209
+  titulo: 3.1.3. V6 y creación de V6_2
+- end_line: 290
+  h_level: 3
+  ruta: 314_antecedentes_del_proyecto_host.md
+  start_line: 227
+  titulo: 3.1.4. Antecedentes del proyecto HOST
+- end_line: 324
+  h_level: 3
+  ruta: 315_interfaces_ssis_en_entorno_host_consolidado_awdalhd.md
+  start_line: 291
+  titulo: 3.1.5. Interfaces SSIS en entorno HOST consolidado (AWD/ALHD)
+- end_line: 328
+  h_level: 2
+  ruta: 32_masql20142sql20142_masql20222.md
+  start_line: 325
+  titulo: 3.2. MASQL20142\\SQL20142 -- (MASQL20222)
+- end_line: 342
+  h_level: 3
+  ruta: 321_caracteristicas_generales.md
+  start_line: 329
+  titulo: 3.2.1. Características generales
+- end_line: 348
+  h_level: 3
+  ruta: 322_contexto_y_dependencias.md
+  start_line: 343
+  titulo: 3.2.2. Contexto y dependencias
+- end_line: 352
+  h_level: 2
+  ruta: 33_masql20142necoranet_masql20222.md
+  start_line: 349
+  titulo: 3.3. MASQL20142\\NECORANET -- (MASQL20222)
+- end_line: 368
+  h_level: 3
+  ruta: 331_caracteristicas_generales.md
+  start_line: 353
+  titulo: 3.3.1. Características generales
+- end_line: 382
+  h_level: 3
+  ruta: 332_contexto_y_dependencias.md
+  start_line: 369
+  titulo: 3.3.2. Contexto y dependencias
+- end_line: 386
+  h_level: 2
+  ruta: 34_masql20221sqlturk.md
+  start_line: 383
+  titulo: 3.4. MASQL20221\\SQLTURK
+- end_line: 402
+  h_level: 3
+  ruta: 341_caracteristicas_generales.md
+  start_line: 387
+  titulo: 3.4.1. Características generales
+- end_line: 412
+  h_level: 3
+  ruta: 342_contexto_y_dependencias.md
+  start_line: 403
+  titulo: 3.4.2. Contexto y dependencias
+- end_line: 416
+  h_level: 2
+  ruta: 35_masql20221sqlnorway.md
+  start_line: 413
+  titulo: 3.5. MASQL20221\\SQLNORWAY
+- end_line: 436
+  h_level: 3
+  ruta: 351_caracteristicas_generales.md
+  start_line: 417
+  titulo: 3.5.1. Características generales
+- end_line: 448
+  h_level: 3
+  ruta: 352_contexto_y_dependencias.md
+  start_line: 437
+  titulo: 3.5.2. Contexto y dependencias
+- end_line: 452
+  h_level: 2
+  ruta: 36_maservf9_antiguo_manecnet.md
+  start_line: 449
+  titulo: 3.6. MASERVF9 -- (Antiguo MANECNET)
+- end_line: 478
+  h_level: 3
+  ruta: 361_caracteristicas_generales.md
+  start_line: 453
+  titulo: 3.6.1. Características generales
+- end_line: 492
+  h_level: 3
+  ruta: 362_funciones_y_contexto.md
+  start_line: 479
+  titulo: 3.6.2. Funciones y contexto
+- end_line: 512
+  h_level: 3
+  ruta: 364_incidencias_y_acciones_correctivas_principales.md
+  start_line: 493
+  titulo: 3.6.4. Incidencias y acciones correctivas principales
+- end_line: 522
+  h_level: 3
+  ruta: 365_lecciones_aprendidas_y_recomendaciones.md
+  start_line: 513
+  titulo: 3.6.5. Lecciones aprendidas y recomendaciones
+- end_line: 530
+  h_level: 1
+  ruta: 4_arquitectura_funcional_del_flujo_f100.md
+  start_line: 523
+  titulo: 4. Arquitectura funcional del flujo F100
+- end_line: 542
+  h_level: 2
+  ruta: 41_origen_de_datos.md
+  start_line: 531
+  titulo: 4.1. Origen de datos
+- end_line: 560
+  h_level: 2
+  ruta: 42_interfaces_de_carga_principales.md
+  start_line: 543
+  titulo: 4.2. Interfaces de carga principales
+- end_line: 572
+  h_level: 2
+  ruta: 43_reglas_de_negocio_y_transformacion.md
+  start_line: 561
+  titulo: 4.3. Reglas de negocio y transformación
+- end_line: 586
+  h_level: 2
+  ruta: 44_consolidacion_y_publicacion_de_datos.md
+  start_line: 573
+  titulo: 4.4. Consolidación y publicación de datos
+- end_line: 612
+  h_level: 3
+  ruta: 441_integracion_ampliada_del_modelo_funcional_foran_windchill_sap.md
+  start_line: 587
+  titulo: 4.4.1. Integración ampliada del modelo funcional -- Foran \<-\> Windchill
+    \<-\> SAP
+- end_line: 624
+  h_level: 2
+  ruta: 45_validacion_de_calidad_y_revision.md
+  start_line: 613
+  titulo: 4.5. Validación de calidad y revisión
+- end_line: 632
+  h_level: 2
+  ruta: 46_escenarios_operativos.md
+  start_line: 625
+  titulo: 4.6. Escenarios operativos
+- end_line: 636
+  h_level: 2
+  ruta: 47_supervision_operativa_y_alertado.md
+  start_line: 633
+  titulo: 4.7. Supervisión operativa y alertado
+- end_line: 648
+  h_level: 2
+  ruta: 48_consideraciones_de_mejora.md
+  start_line: 637
+  titulo: 4.8. Consideraciones de mejora
+- end_line: 664
+  h_level: 1
+  ruta: 5_calidad_y_riesgos_actuales.md
+  start_line: 649
+  titulo: 5. Calidad y riesgos actuales
+- end_line: 690
+  h_level: 1
+  ruta: 6_proximos_pasos_recomendados.md
+  start_line: 665
+  titulo: 6. Próximos pasos recomendados
+- end_line: 740
+  h_level: 1
+  ruta: 7_referencias_internas_y_fuentes_consultadas.md
+  start_line: 691
+  titulo: 7. Referencias internas y fuentes consultadas
+- end_line: 856
+  h_level: 2
+  ruta: anexo_tecnico_inventario_actual_de_bases_de_datos_por_instancia.md
+  start_line: 741
+  titulo: Anexo técnico -- Inventario actual de bases de datos por instancia
+- end_line: 987
+  h_level: 2
+  ruta: anexo_inventario_de_jobs_por_instancia.md
+  start_line: 857
+  titulo: Anexo -- Inventario de Jobs por instancia
