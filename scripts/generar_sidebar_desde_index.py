@@ -12,6 +12,7 @@ import sys
 import yaml
 import unicodedata
 import re
+from limpiar_slug import limpiar_slug
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -98,24 +99,8 @@ def validate_index_schema(data: Dict[str, Any]) -> None:
 
 
 def slugify(text: str) -> str:
-    """
-    Transforma una cadena en un 'slug' compatible con nombres de archivo:
-      - Normaliza a ASCII (elimina acentos y diacríticos).
-      - Convierte a minúsculas.
-      - Sustituye espacios y '/' por '_'.
-      - Elimina caracteres que no sean [a-z0-9_-].
-      - Contrae secuencias de '_' consecutivos a uno.
-      - Retira '_' sobrantes al inicio o al final.
-
-    :param text: Texto original.
-    :return:     Texto 'slug' normalizado.
-    """
-    text_ascii = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
-    text_lower = text_ascii.lower().strip()
-    text_underscored = re.sub(r"[ /]+", "_", text_lower)
-    text_clean = re.sub(r"[^a-z0-9_\-]", "", text_underscored)
-    text_dedupe = re.sub(r"_+", "_", text_clean).strip("_")
-    return text_dedupe
+    """Wrapper retrocompatible que usa :func:`limpiar_slug`."""
+    return limpiar_slug(text)
 
 
 def build_sidebar_lines(data: Dict[str, Any]) -> List[str]:

@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-Fragmenta un Markdown completo (tmp_full.md) en múltiples archivos .md,
-usando un mapa de encabezados y un índice maestro. Asimismo, acepta overrides
-manuales y fuzzy matching con corte configurable.
+"""Ingesta de la wiki a partir de un Markdown completo.
+
+Dividir ``tmp_full.md`` en archivos individuales aplicando un mapa de
+encabezados e ``index_PlataformaBBDD.yaml``.  Permite overrides manuales y
+realiza *fuzzy matching* controlado con ``--cutoff``.
+
+El parámetro ``--cutoff`` (por defecto ``0.5``) indica la similitud mínima (0-1)
+necesaria para considerar que un encabezado coincide con una entrada del índice.
+Si no se alcanza, el bloque se envía a ``wiki/99_Nuevas_Secciones``.
 """
 
 import sys
@@ -15,23 +20,10 @@ import logging
 import argparse
 from pathlib import Path
 from difflib import get_close_matches
+from limpiar_slug import limpiar_slug
 
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
-def normalize_slug(text: str) -> str:
-    """
-    Convierte el texto a un slug:
-      - Normaliza a NFKD (elimina acentos).
-      - Convierte a ASCII descartando lo no mapeable.
-      - Elimina caracteres no alfanuméricos, espacios o guiones.
-      - Reemplaza secuencias de espacios o guiones por "_".
-      - Convierte a minúsculas.
-    """
-    normalized = unicodedata.normalize("NFKD", text)
-    ascii_text = normalized.encode("ascii", "ignore").decode("ascii")
-    cleaned = re.sub(r"[^A-Za-z0-9\s-]", "", ascii_text)
-    underscored = re.sub(r"[\s-]+", "_", cleaned).strip("_")
-    return underscored.lower()
 
 def buscar_destino(titulo: str, index_data: dict, alias_map: dict, fuzzy_cutoff: float) -> Path:
     """
@@ -51,24 +43,24 @@ def buscar_destino(titulo: str, index_data: dict, alias_map: dict, fuzzy_cutoff:
 
     for sec in index_data.get("secciones", []):
         sec_titulo = sec.get("titulo", "")
-        sec_slug = sec.get("slug", normalize_slug(sec_titulo))
+        sec_slug = sec.get("slug", limpiar_slug(sec_titulo))
         id_prefix = f"{sec.get('id')}_{sec_slug}" if "id" in sec else sec_slug
 
         # Ruta de sección principal
-        key_sec = normalize_slug(sec_titulo)
+        key_sec = limpiar_slug(sec_titulo)
         ruta_map[key_sec] = Path(f"wiki/{id_prefix}.md")
         candidatos.append(key_sec)
 
         # Cada subtema (si existe)
         for sub in sec.get("subtemas", []):
-            key_sub = normalize_slug(sub)
+            key_sub = limpiar_slug(sub)
             # Si sub contiene “sql”, carpeta específica; else carpeta = slug de sección
             carpeta = "02_Instancias_SQL" if "sql" in key_sub else sec_slug
-            ruta_map[key_sub] = Path(f"wiki/{carpeta}/{normalize_slug(sub)}.md")
+            ruta_map[key_sub] = Path(f"wiki/{carpeta}/{limpiar_slug(sub)}.md")
             candidatos.append(key_sub)
 
     # 3) Fuzzy matching
-    titulo_norm = normalize_slug(titulo)
+    titulo_norm = limpiar_slug(titulo)
     match = get_close_matches(titulo_norm, candidatos, n=1, cutoff=fuzzy_cutoff)
     if match:
         return ruta_map[match[0]]
@@ -95,7 +87,7 @@ def main():
     parser.add_argument("--index",   default="index_PlataformaBBDD.yaml",    help="Índice maestro YAML")
     parser.add_argument("--fuente",  default="_fuentes/tmp_full.md",         help="Markdown completo")
     parser.add_argument("--alias",   default="_fuentes/alias_override.yaml", help="Overrides YAML (opcional)")
-    parser.add_argument("--cutoff",  type=float, default=0.4,                help="Umbral fuzzy matching")
+    parser.add_argument("--cutoff",  type=float, default=0.5,                help="Umbral fuzzy matching")
     args = parser.parse_args()
 
     wiki_path     = Path("wiki")

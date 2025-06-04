@@ -3,7 +3,10 @@
 Compara los enlaces de _sidebar.md con los .md reales en disco
 y genera un CSV con las discrepancias + propuesta de slug 'limpio'.
 """
-import re, unicodedata, csv
+import re
+import unicodedata
+import csv
+import sys
 from pathlib import Path
 
 # --- Config ---
@@ -64,43 +67,9 @@ with out.open("w", newline="", encoding="utf8") as f:
     w = csv.DictWriter(f, fieldnames=rows[0].keys())
     w.writeheader(); w.writerows(rows)
 
-print(f"✅ Auditoría terminada: {out}")
-
-
-# Añade al final del script anterior
-import argparse, shutil, sys
-ap = argparse.ArgumentParser()
-ap.add_argument("--fix", choices=["fs","sidebar"], help="Aplicar corrección")
-args = ap.parse_args()
-
-if args.fix == "sidebar":
-    new_sidebar = []
-    for row in rows:
-        if row["status"] == "OK":
-            new_sidebar.append(row["enlace_sidebar"])
-        else:
-            # Si NO_MATCH y hubo sugerencia slug_fs
-            if row["coincidencia_fs"]:
-                new_sidebar.append(row["coincidencia_fs"])
-            else:
-                new_sidebar.append(row["enlace_sidebar"] + "  <!-- pendiente -->")
-    # reconstruye líneas (mantén jerarquía si quieres)
-    with open(ROOT/"_sidebar_actualizado.md","w",encoding="utf8") as f:
-        for l in new_sidebar:
-            f.write(f"* [{Path(l).stem}]({l})\n")
-    print("➡️ Generado _sidebar_actualizado.md")
-
-elif args.fix == "fs":
-    for row in rows:
-        if row["status"] == "NO_MATCH" and row["coincidencia_fs"]:
-            src = ROOT / row["coincidencia_fs"]
-            dst = ROOT / row["enlace_sidebar"]
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            shutil.move(src, dst)
-            print(f"🡒 {src}  →  {dst}")
-    print("➡️ Archivos renombrados / movidos")
-
+mismatches = [r for r in rows if r["status"] == "NO_MATCH"]
+if mismatches:
+    print(f"❌ Se encontraron {len(mismatches)} enlaces sin correspondencia")
+    sys.exit(1)
 else:
-    sys.exit(0)
-
-print("→ Abre mismatch_report.csv para ver qué enlaces no encuentran archivo.")
+    print("✅ Auditoría OK: no hay rutas rotas.")
