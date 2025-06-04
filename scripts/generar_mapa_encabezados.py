@@ -1,77 +1,79 @@
-from pathlib import Path
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import sys
 import yaml
 import re
 import unicodedata
+from pathlib import Path
 
 def normalize_slug(text: str) -> str:
     """
-    Convierte el texto a un slug más robusto:
-      - Elimina acentos y diacríticos.
-      - Sustituye caracteres no alfanuméricos (excepto guiones y espacios) por nada.
-      - Reemplaza secuencias de espacios y guiones por un solo guion bajo.
-      - Retorna todo en minúsculas.
+    Convierte el texto a un slug:
+      - Normaliza a NFKD (elimina acentos/diacríticos).
+      - Convierte a ASCII descartando caracteres no mapeables.
+      - Elimina todo lo que no sea alfanumérico, espacio o guion.
+      - Reemplaza secuencias de espacios o guiones por un solo "_".
+      - Convierte a minúsculas.
     """
-    # Normalizar a forma NFKD (descompone acentos)
+    # 1) Normalizar Unicode y pasar a ASCII
     normalized = unicodedata.normalize('NFKD', text)
-    # Convertir a ASCII ignorando caracteres no mapeables
     ascii_text = normalized.encode('ascii', 'ignore').decode('ascii')
-    # Eliminar todo lo que no sea alfanumérico, espacio o guion
-    ascii_text = re.sub(r'[^a-zA-Z0-9\s-]', '', ascii_text)
-    # Reemplazar secuencias de espacios o guiones por un solo "_"
-    ascii_text = re.sub(r'[\s-]+', '_', ascii_text)
-    # Convertir a minúsculas
-    return ascii_text.lower()
+
+    # 2) Mantener solo letras, números, espacios y guiones
+    cleaned = re.sub(r'[^A-Za-z0-9\s-]', '', ascii_text)
+
+    # 3) Reemplazar secuencias de espacios o guiones por "_"
+    underscored = re.sub(r'[\s-]+', '_', cleaned).strip('_')
+
+    return underscored.lower()
 
 def generate_map_from_markdown(md_path: Path, yaml_path: Path) -> None:
     """
-    Lee un archivo Markdown y genera un archivo YAML que describe sus encabezados (H1 a H5).
-    
-    Por cada encabezado detectado se incluye:
-      - h_level: nivel de encabezado (1 a 5).
-      - titulo:  texto crudo del encabezado.
-      - ruta:    un slug derivado del título (campo 'ruta' para indexado futuro).
-      - start_line: línea donde comienza el bloque.
-      - end_line:   línea donde termina el bloque (calculada a partir del siguiente encabezado).
-    
-    :param md_path:   Ruta al archivo Markdown fuente.
-    :param yaml_path: Ruta donde se escribirá el mapa en formato YAML.
+    Lee un archivo Markdown y genera un YAML con sus encabezados (H1 a H5):
+      - h_level: nivel de encabezado (1–5)
+      - titulo: texto crudo del encabezado
+      - ruta: slug generado con normalize_slug() + ".md"
+      - start_line: número de línea donde aparece el encabezado
+      - end_line: línea anterior al comienzo del siguiente encabezado
     """
-    # Leer el contenido del archivo .md línea a línea
-    lines = md_path.read_text(encoding="utf-8").splitlines()
+    if not md_path.exists():
+        print(f"[X] No se encuentra el archivo Markdown: {md_path}")
+        sys.exit(1)
 
-    # Detectar encabezados H1 a H5
+    lines = md_path.read_text(encoding="utf-8").splitlines()
     mapa = []
+
+    # 1) Detectar encabezados H1–H5
     for i, line in enumerate(lines):
         if line.startswith("#"):
             level = len(line) - len(line.lstrip("#"))
-            # Verificar si es un nivel entre H1 y H5
             if 1 <= level <= 5:
                 raw_title = line[level:].strip()
-                # Generar slug a partir del título
                 slug = normalize_slug(raw_title)
+                ruta = f"{slug}.md"
                 mapa.append({
                     "h_level": level,
                     "titulo": raw_title,
-                    "ruta": f"{slug}.md",
+                    "ruta": ruta,
                     "start_line": i + 1
                 })
 
-    # Calcular línea de fin de cada bloque
+    # 2) Calcular end_line de cada bloque
     for idx in range(len(mapa) - 1):
         mapa[idx]["end_line"] = mapa[idx + 1]["start_line"] - 1
     if mapa:
         mapa[-1]["end_line"] = len(lines)
 
-    # Guardar el resultado en YAML
-    yaml_path.write_text(
-        yaml.dump(mapa, allow_unicode=True),
-        encoding="utf-8"
-    )
-    print(f"Mapa generado con {len(mapa)} bloques detectados (niveles H1 a H5).")
+    # 3) Escribir YAML
+    try:
+        yaml_path.write_text(yaml.dump(mapa, allow_unicode=True), encoding="utf-8")
+        print(f"[✓] Mapa generado con {len(mapa)} bloques (H1–H5).")
+    except Exception as e:
+        print(f"[X] Error al escribir {yaml_path}: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
-    # Rutas de ejemplo
     md_path = Path("_fuentes/tmp_full.md")
     yaml_path = Path("_fuentes/mapa_encabezados.yaml")
-    
     generate_map_from_markdown(md_path, yaml_path)
