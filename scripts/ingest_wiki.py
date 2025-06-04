@@ -10,28 +10,14 @@ manuales y fuzzy matching con corte configurable.
 import sys
 import yaml
 import re
-import unicodedata
 import logging
 import argparse
 from pathlib import Path
 from difflib import get_close_matches
+import unicodedata
+from .utils import normalize_slug
 
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
-
-def normalize_slug(text: str) -> str:
-    """
-    Convierte el texto a un slug:
-      - Normaliza a NFKD (elimina acentos).
-      - Convierte a ASCII descartando lo no mapeable.
-      - Elimina caracteres no alfanuméricos, espacios o guiones.
-      - Reemplaza secuencias de espacios o guiones por "_".
-      - Convierte a minúsculas.
-    """
-    normalized = unicodedata.normalize("NFKD", text)
-    ascii_text = normalized.encode("ascii", "ignore").decode("ascii")
-    cleaned = re.sub(r"[^A-Za-z0-9\s-]", "", ascii_text)
-    underscored = re.sub(r"[\s-]+", "_", cleaned).strip("_")
-    return underscored.lower()
 
 def buscar_destino(titulo: str, index_data: dict, alias_map: dict, fuzzy_cutoff: float) -> Path:
     """

@@ -3,30 +3,8 @@
 
 import sys
 import yaml
-import re
-import unicodedata
 from pathlib import Path
-
-def normalize_slug(text: str) -> str:
-    """
-    Convierte el texto a un slug:
-      - Normaliza a NFKD (elimina acentos/diacríticos).
-      - Convierte a ASCII descartando caracteres no mapeables.
-      - Elimina todo lo que no sea alfanumérico, espacio o guion.
-      - Reemplaza secuencias de espacios o guiones por un solo "_".
-      - Convierte a minúsculas.
-    """
-    # 1) Normalizar Unicode y pasar a ASCII
-    normalized = unicodedata.normalize('NFKD', text)
-    ascii_text = normalized.encode('ascii', 'ignore').decode('ascii')
-
-    # 2) Mantener solo letras, números, espacios y guiones
-    cleaned = re.sub(r'[^A-Za-z0-9\s-]', '', ascii_text)
-
-    # 3) Reemplazar secuencias de espacios o guiones por "_"
-    underscored = re.sub(r'[\s-]+', '_', cleaned).strip('_')
-
-    return underscored.lower()
+from .utils import normalize_slug
 
 def generate_map_from_markdown(md_path: Path, yaml_path: Path) -> None:
     """

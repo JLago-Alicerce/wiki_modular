@@ -6,22 +6,7 @@ import yaml
 import logging
 import argparse
 from pathlib import Path
-
-def normalize_slug(text: str) -> str:
-    """
-    Convierte el texto a un slug:
-      - Normaliza a NFKD (elimina acentos/diacríticos).
-      - Convierte a ASCII descartando caracteres no mapeables.
-      - Elimina todo lo que no sea alfanumérico, espacio o guion.
-      - Reemplaza secuencias de espacios o guiones por un solo "_".
-      - Convierte a minúsculas.
-    """
-    import re, unicodedata
-    normalized = unicodedata.normalize('NFKD', text)
-    ascii_text = normalized.encode('ascii', 'ignore').decode('ascii')
-    cleaned = re.sub(r'[^A-Za-z0-9\s-]', '', ascii_text)
-    underscored = re.sub(r'[\s-]+', '_', cleaned).strip('_')
-    return underscored.lower()
+from .utils import normalize_slug
 
 def generar_indice(input_file: Path, output_file: Path) -> dict:
     """
