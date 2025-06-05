@@ -14,12 +14,15 @@ Si no se alcanza, el bloque se envía a ``wiki/99_Nuevas_Secciones``.
 
 import sys
 import yaml
+from pathlib import Path
+
+# Permitir ejecutar el script sin instalar el paquete
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 from wiki_modular import load_yaml
 import re
 import unicodedata
 import logging
 import argparse
-from pathlib import Path
 from difflib import get_close_matches
 from wiki_modular import limpiar_slug
 
