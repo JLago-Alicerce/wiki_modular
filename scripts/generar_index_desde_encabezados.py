@@ -3,10 +3,13 @@
 
 import sys
 import yaml
+from pathlib import Path
+
+# Permitir ejecutar el script sin instalar el paquete
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 from wiki_modular import load_yaml
 import logging
 import argparse
-from pathlib import Path
 from wiki_modular import limpiar_slug
 
 

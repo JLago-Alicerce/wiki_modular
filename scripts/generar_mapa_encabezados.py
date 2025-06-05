@@ -4,6 +4,9 @@
 import sys
 import yaml
 from pathlib import Path
+
+# Permitir ejecutar el script sin instalar el paquete
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 from wiki_modular import limpiar_slug
 
 def generate_map_from_markdown(md_path: Path, yaml_path: Path) -> None:
