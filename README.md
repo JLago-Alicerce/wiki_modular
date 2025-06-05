@@ -10,6 +10,14 @@ pip install -e .
 
 ## Flujo recomendado
 
+> **Nota**: si quiere reconstruir la wiki desde cero antes de procesar nuevos documentos, ejecute:
+>
+> ```bash
+> python3 scripts/resetear_entorno.py
+> ```
+>
+> Esto limpia la carpeta `wiki/`, los índices y archivos temporales para evitar conflictos.
+
 1. Convertir el `.docx` a Markdown (reemplazar por tu archivo):
 
 ```bash
@@ -64,6 +72,16 @@ existen enlaces rotos, puede ejecutarse:
 ```bash
 python3 scripts/validar_sidebar_vs_fs.py
 ```
+
+Si prefiere automatizar la detección y el procesado de nuevos `.docx`, puede
+utilizar:
+
+```bash
+python3 scripts/procesar_nuevos.py --clean
+```
+
+El indicador `--clean` ejecuta `resetear_entorno.py` para garantizar que la
+wiki se regenere desde cero.
 
 ### Personalización de rutas
 
