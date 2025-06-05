@@ -1,7 +1,7 @@
 # wiki_modular
 
 Este repositorio contiene utilidades para fragmentar documentación en Markdown
-y construir una wiki lista para Docsify.  Todas las funciones comunes se
+y construir una wiki lista para Docsify. Todas las funciones comunes se
 encuentran dentro del paquete `wiki_modular` y pueden instalarse con:
 
 ```bash
@@ -18,7 +18,7 @@ pip install -e .
 > **Nota**: si quiere reconstruir la wiki desde cero antes de procesar nuevos documentos, ejecute:
 >
 > ```bash
-> python3 scripts/resetear_entorno.py
+> python scripts/resetear_entorno.py
 > ```
 >
 > Esto limpia la carpeta `wiki/`, los índices y archivos temporales para evitar conflictos.
@@ -34,8 +34,8 @@ pandoc _fuentes/_originales/archivo.docx \
 2. Generar mapa de encabezados y el índice:
 
 ```bash
-python3 scripts/generar_mapa_encabezados.py
-python3 scripts/generar_index_desde_encabezados.py --precheck
+python scripts/generar_mapa_encabezados.py
+python scripts/generar_index_desde_encabezados.py --precheck
 ```
 
 El archivo `index_PlataformaBBDD.yaml` resultante contiene una lista de secciones con el siguiente esquema:
@@ -51,7 +51,7 @@ secciones:
 3. Ingestar la wiki:
 
 ```bash
-python3 scripts/ingest_wiki_v2.py \
+python scripts/ingest_wiki_v2.py \
   --mapa _fuentes/mapa_encabezados.yaml \
   --index index_PlataformaBBDD.yaml \
   --fuente _fuentes/tmp_full.md \
@@ -62,27 +62,27 @@ python3 scripts/ingest_wiki_v2.py \
 4. Generar el sidebar (puede personalizar las rutas con `--index` y `--out`):
 
 ```bash
-python3 scripts/generar_sidebar_desde_index.py --index index_PlataformaBBDD.yaml --out _sidebar.md
+python scripts/generar_sidebar_desde_index.py --index index_PlataformaBBDD.yaml --out _sidebar.md
 ```
 
 5. Auditar enlaces vs. archivos:
 
 ```bash
-python3 scripts/auditar_sidebar_vs_fs.py
+python scripts/auditar_sidebar_vs_fs.py
 ```
 
 Para comprobar que todos los ficheros de `wiki/` aparecen enlazados y que no
 existen enlaces rotos, puede ejecutarse:
 
 ```bash
-python3 scripts/validar_sidebar_vs_fs.py
+python scripts/validar_sidebar_vs_fs.py
 ```
 
 Si prefiere automatizar la detección y el procesado de nuevos `.docx`, puede
 utilizar:
 
 ```bash
-python3 scripts/procesar_nuevos.py --clean
+python scripts/procesar_nuevos.py --clean
 ```
 
 El indicador `--clean` ejecuta `resetear_entorno.py` para garantizar que la
@@ -91,8 +91,8 @@ wiki se regenere desde cero.
 ### Personalización de rutas
 
 La mayoría de los scripts aceptan argumentos opcionales para indicar dónde
-buscar los archivos de entrada o dónde generar las salidas.  Consulte `-h` en
-cada utilidad para ver todas las opciones.  Esto permite integrar el flujo en
+buscar los archivos de entrada o dónde generar las salidas. Consulte `-h` en
+cada utilidad para ver todas las opciones. Esto permite integrar el flujo en
 proyectos con estructuras de directorio diferentes.
 
 El archivo `_fuentes/alias_override.yaml` permite definir emparejamientos de
@@ -110,5 +110,5 @@ encuentra el destino correcto.
 
 Para evitar problemas de compatibilidad entre sistemas y servidores Git,
 procure nombrar las ramas únicamente con caracteres ASCII (letras
-`A-Z`, `a-z`, números y guiones).  Se desaconseja el uso de acentos,
+`A-Z`, `a-z`, números y guiones). Se desaconseja el uso de acentos,
 espacios o caracteres especiales.

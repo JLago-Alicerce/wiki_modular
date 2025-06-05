@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Utilidades para normalizar y limpiar cadenas a slugs idempotentes."""
 from wiki_modular import limpiar_slug
 

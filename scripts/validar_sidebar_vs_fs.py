@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Verifica coherencia entre los enlaces de _sidebar.md y los archivos en wiki/."""
 
 import re

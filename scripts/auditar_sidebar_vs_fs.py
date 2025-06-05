@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Compara los enlaces de _sidebar.md con los .md reales en disco
 y genera un CSV con las discrepancias + propuesta de slug 'limpio'.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Procesa automáticamente nuevos archivos en `_fuentes/_originales`.
 
 Revisa si existen archivos `.docx` nuevos en la carpeta y ejecuta la cadena de

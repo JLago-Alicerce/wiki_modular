@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Verifica consistencia entre mapa de encabezados e índice antes de la ingesta."""
 import sys
 import yaml

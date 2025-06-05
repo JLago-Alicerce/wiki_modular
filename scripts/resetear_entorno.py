@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Limpia archivos generados para reiniciar la wiki desde cero."""
 
 import shutil
