@@ -4,7 +4,7 @@
 import sys
 import yaml
 from pathlib import Path
-from limpiar_slug import limpiar_slug
+from wiki_modular import limpiar_slug
 
 def generate_map_from_markdown(md_path: Path, yaml_path: Path) -> None:
     """
