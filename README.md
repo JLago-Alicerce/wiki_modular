@@ -51,6 +51,7 @@ encuentra el destino correcto.
 
 - `scripts/limpiar_slug.py`: función central para normalizar títulos.
 - `scripts/verificar_pre_ingesta.py`: comprueba consistencia entre el mapa y el índice.
+- `scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
 
 
 
