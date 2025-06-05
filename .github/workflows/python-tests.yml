@@ -1,19 +1,57 @@
 name: CI
+
 on:
   pull_request:
-    branches: ["*"]
+    branches:
+      - main
+      - develop
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10, 3.11]
     steps:
+      # Descarga el código
       - uses: actions/checkout@v3
+
+      # Cache de dependencias pip
+      - name: Set up cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # Configura Python
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
-      - name: Install
+          python-version: ${{ matrix.python-version }}
+
+      # Instalación de dependencias y herramientas de testing
+      - name: Install dependencies
         run: |
           pip install -e .
-          pip install pytest
-      - name: Tests
-        run: pytest
+          pip install pytest pytest-cov flake8 black
+
+      # Linter
+      - name: Lint with flake8
+        run: flake8 .
+
+      # Formateo (solo chequeo)
+      - name: Check formatting with black
+        run: black --check .
+
+      # Ejecuta tests con cobertura
+      - name: Run tests with coverage
+        run: pytest --cov=.
+
+      # (Opcional) Sube reporte de cobertura a Codecov o Coveralls
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v3
+      #   with:
+      #     files: ./coverage.xml
+      #     flags: unittests
+      #     name: codecov-umbrella
