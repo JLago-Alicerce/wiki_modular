@@ -71,6 +71,4 @@ encuentra el destino correcto.
 - `scripts/limpiar_slug.py`: muestra en consola la versión normalizada de los argumentos recibidos.
 - `scripts/verificar_pre_ingesta.py`: comprueba consistencia entre el mapa y el índice.
 - `scripts/validar_sidebar_vs_fs.py`: asegura que `_sidebar.md` está sincronizado con los ficheros de la carpeta `wiki/`.
-
-
-
+- `scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
