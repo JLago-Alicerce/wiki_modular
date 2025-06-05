@@ -72,3 +72,10 @@ encuentra el destino correcto.
 - `scripts/verificar_pre_ingesta.py`: comprueba consistencia entre el mapa y el índice.
 - `scripts/validar_sidebar_vs_fs.py`: asegura que `_sidebar.md` está sincronizado con los ficheros de la carpeta `wiki/`.
 - `scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
+
+## Convención de nombres de ramas
+
+Para evitar problemas de compatibilidad entre sistemas y servidores Git,
+procure nombrar las ramas únicamente con caracteres ASCII (letras
+`A-Z`, `a-z`, números y guiones).  Se desaconseja el uso de acentos,
+espacios o caracteres especiales.
