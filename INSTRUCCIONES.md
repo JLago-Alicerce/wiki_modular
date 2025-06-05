@@ -57,4 +57,5 @@ python3 scripts/procesar_nuevos.py
 ```
 
 El script detecta documentos no procesados, aplica automáticamente la misma cadena de scripts anterior y actualiza la wiki conservando el contenido ya publicado.
+Si necesita una recarga completa, ejecute previamente `python3 scripts/resetear_entorno.py` o use `python3 scripts/procesar_nuevos.py --clean`.
 

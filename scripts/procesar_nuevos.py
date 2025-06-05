@@ -6,6 +6,7 @@ scripts definida en el README. Mantiene un log en `procesados.log` con la fecha
 de cada archivo procesado para evitar reprocesos.
 """
 
+import argparse
 import json
 import logging
 import subprocess
@@ -67,7 +68,22 @@ def run_pipeline(doc: Path) -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Procesa automáticamente nuevos .docx")
+    parser.add_argument(
+        "--clean",
+        action="store_true",
+        help="Ejecutar resetear_entorno.py antes de procesar"
+    )
+    args = parser.parse_args()
+
     logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
+
+    if args.clean:
+        logging.info('Limpiando entorno previo')
+        rc = subprocess.run([sys.executable, 'scripts/resetear_entorno.py']).returncode
+        if rc != 0:
+            raise RuntimeError('resetear_entorno.py fallo')
+
     processed = load_log()
     new_files = []
 
