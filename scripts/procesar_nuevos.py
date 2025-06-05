@@ -9,6 +9,7 @@ de cada archivo procesado para evitar reprocesos.
 import json
 import logging
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict
@@ -23,18 +24,18 @@ PIPELINE = [
         '--extract-media=wiki/assets', '--markdown-headings=atx',
         '--standalone', '--wrap=none'
     ],
-    lambda _doc: ['python3', 'scripts/generar_mapa_encabezados.py'],
-    lambda _doc: ['python3', 'scripts/generar_index_desde_encabezados.py', '--precheck'],
+    lambda _doc: [sys.executable, 'scripts/generar_mapa_encabezados.py'],
+    lambda _doc: [sys.executable, 'scripts/generar_index_desde_encabezados.py', '--precheck'],
     lambda _doc: [
-        'python3', 'scripts/ingest_wiki_v2.py',
+        sys.executable, 'scripts/ingest_wiki_v2.py',
         '--mapa', '_fuentes/mapa_encabezados.yaml',
         '--index', 'index_PlataformaBBDD.yaml',
         '--fuente', '_fuentes/tmp_full.md',
         '--alias', '_fuentes/alias_override.yaml',
         '--cutoff', '0.5'
     ],
-    lambda _doc: ['python3', 'scripts/generar_sidebar_desde_index.py'],
-    lambda _doc: ['python3', 'scripts/auditar_sidebar_vs_fs.py'],
+    lambda _doc: [sys.executable, 'scripts/generar_sidebar_desde_index.py'],
+    lambda _doc: [sys.executable, 'scripts/auditar_sidebar_vs_fs.py'],
 ]
 
 
