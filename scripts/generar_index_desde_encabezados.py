@@ -3,10 +3,11 @@
 
 import sys
 import yaml
+from wiki_modular import load_yaml
 import logging
 import argparse
 from pathlib import Path
-from limpiar_slug import limpiar_slug
+from wiki_modular import limpiar_slug
 
 
 def generar_indice(input_file: Path, output_file: Path) -> dict:
@@ -22,7 +23,7 @@ def generar_indice(input_file: Path, output_file: Path) -> dict:
         raise FileNotFoundError(f"No se encuentra: {input_file}")
 
     try:
-        mapa = yaml.safe_load(input_file.read_text(encoding="utf-8"))
+        mapa = load_yaml(input_file)
     except yaml.YAMLError as e:
         logging.error(f"Error parseando YAML: {e}")
         return {"bloques_totales": 0, "bloques_omitidos": 0, "bloques_incluidos": 0, "output_file": str(output_file)}

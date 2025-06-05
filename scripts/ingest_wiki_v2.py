@@ -14,13 +14,14 @@ Si no se alcanza, el bloque se envía a ``wiki/99_Nuevas_Secciones``.
 
 import sys
 import yaml
+from wiki_modular import load_yaml
 import re
 import unicodedata
 import logging
 import argparse
 from pathlib import Path
 from difflib import get_close_matches
-from limpiar_slug import limpiar_slug
+from wiki_modular import limpiar_slug
 
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 
@@ -108,8 +109,8 @@ def main():
 
     # 2) Cargar mapa, índice y líneas de markdown
     try:
-        mapa = yaml.safe_load(mapa_file.read_text(encoding="utf-8"))
-        index_data = yaml.safe_load(index_file.read_text(encoding="utf-8"))
+        mapa = load_yaml(mapa_file)
+        index_data = load_yaml(index_file)
         tmp_lines = tmp_file.read_text(encoding="utf-8").splitlines()
     except Exception as e:
         logging.critical(f"Error al cargar archivos: {e}")

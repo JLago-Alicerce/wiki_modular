@@ -11,9 +11,10 @@ Esta versión es tolerante a la ausencia del campo 'id' y del campo 'slug' en ca
 
 import sys
 import yaml
+from wiki_modular import load_yaml
 import unicodedata
 import re
-from limpiar_slug import limpiar_slug
+from wiki_modular import limpiar_slug
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -57,8 +58,7 @@ def load_index(path: Path) -> Dict[str, Any]:
     if not path.exists():
         raise IndexFileNotFoundError(f"No se encontró '{path.name}' en la ruta: {path}")
 
-    contenido = path.read_text(encoding="utf-8")
-    datos = yaml.safe_load(contenido)
+    datos = load_yaml(path)
     return datos if isinstance(datos, dict) else {}
 
 

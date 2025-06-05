@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wiki_modular"
+version = "0.1.0"
+description = "Herramientas para wikis basadas en Docsify"
+authors = [{name = "Equipo Docs"}]
+readme = "README.md"
+
+[tool.setuptools.packages.find]
+include = ["wiki_modular"]

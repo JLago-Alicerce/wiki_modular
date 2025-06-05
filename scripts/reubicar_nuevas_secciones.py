@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import shutil
+from difflib import SequenceMatcher
 
 # Configuración
 root = Path(".")
@@ -44,4 +45,12 @@ for md in nuevas_dir.glob("*.md"):
         if encontrado:
             break
     if not encontrado:
-        print(f"[!] No se pudo clasificar: {md.name}")
+        # calcular sugerencias fuzzy
+        candidates = []
+        for sec in index_data["secciones"]:
+            candidates.append((SequenceMatcher(None, nrm_nombre, normalizar(sec["titulo"])).ratio(), sec["titulo"]))
+            for sub in sec.get("subtemas", []):
+                candidates.append((SequenceMatcher(None, nrm_nombre, normalizar(sub)).ratio(), sub))
+        candidates.sort(reverse=True)
+        sugerencias = [c[1] for c in candidates[:3]]
+        print(f"[!] No se pudo clasificar: {md.name}. Sugerencias: {sugerencias}")
