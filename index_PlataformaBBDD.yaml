@@ -1,0 +1,96 @@
+secciones:
+- ruta: 1_objeto_del_documento.md
+  titulo: 1. Objeto del documento
+- ruta: 2_descripcion_del_sistema_actual.md
+  titulo: 2. Descripción del sistema actual
+- ruta: 21_nucleo_hostdb2_masql20171hostdb2.md
+  titulo: 2.1. Núcleo HOSTDB2 (~MASQL20171\\HOSTDB2~)
+- ruta: 22_plataforma_necor_clasica_masql20142sql20142.md
+  titulo: '**2.2. Plataforma Necor@ clásica (~MASQL20142\\SQL20142~)**'
+- ruta: 23_plataforma_necor_extendida_masql20142necoranet.md
+  titulo: '**2.3. Plataforma Necor@ extendida (~MASQL20142\\NECORANET~)**'
+- ruta: 24_clientes_internacionales_sql_server_2022.md
+  titulo: '**2.4. Clientes internacionales (SQL Server 2022)**'
+- ruta: 25_servicios_intermedios_maservf9.md
+  titulo: '**2.5. Servicios intermedios (MASERVF9)**'
+- ruta: 26_flujos_de_carga_y_extraccion.md
+  titulo: '**2.6. Flujos de carga y extracción**'
+- ruta: 3_detalle_tecnico_por_servidorinstancia.md
+  titulo: 3. Detalle técnico por servidor/instancia
+- ruta: 31_masql20171hostdb2.md
+  titulo: 3.1. MASQL20171\\HOSTDB2
+- ruta: 311_caracteristicas_generales.md
+  titulo: 3.1.1. Características generales
+- ruta: 312_contenido_migrado.md
+  titulo: 3.1.2. Contenido migrado
+- ruta: 313_v6_y_creacion_de_v62.md
+  titulo: 3.1.3. V6 y creación de V6_2
+- ruta: 314_antecedentes_del_proyecto_host.md
+  titulo: 3.1.4. Antecedentes del proyecto HOST
+- ruta: 315_interfaces_ssis_en_entorno_host_consolidado_awdalhd.md
+  titulo: 3.1.5. Interfaces SSIS en entorno HOST consolidado (AWD/ALHD)
+- ruta: 32_masql20142sql20142_masql20222.md
+  titulo: 3.2. MASQL20142\\SQL20142 -- (MASQL20222)
+- ruta: 321_caracteristicas_generales.md
+  titulo: 3.2.1. Características generales
+- ruta: 322_contexto_y_dependencias.md
+  titulo: 3.2.2. Contexto y dependencias
+- ruta: 33_masql20142necoranet_masql20222.md
+  titulo: 3.3. MASQL20142\\NECORANET -- (MASQL20222)
+- ruta: 331_caracteristicas_generales.md
+  titulo: 3.3.1. Características generales
+- ruta: 332_contexto_y_dependencias.md
+  titulo: 3.3.2. Contexto y dependencias
+- ruta: 34_masql20221sqlturk.md
+  titulo: 3.4. MASQL20221\\SQLTURK
+- ruta: 341_caracteristicas_generales.md
+  titulo: 3.4.1. Características generales
+- ruta: 342_contexto_y_dependencias.md
+  titulo: 3.4.2. Contexto y dependencias
+- ruta: 35_masql20221sqlnorway.md
+  titulo: 3.5. MASQL20221\\SQLNORWAY
+- ruta: 351_caracteristicas_generales.md
+  titulo: 3.5.1. Características generales
+- ruta: 352_contexto_y_dependencias.md
+  titulo: 3.5.2. Contexto y dependencias
+- ruta: 36_maservf9_antiguo_manecnet.md
+  titulo: 3.6. MASERVF9 -- (Antiguo MANECNET)
+- ruta: 361_caracteristicas_generales.md
+  titulo: 3.6.1. Características generales
+- ruta: 362_funciones_y_contexto.md
+  titulo: 3.6.2. Funciones y contexto
+- ruta: 364_incidencias_y_acciones_correctivas_principales.md
+  titulo: 3.6.4. Incidencias y acciones correctivas principales
+- ruta: 365_lecciones_aprendidas_y_recomendaciones.md
+  titulo: 3.6.5. Lecciones aprendidas y recomendaciones
+- ruta: 4_arquitectura_funcional_del_flujo_f100.md
+  titulo: 4. Arquitectura funcional del flujo F100
+- ruta: 41_origen_de_datos.md
+  titulo: 4.1. Origen de datos
+- ruta: 42_interfaces_de_carga_principales.md
+  titulo: 4.2. Interfaces de carga principales
+- ruta: 43_reglas_de_negocio_y_transformacion.md
+  titulo: 4.3. Reglas de negocio y transformación
+- ruta: 44_consolidacion_y_publicacion_de_datos.md
+  titulo: 4.4. Consolidación y publicación de datos
+- ruta: 441_integracion_ampliada_del_modelo_funcional_foran_windchill_sap.md
+  titulo: 4.4.1. Integración ampliada del modelo funcional -- Foran \<-\> Windchill
+    \<-\> SAP
+- ruta: 45_validacion_de_calidad_y_revision.md
+  titulo: 4.5. Validación de calidad y revisión
+- ruta: 46_escenarios_operativos.md
+  titulo: 4.6. Escenarios operativos
+- ruta: 47_supervision_operativa_y_alertado.md
+  titulo: 4.7. Supervisión operativa y alertado
+- ruta: 48_consideraciones_de_mejora.md
+  titulo: 4.8. Consideraciones de mejora
+- ruta: 5_calidad_y_riesgos_actuales.md
+  titulo: 5. Calidad y riesgos actuales
+- ruta: 6_proximos_pasos_recomendados.md
+  titulo: 6. Próximos pasos recomendados
+- ruta: 7_referencias_internas_y_fuentes_consultadas.md
+  titulo: 7. Referencias internas y fuentes consultadas
+- ruta: anexo_tecnico_inventario_actual_de_bases_de_datos_por_instancia.md
+  titulo: Anexo técnico -- Inventario actual de bases de datos por instancia
+- ruta: anexo_inventario_de_jobs_por_instancia.md
+  titulo: Anexo -- Inventario de Jobs por instancia

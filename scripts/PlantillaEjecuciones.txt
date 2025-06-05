@@ -1,0 +1,9 @@
+EstadoActualPlataformaBBD_V27_3_42
+
+pandoc "EstadoActualPlataformaBBD_V27_3_42.docx" --extract-media="tmp/assets" -o "tmp/tmp_full.md"
+
+pandoc "EstadoActualPlataformaBBD_V0306_10_32.docx" --extract-media="tmp2/assets" --markdown-headings=atx -o "tmp2/tmp_full.md"
+
+
+
+python extraer_encabezados.py wiki/tmp_full.md > wiki/mapa_encabezados.yaml
