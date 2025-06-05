@@ -11,11 +11,14 @@ Esta versión es tolerante a la ausencia del campo 'id' y del campo 'slug' en ca
 
 import sys
 import yaml
+from pathlib import Path
+
+# Permitir ejecutar el script sin instalar el paquete
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 from wiki_modular import load_yaml
 import unicodedata
 import re
 from wiki_modular import limpiar_slug
-from pathlib import Path
 from typing import Any, Dict, List
 
 # --------------------------------------------------
