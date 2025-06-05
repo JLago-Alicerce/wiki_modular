@@ -8,6 +8,11 @@ encuentran dentro del paquete `wiki_modular` y pueden instalarse con:
 pip install -e .
 ```
 
+> **Nota:** este comando instala el proyecto y todas las dependencias
+> necesarias (por ejemplo `PyYAML`). Si se invocan los scripts sin haber
+> realizado esta instalación previa, es probable que falten paquetes y se
+> produzcan errores.
+
 ## Flujo recomendado
 
 1. Convertir el `.docx` a Markdown (reemplazar por tu archivo):
