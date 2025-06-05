@@ -83,7 +83,7 @@ def main():
 
     if args.precheck:
         from subprocess import call
-        rc = call(["python3", "scripts/verificar_pre_ingesta.py", str(input_path), str(output_path)])
+        rc = call([sys.executable, "scripts/verificar_pre_ingesta.py", str(input_path), str(output_path)])
         if rc != 0:
             logging.error("Verificación previa falló")
             sys.exit(rc)

@@ -32,13 +32,16 @@ def limpiar_path(ruta: str) -> str:
             partes.append(nombre)
     return "/".join(partes)
 
-# --- 1) Lee enlaces del sidebar ---
-pat_link = re.compile(r"\]\(([^)]+\.md)\)")
-links = []
-for line in SIDEBAR.read_text(encoding="utf8").splitlines():
-    m = pat_link.search(line)
-    if m:
-        links.append(m.group(1).lstrip("/"))
+def main() -> None:
+    """Ejecuta la auditoría del sidebar vs. los archivos físicos."""
+    # --- 1) Lee enlaces del sidebar ---
+    pat_link = re.compile(r"\]\(([^)]+\.md)\)")
+    links = []
+    for line in SIDEBAR.read_text(encoding="utf8").splitlines():
+        m = pat_link.search(line)
+        if m:
+            links.append(m.group(1).lstrip("/"))
+
 
 # --- 2) Índice físico ---
 # Usa rutas relativas a WIKI_DIR para facilitar la comparación con los enlaces
@@ -76,15 +79,21 @@ for link in links:
         "status": "OK" if match else "NO_MATCH"
     })
 
-# --- 4) Exporta CSV ---
-out = ROOT / "mismatch_report.csv"
-with out.open("w", newline="", encoding="utf8") as f:
-    w = csv.DictWriter(f, fieldnames=rows[0].keys())
-    w.writeheader(); w.writerows(rows)
+    # --- 4) Exporta CSV ---
+    out = ROOT / "mismatch_report.csv"
+    with out.open("w", newline="", encoding="utf8") as f:
+        w = csv.DictWriter(f, fieldnames=rows[0].keys())
+        w.writeheader(); w.writerows(rows)
 
-mismatches = [r for r in rows if r["status"] == "NO_MATCH"]
-if mismatches:
-    print(f"❌ Se encontraron {len(mismatches)} enlaces sin correspondencia")
-    sys.exit(1)
-else:
-    print("✅ Auditoría OK: no hay rutas rotas.")
+    mismatches = [r for r in rows if r["status"] == "NO_MATCH"]
+    if mismatches:
+        print(
+            f"❌ Se encontraron {len(mismatches)} enlaces sin correspondencia"
+        )
+        sys.exit(1)
+    else:
+        print("✅ Auditoría OK: no hay rutas rotas.")
+
+
+if __name__ == "__main__":
+    main()

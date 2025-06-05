@@ -6,9 +6,11 @@ scripts definida en el README. Mantiene un log en `procesados.log` con la fecha
 de cada archivo procesado para evitar reprocesos.
 """
 
+import argparse
 import json
 import logging
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict
@@ -23,18 +25,18 @@ PIPELINE = [
         '--extract-media=wiki/assets', '--markdown-headings=atx',
         '--standalone', '--wrap=none'
     ],
-    lambda _doc: ['python3', 'scripts/generar_mapa_encabezados.py'],
-    lambda _doc: ['python3', 'scripts/generar_index_desde_encabezados.py', '--precheck'],
+    lambda _doc: [sys.executable, 'scripts/generar_mapa_encabezados.py'],
+    lambda _doc: [sys.executable, 'scripts/generar_index_desde_encabezados.py', '--precheck'],
     lambda _doc: [
-        'python3', 'scripts/ingest_wiki_v2.py',
+        sys.executable, 'scripts/ingest_wiki_v2.py',
         '--mapa', '_fuentes/mapa_encabezados.yaml',
         '--index', 'index_PlataformaBBDD.yaml',
         '--fuente', '_fuentes/tmp_full.md',
         '--alias', '_fuentes/alias_override.yaml',
         '--cutoff', '0.5'
     ],
-    lambda _doc: ['python3', 'scripts/generar_sidebar_desde_index.py'],
-    lambda _doc: ['python3', 'scripts/auditar_sidebar_vs_fs.py'],
+    lambda _doc: [sys.executable, 'scripts/generar_sidebar_desde_index.py'],
+    lambda _doc: [sys.executable, 'scripts/auditar_sidebar_vs_fs.py'],
 ]
 
 
@@ -66,7 +68,22 @@ def run_pipeline(doc: Path) -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Procesa automáticamente nuevos .docx")
+    parser.add_argument(
+        "--clean",
+        action="store_true",
+        help="Ejecutar resetear_entorno.py antes de procesar"
+    )
+    args = parser.parse_args()
+
     logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
+
+    if args.clean:
+        logging.info('Limpiando entorno previo')
+        rc = subprocess.run([sys.executable, 'scripts/resetear_entorno.py']).returncode
+        if rc != 0:
+            raise RuntimeError('resetear_entorno.py fallo')
+
     processed = load_log()
     new_files = []
 

@@ -8,7 +8,20 @@ encuentran dentro del paquete `wiki_modular` y pueden instalarse con:
 pip install -e .
 ```
 
+> **Nota:** este comando instala el proyecto y todas las dependencias
+> necesarias (por ejemplo `PyYAML`). Si se invocan los scripts sin haber
+> realizado esta instalación previa, es probable que falten paquetes y se
+> produzcan errores.
+
 ## Flujo recomendado
+
+> **Nota**: si quiere reconstruir la wiki desde cero antes de procesar nuevos documentos, ejecute:
+>
+> ```bash
+> python3 scripts/resetear_entorno.py
+> ```
+>
+> Esto limpia la carpeta `wiki/`, los índices y archivos temporales para evitar conflictos.
 
 1. Convertir el `.docx` a Markdown (reemplazar por tu archivo):
 
@@ -23,6 +36,16 @@ pandoc _fuentes/_originales/archivo.docx \
 ```bash
 python3 scripts/generar_mapa_encabezados.py
 python3 scripts/generar_index_desde_encabezados.py --precheck
+```
+
+El archivo `index_PlataformaBBDD.yaml` resultante contiene una lista de secciones con el siguiente esquema:
+
+```yaml
+secciones:
+  - id: 1
+    titulo: 1. Objeto del documento
+    slug: 1_objeto_del_documento
+    subtemas: []
 ```
 
 3. Ingestar la wiki:
@@ -55,6 +78,16 @@ existen enlaces rotos, puede ejecutarse:
 python3 scripts/validar_sidebar_vs_fs.py
 ```
 
+Si prefiere automatizar la detección y el procesado de nuevos `.docx`, puede
+utilizar:
+
+```bash
+python3 scripts/procesar_nuevos.py --clean
+```
+
+El indicador `--clean` ejecuta `resetear_entorno.py` para garantizar que la
+wiki se regenere desde cero.
+
 ### Personalización de rutas
 
 La mayoría de los scripts aceptan argumentos opcionales para indicar dónde
@@ -72,3 +105,10 @@ encuentra el destino correcto.
 - `scripts/verificar_pre_ingesta.py`: comprueba consistencia entre el mapa y el índice.
 - `scripts/validar_sidebar_vs_fs.py`: asegura que `_sidebar.md` está sincronizado con los ficheros de la carpeta `wiki/`.
 - `scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
+
+## Convención de nombres de ramas
+
+Para evitar problemas de compatibilidad entre sistemas y servidores Git,
+procure nombrar las ramas únicamente con caracteres ASCII (letras
+`A-Z`, `a-z`, números y guiones).  Se desaconseja el uso de acentos,
+espacios o caracteres especiales.
