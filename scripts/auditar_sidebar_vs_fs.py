@@ -41,18 +41,33 @@ for line in SIDEBAR.read_text(encoding="utf8").splitlines():
         links.append(m.group(1).lstrip("/"))
 
 # --- 2) Índice físico ---
-files = {str(p.relative_to(ROOT)).replace("\\","/").lower(): p for p in WIKI_DIR.rglob("*.md")}
+# Usa rutas relativas a WIKI_DIR para facilitar la comparación con los enlaces
+# del sidebar, que normalmente no incluyen el prefijo "wiki/".
+files = {
+    str(p.relative_to(WIKI_DIR)).replace("\\", "/").lower(): p
+    for p in WIKI_DIR.rglob("*.md")
+}
 
 # --- 3) Compara ---
 rows = []
 for link in links:
     norm_link = limpiar_path(link)
-    # Busca coincidencia fuzzy sobre las rutas físicas normalizadas
+    # Busca coincidencia exacta sobre las rutas físicas normalizadas
     match = None
     for fs_path in files:
-        if limpiar_path(fs_path) == norm_link:
+        fs_norm = limpiar_path(fs_path)
+        if fs_norm == norm_link:
             match = fs_path
             break
+    # Si no hay coincidencia exacta, intenta ignorando prefijos numéricos
+    if not match:
+        base_link = re.sub(r"^[0-9]+_", "", norm_link)
+        for fs_path in files:
+            fs_norm = limpiar_path(fs_path)
+            base_fs = re.sub(r"^[0-9]+_", "", fs_norm)
+            if base_fs == base_link:
+                match = fs_path
+                break
     rows.append({
         "enlace_sidebar": link,
         "coincidencia_fs": match or "",
