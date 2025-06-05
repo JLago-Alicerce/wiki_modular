@@ -25,6 +25,16 @@ python3 scripts/generar_mapa_encabezados.py
 python3 scripts/generar_index_desde_encabezados.py --precheck
 ```
 
+El archivo `index_PlataformaBBDD.yaml` resultante contiene una lista de secciones con el siguiente esquema:
+
+```yaml
+secciones:
+  - id: 1
+    titulo: 1. Objeto del documento
+    slug: 1_objeto_del_documento
+    subtemas: []
+```
+
 3. Ingestar la wiki:
 
 ```bash
