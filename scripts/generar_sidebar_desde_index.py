@@ -192,7 +192,7 @@ def main() -> None:
     # 4) Escribir en disco
     try:
         SIDEBAR_FILE.write_text("\n".join(sidebar_lines), encoding="utf-8")
-        print("✅ 'wiki/_sidebar.md' generado/actualizado correctamente.")
+        print("✅ '_sidebar.md' generado/actualizado correctamente.")
     except Exception as e:
         print(f"[ERROR] No se pudo escribir '{SIDEBAR_FILE}': {e}", file=sys.stderr)
         sys.exit(1)
