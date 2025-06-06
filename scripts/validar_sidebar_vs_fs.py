@@ -30,6 +30,13 @@ def obtener_archivos() -> list[str]:
 
 
 def main() -> int:
+    if not SIDEBAR.exists():
+        print(
+            "No se encontró _sidebar.md; ejecute generar_sidebar_desde_index.py primero",
+            file=sys.stderr,
+        )
+        return 1
+
     links = obtener_links()
     files = obtener_archivos()
 

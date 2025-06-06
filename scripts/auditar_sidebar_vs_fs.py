@@ -34,6 +34,13 @@ def limpiar_path(ruta: str) -> str:
 
 def main() -> None:
     """Ejecuta la auditoría del sidebar vs. los archivos físicos."""
+    if not SIDEBAR.exists():
+        print(
+            "No se encontró _sidebar.md; ejecute generar_sidebar_desde_index.py primero",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     # --- 1) Lee enlaces del sidebar ---
     pat_link = re.compile(r"\]\(([^)]+\.md)\)")
     links = []
