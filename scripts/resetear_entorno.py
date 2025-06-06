@@ -39,8 +39,20 @@ def eliminar(path: Path) -> None:
 
 
 def main() -> None:
+    wiki_dir = Path("wiki")
+    readme_backup = None
+    readme_path = wiki_dir / "README.md"
+    if readme_path.exists():
+        readme_backup = readme_path.read_text(encoding="utf-8")
+
     for ruta in RUTAS:
         eliminar(ruta)
+
+    if readme_backup is not None:
+        wiki_dir.mkdir(exist_ok=True)
+        readme_path.write_text(readme_backup, encoding="utf-8")
+        print(f"[✓] README restaurado: {readme_path}")
+
     print("✅ Entorno limpio. Puede ejecutar los scripts de carga desde cero.")
 
 
