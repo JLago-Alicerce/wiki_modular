@@ -4,8 +4,8 @@
 """
 generar_sidebar_desde_index.py
 ------------------------------
-Genera el archivo '_sidebar.md' en la raíz del proyecto para Docsify a partir de
-'index_PlataformaBBDD.yaml'.
+Genera el archivo '_sidebar.md' dentro de la carpeta 'wiki/' para Docsify a
+partir de 'index_PlataformaBBDD.yaml'.
 Esta versión es tolerante a la ausencia del campo 'id' y del campo 'slug' en cada sección.
 """
 
@@ -27,7 +27,7 @@ from typing import Any, Dict, List
 ROOT_DIR     = Path(__file__).resolve().parent.parent
 WIKI_DIR     = ROOT_DIR / "wiki"
 INDEX_FILE   = ROOT_DIR / "index_PlataformaBBDD.yaml"
-SIDEBAR_FILE = ROOT_DIR / "_sidebar.md"
+SIDEBAR_FILE = WIKI_DIR / "_sidebar.md"
 
 
 # --------------------------------------------------
