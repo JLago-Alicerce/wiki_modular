@@ -2,6 +2,7 @@
 """Limpia archivos generados para reiniciar la wiki desde cero."""
 
 import shutil
+from datetime import datetime
 from pathlib import Path
 
 
@@ -10,6 +11,7 @@ RUTAS = [
     Path("_sidebar.md"),
     Path("index_PlataformaBBDD.yaml"),
     Path("mismatch_report.csv"),
+    Path("procesados.log"),
     Path("_tmp"),
     Path("_fuentes/tmp_full.md"),
     Path("_fuentes/mapa_encabezados.yaml"),
@@ -22,8 +24,16 @@ def eliminar(path: Path) -> None:
         shutil.rmtree(path, ignore_errors=True)
         print(f"[✓] Carpeta eliminada: {path}")
     elif path.exists():
-        path.unlink()
-        print(f"[✓] Archivo eliminado: {path}")
+        if path.name == "procesados.log":
+            archive_dir = Path("logs")
+            archive_dir.mkdir(exist_ok=True)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            archive_path = archive_dir / f"procesados_{timestamp}.log"
+            shutil.move(str(path), archive_path)
+            print(f"[✓] Log archivado en: {archive_path}")
+        else:
+            path.unlink()
+            print(f"[✓] Archivo eliminado: {path}")
     else:
         print(f"[ ] No existe: {path}")
 
