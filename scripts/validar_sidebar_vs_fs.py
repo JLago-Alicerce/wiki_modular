@@ -25,7 +25,7 @@ def obtener_archivos() -> list[str]:
     for p in WIKI_DIR.rglob("*.md"):
         if p.name == "README.md":
             continue
-        files.append(str(p.relative_to(ROOT)).replace("\\", "/"))
+        files.append(str(p.relative_to(WIKI_DIR)).replace("\\", "/"))
     return files
 
 
