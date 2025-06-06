@@ -112,3 +112,19 @@ Para evitar problemas de compatibilidad entre sistemas y servidores Git,
 procure nombrar las ramas únicamente con caracteres ASCII (letras
 `A-Z`, `a-z`, números y guiones). Se desaconseja el uso de acentos,
 espacios o caracteres especiales.
+
+## Pruebas
+
+Instale las dependencias en modo editable con:
+
+```bash
+pip install -e .
+```
+
+Luego ejecute todos los tests con:
+
+```bash
+pytest
+```
+
+Todas las pruebas deberían completarse correctamente sin requerir acceso a la red.
