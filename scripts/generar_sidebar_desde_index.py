@@ -27,7 +27,7 @@ from typing import Any, Dict, List
 ROOT_DIR     = Path(__file__).resolve().parent.parent
 WIKI_DIR     = ROOT_DIR / "wiki"
 INDEX_FILE   = ROOT_DIR / "index_PlataformaBBDD.yaml"
-SIDEBAR_FILE = ROOT_DIR / "_sidebar.md"
+SIDEBAR_FILE = WIKI_DIR / "_sidebar.md"
 
 
 # --------------------------------------------------

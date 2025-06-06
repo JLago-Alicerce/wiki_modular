@@ -11,8 +11,8 @@ from pathlib import Path
 
 # --- Config ---
 ROOT = Path(__file__).resolve().parent.parent           # ..\Conocimiento_Tecnico_Navantia
-SIDEBAR = ROOT / "_sidebar.md"                         # sidebar global
 WIKI_DIR = ROOT / "wiki"                               # raíz de .md
+SIDEBAR = WIKI_DIR / "_sidebar.md"                         # sidebar global
 
 def limpiar_path(ruta: str) -> str:
     partes = []

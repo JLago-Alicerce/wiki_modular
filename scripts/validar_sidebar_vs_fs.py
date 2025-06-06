@@ -6,8 +6,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SIDEBAR = ROOT / "_sidebar.md"
 WIKI_DIR = ROOT / "wiki"
+SIDEBAR = WIKI_DIR / "_sidebar.md"
 
 
 def obtener_links() -> list[str]:
