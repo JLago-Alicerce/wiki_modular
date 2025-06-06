@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-"""Verifica coherencia entre los enlaces de _sidebar.md y los archivos en wiki/."""
+"""Verifica coherencia entre los enlaces de wiki/_sidebar.md y los archivos en wiki/."""
 
 import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SIDEBAR = ROOT / "_sidebar.md"
+SIDEBAR = ROOT / "wiki" / "_sidebar.md"
 WIKI_DIR = ROOT / "wiki"
 
 
@@ -32,7 +32,7 @@ def obtener_archivos() -> list[str]:
 def main() -> int:
     if not SIDEBAR.exists():
         print(
-            "No se encontró _sidebar.md; ejecute generar_sidebar_desde_index.py primero",
+            "No se encontró wiki/_sidebar.md; ejecute generar_sidebar_desde_index.py primero",
             file=sys.stderr,
         )
         return 1

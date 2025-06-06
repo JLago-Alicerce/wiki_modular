@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
-Compara los enlaces de _sidebar.md con los .md reales en disco
-y genera un CSV con las discrepancias + propuesta de slug 'limpio'.
+Compara los enlaces de ``wiki/_sidebar.md`` con los .md reales en disco
+y genera un CSV con las discrepancias + propuesta de slug "limpio".
 """
 import re
 import unicodedata
@@ -11,7 +11,7 @@ from pathlib import Path
 
 # --- Config ---
 ROOT = Path(__file__).resolve().parent.parent           # ..\Conocimiento_Tecnico_Navantia
-SIDEBAR = ROOT / "_sidebar.md"                         # sidebar global
+SIDEBAR = ROOT / "wiki" / "_sidebar.md"               # sidebar global
 WIKI_DIR = ROOT / "wiki"                               # raíz de .md
 
 def limpiar_path(ruta: str) -> str:
@@ -36,7 +36,7 @@ def main() -> None:
     """Ejecuta la auditoría del sidebar vs. los archivos físicos."""
     if not SIDEBAR.exists():
         print(
-            "No se encontró _sidebar.md; ejecute generar_sidebar_desde_index.py primero",
+            "No se encontró wiki/_sidebar.md; ejecute generar_sidebar_desde_index.py primero",
             file=sys.stderr,
         )
         sys.exit(1)
@@ -107,7 +107,7 @@ def main() -> None:
         with out.open("w", newline="", encoding="utf8") as f:
             w = csv.DictWriter(f, fieldnames=headers)
             w.writeheader()
-        print("No se encontraron enlaces en _sidebar.md")
+        print("No se encontraron enlaces en wiki/_sidebar.md")
         sys.exit(1)
 
     with out.open("w", newline="", encoding="utf8") as f:

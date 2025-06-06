@@ -8,7 +8,7 @@ from pathlib import Path
 
 RUTAS = [
     Path("wiki"),
-    Path("_sidebar.md"),
+    Path("wiki/_sidebar.md"),
     Path("index_PlataformaBBDD.yaml"),
     Path("mismatch_report.csv"),
     Path("procesados.log"),

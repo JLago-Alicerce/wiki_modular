@@ -6,10 +6,11 @@ from scripts import auditar_sidebar_vs_fs as audit
 
 def test_auditar_sidebar_empty(tmp_path, monkeypatch):
     root = tmp_path
-    sidebar = root / "_sidebar.md"
+    sidebar = root / "wiki/_sidebar.md"
+    sidebar.parent.mkdir(parents=True)
     sidebar.write_text("", encoding="utf-8")
     wiki = root / "wiki"
-    wiki.mkdir()
+    wiki.mkdir(exist_ok=True)
 
     monkeypatch.setattr(audit, "ROOT", root)
     monkeypatch.setattr(audit, "SIDEBAR", sidebar)

@@ -45,7 +45,7 @@ Este proyecto permite convertir documentos en Markdown y generar una wiki basada
 5. **Generar el sidebar y auditar**
 
    ```bash
-   python scripts/generar_sidebar_desde_index.py --index index_PlataformaBBDD.yaml --out _sidebar.md
+   python scripts/generar_sidebar_desde_index.py --index index_PlataformaBBDD.yaml --out wiki/_sidebar.md
    python scripts/auditar_sidebar_vs_fs.py
    ```
 
