@@ -92,6 +92,24 @@ def main() -> None:
 
     # --- 4) Exporta CSV ---
     out = ROOT / "mismatch_report.csv"
+
+    if not rows:
+        # Si no se encontraron enlaces en el sidebar, crear CSV vacío con
+        # cabeceras conocidas para mantener la compatibilidad con otras
+        # herramientas y avisar al usuario.
+        headers = [
+            "enlace_sidebar",
+            "coincidencia_fs",
+            "slug_sidebar",
+            "slug_fs",
+            "status",
+        ]
+        with out.open("w", newline="", encoding="utf8") as f:
+            w = csv.DictWriter(f, fieldnames=headers)
+            w.writeheader()
+        print("No se encontraron enlaces en _sidebar.md")
+        sys.exit(1)
+
     with out.open("w", newline="", encoding="utf8") as f:
         w = csv.DictWriter(f, fieldnames=rows[0].keys())
         w.writeheader(); w.writerows(rows)
