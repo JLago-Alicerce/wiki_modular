@@ -47,7 +47,11 @@ def main() -> None:
     for line in SIDEBAR.read_text(encoding="utf8").splitlines():
         m = pat_link.search(line)
         if m:
-            links.append(m.group(1).lstrip("/"))
+            link = m.group(1).lstrip("/")
+            # Ignore README entries as they are handled implicitly by Docsify
+            if Path(link).name.lower() == "readme.md":
+                continue
+            links.append(link)
 
     # --- 2) Índice físico ---
     # Usa rutas relativas a WIKI_DIR para facilitar la comparación con los enlaces
@@ -55,6 +59,7 @@ def main() -> None:
     files = {
         str(p.relative_to(WIKI_DIR)).replace("\\", "/").lower(): p
         for p in WIKI_DIR.rglob("*.md")
+        if p.name.lower() != "readme.md"
     }
 
     # --- 3) Compara ---
