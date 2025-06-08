@@ -22,7 +22,10 @@ Este proyecto permite convertir documentos en Markdown y generar una wiki basada
    pandoc _fuentes/_originales/archivo.docx \
      --from=docx --to=markdown --output=_fuentes/tmp_full.md \
      --extract-media=wiki/assets --markdown-headings=atx --standalone --wrap=none
+   python scripts/limpiar_md.py _fuentes/tmp_full.md
    ```
+   Este paso elimina los atributos `{width=..., height=...}` de las imágenes
+   que Pandoc incorpora y que Docsify no interpreta correctamente.
 
 3. **Generar mapa e índice**
 
