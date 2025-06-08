@@ -51,14 +51,22 @@ h4 {
 }
 
 /* Header with logo */
+.app-name {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  color: var(--color-primary);
+  font-weight: bold;
+  text-decoration: none;
+}
+
 .app-name::before {
   content: '';
   display: inline-block;
   background: url('assets/logo.png') no-repeat center/contain;
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   margin-right: 8px;
-  vertical-align: middle;
 }
 
 /* Sidebar layout */
@@ -95,6 +103,14 @@ a:hover {
 @media (max-width: 480px) {
   .sidebar {
     width: 200px;
+  }
+  .app-name {
+    justify-content: center;
+  }
+  .app-name::before {
+    width: 30px;
+    height: 30px;
+    margin-right: 4px;
   }
   h1 {
     font-size: 1.6rem;
