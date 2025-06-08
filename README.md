@@ -27,7 +27,7 @@ pip install -e .
 
 ```bash
 pandoc _fuentes/_originales/archivo.docx \
-  --from=docx --to=markdown --output=_fuentes/tmp_full.md \
+  --from=docx --to=gfm --output=_fuentes/tmp_full.md \
   --extract-media=wiki/assets --markdown-headings=atx --standalone --wrap=none
 python scripts/limpiar_md.py _fuentes/tmp_full.md
 ```
