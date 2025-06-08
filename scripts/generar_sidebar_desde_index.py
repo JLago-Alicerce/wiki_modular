@@ -12,6 +12,7 @@ Esta versión es tolerante a la ausencia del campo 'id' y del campo 'slug' en ca
 import sys
 import yaml
 from pathlib import Path
+import argparse
 
 # Permitir ejecutar el script sin instalar el paquete
 sys.path.append(str(Path(__file__).resolve().parents[1]))
@@ -166,21 +167,23 @@ def build_sidebar_lines(data: Dict[str, Any]) -> List[str]:
 # Función principal (entry point)
 # --------------------------------------------------
 def main() -> None:
-    """
-    Flujo principal:
-      1) Carga el índice 'index_PlataformaBBDD.yaml'.
-      2) Valida la estructura (exige 'titulo'; 'slug' se crea si falta).
-      3) Construye las líneas de '_sidebar.md'.
-      4) Escribe el resultado en '_sidebar.md'.
-    """
+    """Genera ``_sidebar.md`` a partir de un índice YAML."""
+    parser = argparse.ArgumentParser(description="Genera el _sidebar.md desde un índice YAML")
+    parser.add_argument("--index", type=str, default=str(INDEX_FILE), help="Ruta al índice YAML")
+    parser.add_argument("--out", type=str, default=str(SIDEBAR_FILE), help="Archivo de salida")
+    args = parser.parse_args()
+
+    index_path = Path(args.index)
+    sidebar_path = Path(args.out)
+
     # 1) Cargar índice
     try:
-        index_data = load_index(INDEX_FILE)
+        index_data = load_index(index_path)
     except IndexFileNotFoundError as fnf:
         print(f"[ERROR] {fnf}", file=sys.stderr)
         sys.exit(1)
     except yaml.YAMLError as parse_err:
-        print(f"[ERROR] Falló parseo de YAML en '{INDEX_FILE.name}': {parse_err}", file=sys.stderr)
+        print(f"[ERROR] Falló parseo de YAML en '{index_path.name}': {parse_err}", file=sys.stderr)
         sys.exit(1)
 
     # 2) Validar esquema
@@ -195,10 +198,10 @@ def main() -> None:
 
     # 4) Escribir en disco
     try:
-        SIDEBAR_FILE.write_text("\n".join(sidebar_lines), encoding="utf-8")
-        print("✅ '_sidebar.md' generado/actualizado correctamente.")
+        sidebar_path.write_text("\n".join(sidebar_lines), encoding="utf-8")
+        print(f"✅ '{sidebar_path}' generado/actualizado correctamente.")
     except Exception as e:
-        print(f"[ERROR] No se pudo escribir '{SIDEBAR_FILE}': {e}", file=sys.stderr)
+        print(f"[ERROR] No se pudo escribir '{sidebar_path}': {e}", file=sys.stderr)
         sys.exit(1)
 
 
