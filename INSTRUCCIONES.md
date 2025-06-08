@@ -20,7 +20,7 @@ Este proyecto permite convertir documentos en Markdown y generar una wiki basada
 
    ```bash
    pandoc _fuentes/_originales/archivo.docx \
-     --from=docx --to=markdown --output=_fuentes/tmp_full.md \
+     --from=docx --to=gfm --output=_fuentes/tmp_full.md \
      --extract-media=wiki/assets --markdown-headings=atx --standalone --wrap=none
    ```
 

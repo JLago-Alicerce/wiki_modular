@@ -21,7 +21,7 @@ LOG_FILE = Path('procesados.log')
 PIPELINE = [
     lambda doc: [
         'pandoc', str(doc),
-        '--from=docx', '--to=markdown', '--output=_fuentes/tmp_full.md',
+        '--from=docx', '--to=gfm', '--output=_fuentes/tmp_full.md',
         '--extract-media=wiki/assets', '--markdown-headings=atx',
         '--standalone', '--wrap=none'
     ],
