@@ -150,18 +150,23 @@ a:hover {
   color: #333;
 }
 
+
 .markdown-section th {
   background-color: #e0e0e0;
   font-weight: bold;
   padding: 8px 12px;
   border: 1px solid #ddd;
   color: #333;
+  line-height: 1.4;
+  vertical-align: top;
 }
 
 .markdown-section td {
   padding: 8px 12px;
   border: 1px solid #ddd;
   color: #333;
+  line-height: 1.4;
+  vertical-align: top;
 }
 
 .markdown-section tr:nth-child(even) {
@@ -169,13 +174,32 @@ a:hover {
 }
 
 /* Remove left highlight from cells if any */
-.markdown-section td:first-child {
-  border-left: 1px solid #ddd;
+/* No internal vertical lines on first column */
+.markdown-section td:first-child,
+.markdown-section th:first-child {
+  border-left: none;
 }
 
+/* Optional width for header first column */
 .markdown-section th:first-child {
-  border-left: 1px solid #ddd;
   width: 25%;
+}
+
+/* Reduce spacing from paragraphs inside cells */
+.markdown-section td p,
+.markdown-section th p {
+  margin: 0;
+}
+
+/* Visual labels for document status */
+.estado-activa {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+.estado-obsoleta {
+  color: #c62828;
+  font-weight: bold;
 }
 
 /* Center images and remove inner borders or pseudo-elements */
@@ -190,4 +214,3 @@ a:hover {
 .markdown-section img::before,
 .markdown-section img::after {
   content: none !important;
-}
