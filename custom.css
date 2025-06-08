@@ -1,0 +1,111 @@
+/*
+ * ALTIA Docsify Custom Theme
+ * Styles derived from internal design guide v3.1
+ */
+
+
+/* If hosting the font locally, declare it here with @font-face.
+ * Using system fallback fonts avoids online dependencies. */
+
+:root {
+  --color-primary: #003366;
+  --color-bg: #f5f5f5;
+  --color-sidebar-bg: #e0e0e0;
+  /* Use Open Sans if available, otherwise fall back to system fonts */
+  --font-base: 'Open Sans', Arial, sans-serif;
+}
+
+/* Future dark mode variables */
+/* :root[data-theme='dark'] {
+  --color-primary: #4d88cc;
+  --color-bg: #1a1a1a;
+  --color-sidebar-bg: #222;
+  color-scheme: dark;
+} */
+
+body {
+  font-family: var(--font-base);
+  background: var(--color-bg);
+  color: #111;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-top: 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+h2 {
+  font-size: 1.6rem;
+  margin-top: 1.2rem;
+}
+
+h3 {
+  font-size: 1.3rem;
+  margin-top: 1rem;
+}
+
+h4 {
+  font-size: 1.1rem;
+  margin-top: 0.8rem;
+}
+
+/* Header with logo */
+.app-name::before {
+  content: '';
+  display: inline-block;
+  background: url('assets/logo.png') no-repeat center/contain;
+  width: 48px;
+  height: 48px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Sidebar layout */
+.sidebar {
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  background: var(--color-sidebar-bg);
+}
+
+/* Active item in sidebar */
+.sidebar-nav li.active > a {
+  border-left: 4px solid var(--color-primary);
+  font-weight: 600;
+}
+
+/* Links and active elements */
+a {
+  color: var(--color-primary);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 240px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 200px;
+  }
+  h1 {
+    font-size: 1.6rem;
+  }
+  h2 {
+    font-size: 1.4rem;
+  }
+  h3 {
+    font-size: 1.2rem;
+  }
+  h4 {
+    font-size: 1rem;
+  }
+}
