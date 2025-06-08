@@ -15,6 +15,18 @@ pip install -e .
 
 ## Flujo recomendado
 
+Si prefiere ejecutar todos los pasos de forma automática puede utilizar la
+interfaz unificada:
+
+```bash
+python scripts/wiki_cli.py full _fuentes/_originales/archivo.docx
+```
+
+El comando `full` limpiará el entorno, convertirá el documento, generará los
+índices, realizará la ingesta y validará el resultado. También existe
+`python scripts/wiki_cli.py reset` para borrar la wiki e índices antes de una
+nueva carga.
+
 > **Nota**: si quiere reconstruir la wiki desde cero antes de procesar nuevos documentos, ejecute:
 >
 > ```bash
@@ -100,7 +112,8 @@ proyectos con estructuras de directorio diferentes.
 
 El archivo `_fuentes/alias_override.yaml` permite definir emparejamientos de
 títulos con slugs personalizados cuando el algoritmo de coincidencia difusa no
-encuentra el destino correcto.
+encuentra el destino correcto. Consulte [alias_override.md](alias_override.md)
+para ver el formato detallado y algunos ejemplos de uso.
 
 ## Utilidades
 
@@ -129,5 +142,8 @@ Luego ejecute todos los tests con:
 ```bash
 pytest
 ```
+
+Si tiene `pre-commit` instalado puede ejecutar `pre-commit run --all-files` para
+verificar formato y estilo antes de enviar cambios.
 
 Todas las pruebas deberían completarse correctamente sin requerir acceso a la red.
