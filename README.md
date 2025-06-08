@@ -29,7 +29,10 @@ pip install -e .
 pandoc _fuentes/_originales/archivo.docx \
   --from=docx --to=markdown --output=_fuentes/tmp_full.md \
   --extract-media=wiki/assets --markdown-headings=atx --standalone --wrap=none
+python scripts/limpiar_md.py _fuentes/tmp_full.md
 ```
+Este paso elimina los atributos `{width=..., height=...}` que Pandoc añade a las
+imágenes y que Docsify no interpreta.
 
 2. Generar mapa de encabezados y el índice:
 

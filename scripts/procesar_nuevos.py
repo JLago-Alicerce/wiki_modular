@@ -25,6 +25,7 @@ PIPELINE = [
         '--extract-media=wiki/assets', '--markdown-headings=atx',
         '--standalone', '--wrap=none'
     ],
+    lambda _doc: [sys.executable, 'scripts/limpiar_md.py', '_fuentes/tmp_full.md'],
     lambda _doc: [sys.executable, 'scripts/generar_mapa_encabezados.py'],
     lambda _doc: [sys.executable, 'scripts/generar_index_desde_encabezados.py', '--precheck'],
     lambda _doc: [
