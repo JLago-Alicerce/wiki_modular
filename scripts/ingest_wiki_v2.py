@@ -149,7 +149,13 @@ def main():
             no_match_count += 1
 
         destino.parent.mkdir(parents=True, exist_ok=True)
-        md_texto = f"{'#' * nivel} {titulo}\n\n" + "\n".join(contenido)
+
+        header_line = f"{'#' * nivel} {titulo}".strip()
+        if contenido and contenido[0].strip() == header_line:
+            md_texto = "\n".join(contenido)
+        else:
+            md_texto = header_line + "\n\n" + "\n".join(contenido)
+
         destino.write_text(md_texto, encoding="utf-8")
         logging.info(f"[✓] {titulo} → {destino}")
 
