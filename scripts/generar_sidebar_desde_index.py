@@ -145,6 +145,10 @@ def build_sidebar_lines(data: Dict[str, Any]) -> List[str]:
             sub_title = sub
             sub_slug  = slugify(sub_title)
 
+            # Evitar que un subtema duplique a la propia sección
+            if sub_slug == sec_slug:
+                continue
+
             # Regla por defecto: si contiene 'sql', carpeta "02_Instancias_SQL"
             if "sql" in sub_slug:
                 carpeta = "02_Instancias_SQL"
