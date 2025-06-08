@@ -201,3 +201,16 @@ a:hover {
   color: #c62828;
   font-weight: bold;
 }
+
+/* Center images and remove inner borders or pseudo-elements */
+.markdown-section img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border: none;
+  box-shadow: none;
+}
+
+.markdown-section img::before,
+.markdown-section img::after {
+  content: none !important;
