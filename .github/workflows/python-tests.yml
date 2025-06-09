@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.10, 3.11, 3.12]
+        # Python versions must be quoted so YAML does not treat them as floats
+        python-version: ['3.10', '3.11', '3.12']
     steps:
       # Descarga el código
       - uses: actions/checkout@v3
