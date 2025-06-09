@@ -2,13 +2,13 @@
 
 Este proyecto cuenta con dos componentes clave para mantener la wiki al día:
 
-- **Alimentador de documentación** (`procesar_nuevos.py` o `wiki_cli.py`): se encarga de convertir los nuevos archivos `.docx` y generar las páginas correspondientes.
+ - **Alimentador de documentación** (`procesar_nuevos.py` o `wiki_cli.py`): se encarga de convertir los nuevos archivos `.docx` o `.pdf` y generar las páginas correspondientes.
 - **Supervisor de índices** (`verificar_pre_ingesta.py` y herramientas de generación de índices): comprueba que el mapa de encabezados y el índice estén sincronizados para evitar enlaces rotos.
 
 A nivel de uso diario se recomienda:
 
 1. **Organizar la carpeta `_fuentes/_originales`**
-   - Mantenga aquí únicamente los documentos pendientes de procesar.
+   - Mantenga aquí únicamente los documentos pendientes de procesar (tanto `.docx` como `.pdf`).
    - El alimentador registrará cada archivo en `procesados.log` para no repetir trabajos.
 2. **Ejecutar el alimentador desde un entorno limpio**
    - Si es la primera carga o se han eliminado archivos manualmente, corra `resetear_entorno.py` antes de procesar.

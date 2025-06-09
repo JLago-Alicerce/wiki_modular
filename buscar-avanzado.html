@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <title>Busqueda Avanzada</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="https://unpkg.com/docsify@4.12.1/themes/vue.css"/>
+  <link rel="stylesheet" href="custom.css"/>
+  <style>
+  #search-form { margin:20px; }
+  #results ul { list-style:none; padding:0; }
+  #results li { margin-bottom:10px; }
+  </style>
+</head>
+<body>
+  <div id="search-form">
+    <input type="text" id="query" placeholder="Término" />
+    <input type="text" id="source" placeholder="source_file" />
+    <input type="date" id="date" />
+    <button id="btn-search">Buscar</button>
+  </div>
+  <div id="results"></div>
+
+  <script src="https://unpkg.com/lunr/lunr.js"></script>
+  <script>
+    let idx; let docs = [];
+
+    async function init() {
+      const res = await fetch('search_index.json');
+      const json = await res.json();
+      docs = Object.entries(json).map(([id, info]) => {
+        const meta = info.metadata || {};
+        return {
+          id: id,
+          url: 'index.html#/' + id.replace(/\.md$/, ''),
+          content: info.content || '',
+          source_file: meta.source_file || '',
+          conversion_date: meta.conversion_date || ''
+        };
+      });
+
+      idx = lunr(function() {
+        this.ref('id');
+        this.field('content');
+        this.field('source_file');
+        this.field('conversion_date');
+        docs.forEach(d => this.add(d));
+      });
+    }
+
+    function doSearch() {
+      const q = document.getElementById('query').value;
+      const source = document.getElementById('source').value.toLowerCase();
+      const date = document.getElementById('date').value;
+      let res = q ? idx.search(q) : docs.map(d => ({ ref: d.id }));
+      res = res.map(r => docs.find(d => d.id === r.ref));
+      res = res.filter(d => (!source || d.source_file.toLowerCase().includes(source)) &&
+                            (!date || d.conversion_date === date));
+      const list = res.map(d => `<li><a href="${d.url}">${d.id}</a>`+
+         ` <small>${d.source_file} - ${d.conversion_date}</small></li>`).join('');
+      document.getElementById('results').innerHTML = `<ul>${list}</ul>`;
+    }
+
+    document.getElementById('btn-search').addEventListener('click', doSearch);
+    init();
+  </script>
+</body>
+</html>
