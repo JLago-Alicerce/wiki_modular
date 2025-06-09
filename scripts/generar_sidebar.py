@@ -2,32 +2,32 @@
 # -*- coding: utf-8 -*-
 
 """
-generar_sidebar_desde_index.py
-------------------------------
-Genera el archivo '_sidebar.md' en la raíz del proyecto para Docsify a partir de
-'index_PlataformaBBDD.yaml'.
-Esta versión es tolerante a la ausencia del campo 'id' y del campo 'slug' en cada sección.
+generar_sidebar.py
+------------------
+Genera el archivo ``_sidebar.md`` a partir de ``index_PlataformaBBDD.yaml``.
+
+Permite operar en modo estricto o tolerante mediante ``--tolerant``. El modo
+estricto exige que cada sección tenga un ``id`` único y detecta rutas
+duplicadas; el modo tolerante omite esas comprobaciones.
 """
 
 import sys
-import yaml
 from pathlib import Path
-import argparse
 
-# Permitir ejecutar el script sin instalar el paquete
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from wiki_modular import load_yaml
-import unicodedata
-import re
-from wiki_modular import limpiar_slug
+
+import argparse
+import yaml
 from typing import Any, Dict, List
+
+from wiki_modular import load_yaml, limpiar_slug
 
 # --------------------------------------------------
 # Rutas de proyecto
 # --------------------------------------------------
-ROOT_DIR     = Path(__file__).resolve().parent.parent
-WIKI_DIR     = ROOT_DIR / "wiki"
-INDEX_FILE   = ROOT_DIR / "index_PlataformaBBDD.yaml"
+ROOT_DIR = Path(__file__).resolve().parent.parent
+WIKI_DIR = ROOT_DIR / "wiki"
+INDEX_FILE = ROOT_DIR / "index_PlataformaBBDD.yaml"
 SIDEBAR_FILE = WIKI_DIR / "_sidebar.md"
 
 
@@ -38,12 +38,15 @@ class IndexFileNotFoundError(FileNotFoundError):
     """
     Excepción lanzada cuando 'index_PlataformaBBDD.yaml' no se encuentra.
     """
+
     pass
+
 
 class InvalidIndexSchemaError(Exception):
     """
     Excepción lanzada cuando la estructura del YAML no cumple con el formato esperado.
     """
+
     pass
 
 
@@ -66,7 +69,7 @@ def load_index(path: Path) -> Dict[str, Any]:
     return datos if isinstance(datos, dict) else {}
 
 
-def validate_index_schema(data: Dict[str, Any]) -> None:
+def validate_index_schema(data: Dict[str, Any], *, tolerant: bool = False) -> None:
     """
     Valida la estructura del diccionario 'data' para que cumpla el formato mínimo:
 
@@ -88,19 +91,32 @@ def validate_index_schema(data: Dict[str, Any]) -> None:
     :raises InvalidIndexSchemaError: Si falta "secciones" o el contenido esperado en cada sección.
     """
     if "secciones" not in data or not isinstance(data["secciones"], list):
-        raise InvalidIndexSchemaError("El YAML debe contener clave 'secciones' como lista.")
+        raise InvalidIndexSchemaError(
+            "El YAML debe contener clave 'secciones' como lista."
+        )
 
     for idx, seccion in enumerate(data["secciones"], start=1):
         if not isinstance(seccion, dict):
-            raise InvalidIndexSchemaError(f"La sección en posición {idx} no es un mapeo válido.")
+            raise InvalidIndexSchemaError(
+                f"La sección en posición {idx} no es un mapeo válido."
+            )
 
-        # Exigimos únicamente 'titulo'; 'slug' es opcional
+        # Exigimos únicamente 'titulo' y opcionalmente 'id'
         if "titulo" not in seccion:
-            raise InvalidIndexSchemaError(f"Falta 'titulo' en la sección de índice {idx}.")
+            raise InvalidIndexSchemaError(
+                f"Falta 'titulo' en la sección de índice {idx}."
+            )
+        if not tolerant and "id" not in seccion:
+            raise InvalidIndexSchemaError(
+                "Falta 'id' en la sección de índice "
+                f"{idx} (ejecute con --tolerant para permitirlo)."
+            )
 
         # subtemas, si existe, debe ser lista
         if "subtemas" in seccion and not isinstance(seccion["subtemas"], list):
-            raise InvalidIndexSchemaError(f"'subtemas' en la sección {idx} debe ser lista.")
+            raise InvalidIndexSchemaError(
+                f"'subtemas' en la sección {idx} debe ser lista."
+            )
 
 
 def slugify(text: str) -> str:
@@ -108,16 +124,16 @@ def slugify(text: str) -> str:
     return limpiar_slug(text)
 
 
-def build_sidebar_lines(data: Dict[str, Any]) -> List[str]:
+def build_sidebar_lines(data: Dict[str, Any], *, tolerant: bool = False) -> List[str]:
     """
     Construye las líneas que se usarán en el archivo '_sidebar.md'.
-    
+
     Para cada sección:
       * Si falta 'slug', se genera con slugify(titulo).
       * Se genera un enlace de la forma:
           * [Título sección](<id>_<slug_seccion>.md)
         donde '<id>_' aparece solo si la sección tiene el campo 'id'.
-    
+
     Para cada subtema:
       * Se anida con dos espacios y un asterisco:
           *   [Título subtema](<carpeta_subtemas>/<slug_subtema>.md)
@@ -129,22 +145,36 @@ def build_sidebar_lines(data: Dict[str, Any]) -> List[str]:
     """
     lines: List[str] = ["* [Inicio](README.md)"]
     secciones = data["secciones"]
+    seen_paths = set()
 
     for seccion in secciones:
         sec_title = seccion["titulo"]
         # Si falta 'slug', generarlo desde 'titulo'
         sec_slug = seccion.get("slug", slugify(sec_title))
-        sec_id   = seccion.get("id")
+        sec_id = seccion.get("id")
 
         # Nombre de archivo de la sección: "<id>_<slug>.md" o "<slug>.md" si no hay id
+        if sec_id is None and not tolerant:
+            raise InvalidIndexSchemaError(
+                f"Sección '{sec_title}' sin 'id'; use --tolerant para permitirlo"
+            )
+
         prefix = f"{sec_id}_" if sec_id is not None else ""
         filename = f"{prefix}{sec_slug}.md"
+        key = filename.lower()
+        if key in seen_paths:
+            msg = f"Ruta duplicada: {filename}"
+            if not tolerant:
+                raise InvalidIndexSchemaError(msg)
+            else:
+                continue
+        seen_paths.add(key)
         lines.append(f"* [{sec_title}]({filename})")
 
         # Procesar subtemas (si existen)
         for sub in seccion.get("subtemas", []):
             sub_title = sub
-            sub_slug  = slugify(sub_title)
+            sub_slug = slugify(sub_title)
 
             # Evitar que un subtema duplique a la propia sección
             if sub_slug == sec_slug:
@@ -157,7 +187,15 @@ def build_sidebar_lines(data: Dict[str, Any]) -> List[str]:
                 carpeta = sec_slug
 
             sub_filename = f"{sub_slug}.md"
-            lines.append(f"  * [{sub_title}]({carpeta}/{sub_filename})")
+            route = f"{carpeta}/{sub_filename}"
+            key = route.lower()
+            if key in seen_paths:
+                if not tolerant:
+                    raise InvalidIndexSchemaError(f"Ruta duplicada: {route}")
+                else:
+                    continue
+            seen_paths.add(key)
+            lines.append(f"  * [{sub_title}]({route})")
 
     lines.append("")  # Línea vacía al final
     return lines
@@ -168,9 +206,20 @@ def build_sidebar_lines(data: Dict[str, Any]) -> List[str]:
 # --------------------------------------------------
 def main() -> None:
     """Genera ``_sidebar.md`` a partir de un índice YAML."""
-    parser = argparse.ArgumentParser(description="Genera el _sidebar.md desde un índice YAML")
-    parser.add_argument("--index", type=str, default=str(INDEX_FILE), help="Ruta al índice YAML")
-    parser.add_argument("--out", type=str, default=str(SIDEBAR_FILE), help="Archivo de salida")
+    parser = argparse.ArgumentParser(
+        description="Genera el _sidebar.md desde un índice YAML"
+    )
+    parser.add_argument(
+        "--index", type=str, default=str(INDEX_FILE), help="Ruta al índice YAML"
+    )
+    parser.add_argument(
+        "--out", type=str, default=str(SIDEBAR_FILE), help="Archivo de salida"
+    )
+    parser.add_argument(
+        "--tolerant",
+        action="store_true",
+        help="Permitir secciones sin id y rutas duplicadas",
+    )
     args = parser.parse_args()
 
     index_path = Path(args.index)
@@ -183,18 +232,21 @@ def main() -> None:
         print(f"[ERROR] {fnf}", file=sys.stderr)
         sys.exit(1)
     except yaml.YAMLError as parse_err:
-        print(f"[ERROR] Falló parseo de YAML en '{index_path.name}': {parse_err}", file=sys.stderr)
+        print(
+            f"[ERROR] Falló parseo de YAML en '{index_path.name}': {parse_err}",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     # 2) Validar esquema
     try:
-        validate_index_schema(index_data)
+        validate_index_schema(index_data, tolerant=args.tolerant)
     except InvalidIndexSchemaError as schema_err:
         print(f"[ERROR] Índice con estructura inválida: {schema_err}", file=sys.stderr)
         sys.exit(1)
 
     # 3) Generar líneas de _sidebar.md
-    sidebar_lines = build_sidebar_lines(index_data)
+    sidebar_lines = build_sidebar_lines(index_data, tolerant=args.tolerant)
 
     # 4) Escribir en disco
     try:

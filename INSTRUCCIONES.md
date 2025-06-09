@@ -52,7 +52,7 @@ Este proyecto permite convertir documentos en Markdown y generar una wiki basada
 5. **Generar el sidebar y auditar**
 
    ```bash
-   python scripts/generar_sidebar_desde_index.py --index index_PlataformaBBDD.yaml --out _sidebar.md
+   python scripts/generar_sidebar.py --index index_PlataformaBBDD.yaml --out _sidebar.md --tolerant
    python scripts/auditar_sidebar_vs_fs.py
    ```
 
@@ -60,12 +60,13 @@ Con esto la wiki quedará creada en la carpeta `wiki/`.
 
 ## Añadir documentos sin limpiar
 
-Si desea incorporar nuevos `.docx` sin borrar la wiki existente, copie los archivos en `_fuentes/_originales` y ejecute:
+Si desea incorporar nuevos `.docx` o `.pdf` sin borrar la wiki existente, copie los archivos en `_fuentes/_originales` y ejecute:
 
 ```bash
 python scripts/procesar_nuevos.py
 ```
 
 El script detecta documentos no procesados, aplica automáticamente la misma cadena de scripts anterior y actualiza la wiki conservando el contenido ya publicado.
-Si tiene varios `.docx` pendientes puede copiarlos juntos y ejecutar el comando una sola vez; se procesarán de forma secuencial manteniendo el índice existente.
+Si tiene varios archivos pendientes puede copiarlos juntos y ejecutar el comando una sola vez; se procesarán de forma secuencial manteniendo el índice existente.
+Los PDF legibles se convertirán automáticamente y los fallidos se registrarán en `errores_pdf.csv`.
 Si necesita una recarga completa, ejecute previamente `python scripts/resetear_entorno.py` o use `python scripts/procesar_nuevos.py --clean`.

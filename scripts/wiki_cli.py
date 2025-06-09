@@ -63,7 +63,7 @@ def step_ingest(cutoff: float) -> None:
 
 
 def step_sidebar() -> None:
-    run([sys.executable, "scripts/generar_sidebar_desde_index.py"])
+    run([sys.executable, "scripts/generar_sidebar.py", "--tolerant"])
     run([sys.executable, "scripts/auditar_sidebar_vs_fs.py"])
 
 

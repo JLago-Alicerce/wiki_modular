@@ -10,9 +10,9 @@
 :root {
   --color-primary: #003366;
   --color-bg: #f5f5f5;
-  --color-sidebar-bg: #e0e0e0;
+  --color-sidebar-bg: #f5f5f5; /* lighter background for better logo contrast */
   /* Use Open Sans if available, otherwise fall back to system fonts */
-  --font-base: 'Open Sans', Arial, sans-serif;
+  --font-base: 'Open Sans', sans-serif;
 }
 
 /* Future dark mode variables */
@@ -56,7 +56,7 @@ h4 {
 .app-name {
   display: flex;
   align-items: center;
-  padding: 1rem 1rem; /* extra space for bigger logo */
+  padding: 1rem 1rem 1rem 24px; /* left padding for title */
   color: var(--color-primary);
   font-weight: bold;
   text-decoration: none;
@@ -67,8 +67,8 @@ h4 {
   content: '';
   display: inline-block;
   background: url('assets/logo.png') no-repeat center/contain;
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   margin-right: 12px;
 }
 
@@ -80,6 +80,7 @@ h4 {
   overflow-y: auto;
   width: 320px; /* slightly wider sidebar */
   background: var(--color-sidebar-bg);
+  z-index: 1100; /* keep menu above other elements */
 }
 
 /* Active item in sidebar */
@@ -94,8 +95,14 @@ h4 {
 }
 
 /* Indent nested links */
+/* Indentation and spacing for nested links */
 .sidebar-nav ul ul > li > a {
-  padding-left: 1em;
+  padding-left: 1.5em;
+}
+
+/* Consistent vertical spacing */
+.sidebar-nav li {
+  margin: 0.2rem 0;
 }
 
 /* Links and active elements */
@@ -120,6 +127,7 @@ a:hover {
   }
   .app-name {
     justify-content: center;
+    padding-left: 24px;
   }
   .app-name::before {
     width: 30px;
@@ -138,6 +146,11 @@ a:hover {
   h4 {
     font-size: 1rem;
   }
+}
+
+/* Ensure hamburger icon is visible above content */
+.sidebar-toggle {
+  z-index: 1200;
 }
 
 /* Table styling according to ALTIA guidelines */
@@ -214,3 +227,13 @@ a:hover {
 .markdown-section img::before,
 .markdown-section img::after {
   content: none !important;
+
+}
+
+/* Footer for all pages */
+.page-footer {
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+  margin-top: 2rem;
+}
