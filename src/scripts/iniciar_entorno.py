@@ -7,7 +7,8 @@ import sys
 from pathlib import Path
 
 # Permitir ejecutar el script sin instalar el paquete
-sys.path.append(str(Path(__file__).resolve().parents[2]))
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR / "src"))
 
 from scripts import procesar_nuevos as pn  # type: ignore
 
@@ -24,7 +25,8 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
     # 1. Limpiar todo el entorno
-    run([sys.executable, "scripts/resetear_entorno.py"])
+    reset_script = Path(__file__).resolve().parent / "resetear_entorno.py"
+    run([sys.executable, str(reset_script)])
 
     orig_dir = pn.ORIG_DIR
     if not orig_dir.exists():
@@ -46,7 +48,8 @@ def main() -> None:
         pn.run_pipeline(docx)
 
     # 4. Generar índice de búsqueda
-    run([sys.executable, "scripts/generar_indice_busqueda.py"])
+    idx_script = Path(__file__).resolve().parent / "generar_indice_busqueda.py"
+    run([sys.executable, str(idx_script)])
 
 
 if __name__ == "__main__":
