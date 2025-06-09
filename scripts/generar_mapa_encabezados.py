@@ -2,21 +2,25 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import yaml
 from pathlib import Path
+import re
+import yaml
+
 
 # Permitir ejecutar el script sin instalar el paquete
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from wiki_modular import limpiar_slug
+from wiki_modular import limpiar_slug  # noqa: E402
+
 
 def generate_map_from_markdown(md_path: Path, yaml_path: Path) -> None:
-    """
-    Lee un archivo Markdown y genera un YAML con sus encabezados (H1 a H5):
-      - h_level: nivel de encabezado (1–5)
-      - titulo: texto crudo del encabezado
-      - ruta: slug generado con limpiar_slug() + ".md"
-      - start_line: número de línea donde aparece el encabezado
-      - end_line: línea anterior al comienzo del siguiente encabezado
+    """Genera un YAML con los encabezados H2 de ``md_path``.
+
+    Cada entrada contiene:
+        - ``h_level``: siempre ``2``.
+        - ``titulo``: texto crudo del encabezado.
+        - ``ruta``: resultado de :func:`limpiar_slug` + ``.md``.
+        - ``start_line``: número de línea donde aparece el H2.
+        - ``end_line``: línea anterior al siguiente H2 (o EOF).
     """
     if not md_path.exists():
         print(f"[X] No se encuentra el archivo Markdown: {md_path}")
@@ -24,35 +28,38 @@ def generate_map_from_markdown(md_path: Path, yaml_path: Path) -> None:
 
     lines = md_path.read_text(encoding="utf-8").splitlines()
     mapa = []
+    pat_h2 = re.compile(r"^\s*##(?!#)\s*(.*)$")
+    current = None
 
-    # 1) Detectar encabezados H1–H5
     for i, line in enumerate(lines):
-        if line.startswith("#"):
-            level = len(line) - len(line.lstrip("#"))
-            if 1 <= level <= 5:
-                raw_title = line[level:].strip()
-                slug = limpiar_slug(raw_title)
-                ruta = f"{slug}.md"
-                mapa.append({
-                    "h_level": level,
-                    "titulo": raw_title,
-                    "ruta": ruta,
-                    "start_line": i + 1
-                })
+        m = pat_h2.match(line)
+        if m:
+            if current:
+                current["end_line"] = i
+                mapa.append(current)
 
-    # 2) Calcular end_line de cada bloque
-    for idx in range(len(mapa) - 1):
-        mapa[idx]["end_line"] = mapa[idx + 1]["start_line"] - 1
-    if mapa:
-        mapa[-1]["end_line"] = len(lines)
+            raw_title = m.group(1).strip()
+            slug = limpiar_slug(raw_title)
+            ruta = f"{slug}.md"
+            current = {
+                "h_level": 2,
+                "titulo": raw_title,
+                "ruta": ruta,
+                "start_line": i + 1,
+            }
 
-    # 3) Escribir YAML
+    if current:
+        current["end_line"] = len(lines)
+        mapa.append(current)
+
+    # 2) Escribir YAML
     try:
         yaml_path.write_text(yaml.dump(mapa, allow_unicode=True), encoding="utf-8")
-        print(f"[✓] Mapa generado con {len(mapa)} bloques (H1–H5).")
+        print(f"[✓] Mapa generado con {len(mapa)} bloques (H2).")
     except Exception as e:
         print(f"[X] Error al escribir {yaml_path}: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     md_path = Path("_fuentes/tmp_full.md")
