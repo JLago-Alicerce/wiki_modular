@@ -6,3 +6,12 @@ mismatch_report.csv
 .venv/
 wiki_modular.egg-info/
 _fuentes/_originales/
+
+# Standard ignores
+*.pyc
+*.log
+*.exe
+*.pyd
+*.egg-info/
+.venv/
+__pycache__/
