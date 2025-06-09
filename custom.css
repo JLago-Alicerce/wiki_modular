@@ -3,7 +3,6 @@
  * Styles derived from internal design guide v3.1
  */
 
-
 /* If hosting the font locally, declare it here with @font-face.
  * Using system fallback fonts avoids online dependencies. */
 
@@ -14,14 +13,6 @@
   /* Use Open Sans if available, otherwise fall back to system fonts */
   --font-base: 'Open Sans', sans-serif;
 }
-
-/* Future dark mode variables */
-/* :root[data-theme='dark'] {
-  --color-primary: #4d88cc;
-  --color-bg: #1a1a1a;
-  --color-sidebar-bg: #222;
-  color-scheme: dark;
-} */
 
 body {
   font-family: var(--font-base);
