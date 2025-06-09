@@ -27,27 +27,40 @@ body {
   font-family: var(--font-base);
   background: var(--color-bg);
   color: #333;
+  margin: 0;
+}
+
+.markdown-section {
+  padding: 16px;
+  margin: 0 auto;
 }
 
 h1 {
   font-size: 1.8rem;
   margin-top: 1rem;
   border-bottom: 1px solid #ccc;
+  padding-bottom: 0.25rem;
 }
 
 h2 {
   font-size: 1.6rem;
   margin-top: 1.2rem;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.25rem;
 }
 
 h3 {
   font-size: 1.3rem;
   margin-top: 1rem;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.25rem;
 }
 
 h4 {
   font-size: 1.1rem;
   margin-top: 0.8rem;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.25rem;
 }
 
 /* Header with logo */
