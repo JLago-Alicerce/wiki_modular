@@ -83,7 +83,16 @@ def main():
     parser.add_argument("--input", type=str, default="_fuentes/mapa_encabezados.yaml", help="Archivo de entrada (mapa de encabezados).")
     parser.add_argument("--output", type=str, default="index_PlataformaBBDD.yaml", help="Archivo de salida (índice).")
     parser.add_argument("--log-level", type=str, default="INFO", choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"])
-    parser.add_argument("--precheck", action="store_true", help="Ejecutar verificación previa de consistencia")
+    parser.add_argument(
+        "--precheck",
+        action="store_true",
+        help="Ejecutar verificación previa de consistencia",
+    )
+    parser.add_argument(
+        "--ignore-extra",
+        action="store_true",
+        help="Al usar --precheck, no fallar por entradas extra en el índice",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(level=args.log_level)
@@ -97,7 +106,15 @@ def main():
 
     if args.precheck:
         from subprocess import call
-        rc = call([sys.executable, "scripts/verificar_pre_ingesta.py", str(input_path), str(output_path)])
+        cmd = [
+            sys.executable,
+            "scripts/verificar_pre_ingesta.py",
+            str(input_path),
+            str(output_path),
+        ]
+        if args.ignore_extra:
+            cmd.append("--ignore-extra")
+        rc = call(cmd)
         if rc != 0:
             logging.error("Verificación previa falló")
             sys.exit(rc)

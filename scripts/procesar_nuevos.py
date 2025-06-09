@@ -31,6 +31,7 @@ PIPELINE = [
         sys.executable,
         'scripts/generar_index_desde_encabezados.py',
         '--precheck',
+        '--ignore-extra',
         '--output',
         'index_PlataformaBBDD.yaml',
     ],

@@ -50,13 +50,14 @@ imágenes y que Docsify no interpreta.
 
 ```bash
 python scripts/generar_mapa_encabezados.py
-python scripts/generar_index_desde_encabezados.py --precheck
+python scripts/generar_index_desde_encabezados.py --precheck --ignore-extra
 ```
 
 Si `index_PlataformaBBDD.yaml` ya existe, el script añadirá las nuevas secciones
-al final manteniendo los `subtemas` previamente definidos. De esta forma es
-posible procesar varios documentos de forma incremental sin perder el índice
-anterior.
+al final manteniendo los `subtemas` previamente definidos. Con la opción
+`--ignore-extra` la verificación previa solo fallará cuando el mapa incluya
+títulos que no existan en el índice, por lo que se pueden procesar varios
+documentos de forma incremental sin reiniciar la wiki.
 
 El archivo `index_PlataformaBBDD.yaml` resultante contiene una lista de secciones con el siguiente esquema:
 
@@ -123,7 +124,7 @@ para ver el formato detallado y algunos ejemplos de uso.
 ## Utilidades
 
 - `scripts/limpiar_slug.py`: muestra en consola la versión normalizada de los argumentos recibidos.
-- `scripts/verificar_pre_ingesta.py`: comprueba consistencia entre el mapa y el índice.
+- `scripts/verificar_pre_ingesta.py`: comprueba consistencia entre el mapa y el índice. Con `--ignore-extra` sólo advierte por títulos faltantes.
 - `scripts/validar_sidebar_vs_fs.py`: asegura que `_sidebar.md` está sincronizado con los ficheros de la carpeta `wiki/`.
 - `scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
 
