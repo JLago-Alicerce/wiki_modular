@@ -18,6 +18,7 @@ def test_generar_indice_creates_json(tmp_path, monkeypatch):
     gen.main()
 
     data = json.loads(out.read_text(encoding="utf-8"))
-    assert "sample.md" in data
-    assert data["sample.md"]["metadata"]["source"] == "doc.docx"
-    assert "contenido" in data["sample.md"]["content"]
+    assert isinstance(data, list)
+    assert data[0]["path"] == "sample.md"
+    assert data[0]["metadata"]["source"] == "doc.docx"
+    assert "contenido" in data[0]["content"]

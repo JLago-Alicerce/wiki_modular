@@ -9,7 +9,7 @@ Markdown y construye `search_index.json` con el contenido y metadatos.
 import argparse
 import json
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 import yaml
 
 
@@ -28,14 +28,18 @@ def extraer_frontmatter(path: Path) -> Tuple[Dict[str, str], str]:
     return {}, texto
 
 
-def generar_indice(wiki_dir: Path) -> Dict[str, Dict[str, object]]:
-    indice: Dict[str, Dict[str, object]] = {}
-    for md in wiki_dir.rglob("*.md"):
+def generar_indice(wiki_dir: Path) -> List[Dict[str, object]]:
+    """Devuelve una lista de entradas compatibles con Docsify."""
+    indice: List[Dict[str, object]] = []
+    for md in sorted(wiki_dir.rglob("*.md")):
         meta, cuerpo = extraer_frontmatter(md)
-        indice[str(md.relative_to(wiki_dir))] = {
-            "metadata": meta,
+        item = {
+            "path": str(md.relative_to(wiki_dir)),
+            "title": meta.get("titulo", md.stem),
             "content": cuerpo,
+            "metadata": meta,
         }
+        indice.append(item)
     return indice
 
 
