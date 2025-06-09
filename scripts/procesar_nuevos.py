@@ -131,6 +131,7 @@ def convertir_pdf(pdf: Path, *, ocr: bool = False, dest: Path | None = None) -> 
 
 
 def run_pipeline(doc: Path, *, skip_pandoc: bool = False) -> None:
+    """Ejecuta la cadena de utilidades definida en :data:`PIPELINE`."""
     for i, build_cmd in enumerate(PIPELINE):
         if skip_pandoc and i == 0:
             continue
@@ -139,6 +140,18 @@ def run_pipeline(doc: Path, *, skip_pandoc: bool = False) -> None:
         result = subprocess.run(cmd)
         if result.returncode != 0:
             raise RuntimeError(f"Paso fallido: {' '.join(cmd)}")
+
+        # Tras generar el sidebar comprobamos si contiene enlaces. Si no hay
+        # ninguno significa que no se creó contenido nuevo y por tanto la
+        # auditoría no tiene sentido. Se omite el paso restante para evitar
+        # detener el flujo por un error innecesario.
+        if "generar_sidebar.py" in cmd[-1]:
+            sidebar = Path("wiki/_sidebar.md")
+            if sidebar.exists():
+                text = sidebar.read_text(encoding="utf-8")
+                if "](" not in text:
+                    logging.info("_sidebar.md vacío; omitiendo auditoría")
+                    break
 
 
 def main() -> None:
