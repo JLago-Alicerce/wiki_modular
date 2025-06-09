@@ -16,6 +16,7 @@ import sys
 import yaml
 from pathlib import Path
 from datetime import datetime
+import csv
 
 # Permitir ejecutar el script sin instalar el paquete
 sys.path.append(str(Path(__file__).resolve().parents[1]))
@@ -95,6 +96,11 @@ def main():
     parser.add_argument("--cutoff",  type=float, default=0.5,                help="Umbral fuzzy matching")
     parser.add_argument("--docx",   default="", help="Ruta al archivo .docx original")
     parser.add_argument("--metadata", action="store_true", help="Incluir frontmatter con metadatos")
+    parser.add_argument(
+        "--suggest",
+        default="alias_suggestions.csv",
+        help="Ruta del CSV para sugerencias de alias_override",
+    )
     args = parser.parse_args()
 
     wiki_path     = Path("wiki")
@@ -102,6 +108,7 @@ def main():
     index_file    = Path(args.index)
     tmp_file      = Path(args.fuente)
     override_file = Path(args.alias)
+    suggest_file = Path(args.suggest)
 
     # 1) Cargar alias_override (si existe)
     alias_map = {}
@@ -146,10 +153,13 @@ def main():
     for titulo, nivel, contenido in bloques:
         destino = buscar_destino(titulo, index_data, alias_map, fuzzy_cutoff=args.cutoff)
         if not destino:
-            # Asignar a carpeta wildcard
+            # Asignar a carpeta wildcard y registrar sugerencia
             nombre_def = limpiar_nombre_archivo(titulo)
             destino = wiki_path / "99_Nuevas_Secciones" / f"{nombre_def}.md"
             no_match_count += 1
+            with suggest_file.open("a", encoding="utf-8", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow([titulo, limpiar_slug(titulo)])
 
         destino.parent.mkdir(parents=True, exist_ok=True)
 

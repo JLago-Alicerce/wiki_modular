@@ -14,3 +14,12 @@ Durante la ingesta, si un título coincide exactamente con alguna clave del
 archivo, el bloque se escribirá en la ruta indicada sin aplicar "fuzzy matching".
 De este modo se pueden resolver manualmente excepciones o nombres ambiguos.
 
+## Revisión de sugerencias
+
+Cuando `ingest_wiki_v2.py` no encuentra destino para un título, el script lo
+guarda en `wiki/99_Nuevas_Secciones` y añade una fila al archivo
+`alias_suggestions.csv` con dos columnas: el título original y el slug
+sugerido. Tras revisar estas entradas se pueden copiar al
+`_fuentes/alias_override.yaml` para fijar la ruta definitiva y volver a ejecutar
+la ingesta.
+

@@ -2,6 +2,7 @@ import scripts.ingest_wiki_v2 as ingest
 from pathlib import Path
 import yaml
 import sys
+import csv
 from datetime import datetime
 
 
@@ -92,3 +93,42 @@ def test_main_generates_frontmatter(tmp_path, monkeypatch):
     meta = yaml.safe_load(parts[1])
     assert meta["source_file"] == "orig.docx"
     assert meta["conversion_date"] == datetime.now().strftime("%Y-%m-%d")
+
+
+def test_suggestion_file_written(tmp_path, monkeypatch):
+    mapa = [{"titulo": "Tema Nuevo", "start_line": 1, "h_level": 1}]
+    mapa_file = tmp_path / "mapa.yaml"
+    mapa_file.write_text(yaml.safe_dump(mapa), encoding="utf-8")
+
+    index = {"secciones": []}
+    index_file = tmp_path / "index.yaml"
+    index_file.write_text(yaml.safe_dump(index), encoding="utf-8")
+
+    fuente = tmp_path / "full.md"
+    fuente.write_text("# Tema Nuevo\n\ncontenido", encoding="utf-8")
+
+    alias = tmp_path / "alias.yaml"
+    alias.write_text("{}", encoding="utf-8")
+
+    suggest = tmp_path / "sugg.csv"
+
+    monkeypatch.chdir(tmp_path)
+    args = [
+        "prog",
+        "--mapa",
+        str(mapa_file),
+        "--index",
+        str(index_file),
+        "--fuente",
+        str(fuente),
+        "--alias",
+        str(alias),
+        "--suggest",
+        str(suggest),
+    ]
+    monkeypatch.setattr(sys, "argv", args)
+    ingest.main()
+
+    rows = list(csv.reader(suggest.read_text(encoding="utf-8").splitlines()))
+    assert rows[0][0] == "Tema Nuevo"
+    assert rows[0][1] == ingest.limpiar_slug("Tema Nuevo")
