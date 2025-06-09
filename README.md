@@ -122,8 +122,9 @@ python scripts/procesar_nuevos.py --clean
 ```
 
 El indicador `--clean` ejecuta `resetear_entorno.py` para garantizar que la
-wiki se regenere desde cero. Los PDF legibles se convierten primero a DOCX y
-los que no puedan procesarse se anotarán en `errores_pdf.csv`.
+wiki se regenere desde cero. Los PDF se convierten directamente a Markdown
+mediante `pdfminer.six` y opcionalmente `pytesseract` con `--ocr`. Los que no
+puedan procesarse se anotarán en `errores_pdf.csv`.
 
 ### Personalización de rutas
 
