@@ -13,4 +13,3 @@ __all__ = [
     "limpiar_atributos_imagenes",
     "limpiar_archivo_markdown",
 ]
-
