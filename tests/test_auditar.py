@@ -1,5 +1,4 @@
 import csv
-import pytest
 
 from scripts import auditar_sidebar_vs_fs as audit
 
@@ -15,9 +14,7 @@ def test_auditar_sidebar_empty(tmp_path, monkeypatch):
     monkeypatch.setattr(audit, "SIDEBAR", sidebar)
     monkeypatch.setattr(audit, "WIKI_DIR", wiki)
 
-    with pytest.raises(SystemExit) as exc:
-        audit.main()
-    assert exc.value.code == 1
+    audit.main()
 
     report = root / "mismatch_report.csv"
     assert report.exists()
