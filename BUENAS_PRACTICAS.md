@@ -24,3 +24,15 @@ A nivel de uso diario se recomienda:
 
 Seguir estas pautas ayuda a que el servicio de generación de la wiki sea consistente y rápido, evitando reprocesamientos innecesarios y minimizando los errores en los enlaces.
 
+## Preparación del documento `.docx`
+
+Para obtener una conversión limpia conviene cuidar la estructura del archivo original:
+
+* Utilice los estilos de Word **Título 1**, **Título 2**, etc. para marcar los encabezados. El generador de índices se apoya en esos estilos para crear los slugs de cada sección.
+* Evite numerar manualmente las secciones o aplicar formatos personalizados; deje que Word gestione la numeración.
+* Inserte las imágenes de forma directa (copiar y pegar) y con un tamaño razonable. Estas se extraerán a `wiki/assets` durante la conversión.
+* Procure que las tablas no contengan celdas anidadas ni combinadas de manera compleja. Pandoc procesa mejor las tablas simples.
+* Guarde el documento final en formato `.docx` sin macros ni campos especiales para evitar advertencias.
+
+Si el documento respeta estas reglas, la generación de la wiki será más fiable y requerirá menos ajustes manuales.
+
