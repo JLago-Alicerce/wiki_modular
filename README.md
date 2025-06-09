@@ -84,7 +84,7 @@ python scripts/ingest_wiki_v2.py \
 4. Generar el sidebar (puede personalizar las rutas con `--index` y `--out`):
 
 ```bash
-python scripts/generar_sidebar_desde_index.py --index index_PlataformaBBDD.yaml --out _sidebar.md
+python scripts/generar_sidebar.py --index index_PlataformaBBDD.yaml --out _sidebar.md --tolerant
 ```
 
 5. Auditar enlaces vs. archivos:
