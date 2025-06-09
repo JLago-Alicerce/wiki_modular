@@ -1,5 +1,7 @@
 import scripts.ingest_wiki_v2 as ingest
 from pathlib import Path
+import yaml
+import sys
 
 
 def sample_index():
@@ -44,3 +46,43 @@ def test_limpiar_nombre_archivo_basic():
     assert second == "Ambito_General"
     long = "a" * 200
     assert len(ingest.limpiar_nombre_archivo(long)) == 128
+
+
+def test_main_generates_frontmatter(tmp_path, monkeypatch):
+    mapa = [{"titulo": "Intro", "start_line": 1, "h_level": 1}]
+    mapa_file = tmp_path / "mapa.yaml"
+    mapa_file.write_text(yaml.safe_dump(mapa), encoding="utf-8")
+
+    index = {"secciones": [{"id": 1, "titulo": "Intro", "slug": "intro", "subtemas": []}]}
+    index_file = tmp_path / "index.yaml"
+    index_file.write_text(yaml.safe_dump(index), encoding="utf-8")
+
+    fuente = tmp_path / "full.md"
+    fuente.write_text("# Intro\n\ncontenido", encoding="utf-8")
+
+    alias = tmp_path / "alias.yaml"
+    alias.write_text("{}", encoding="utf-8")
+
+    monkeypatch.chdir(tmp_path)
+    args = [
+        "prog",
+        "--mapa",
+        str(mapa_file),
+        "--index",
+        str(index_file),
+        "--fuente",
+        str(fuente),
+        "--alias",
+        str(alias),
+        "--docx",
+        "orig.docx",
+    ]
+    monkeypatch.setattr(sys, "argv", args)
+    ingest.main()
+
+    out_file = tmp_path / "wiki" / "1_intro.md"
+    text = out_file.read_text(encoding="utf-8")
+    assert text.startswith("---")
+    parts = text.split("---", 2)
+    meta = yaml.safe_load(parts[1])
+    assert meta["source"] == "orig.docx"

@@ -92,6 +92,7 @@ def main():
     parser.add_argument("--fuente",  default="_fuentes/tmp_full.md",         help="Markdown completo")
     parser.add_argument("--alias",   default="_fuentes/alias_override.yaml", help="Overrides YAML (opcional)")
     parser.add_argument("--cutoff",  type=float, default=0.5,                help="Umbral fuzzy matching")
+    parser.add_argument("--docx",   default="", help="Ruta al archivo .docx original")
     args = parser.parse_args()
 
     wiki_path     = Path("wiki")
@@ -156,7 +157,13 @@ def main():
         else:
             md_texto = header_line + "\n\n" + "\n".join(contenido)
 
-        destino.write_text(md_texto, encoding="utf-8")
+        frontmatter = {
+            "source": args.docx,
+            "titulo": titulo,
+            "nivel": nivel,
+        }
+        fm_text = "---\n" + yaml.safe_dump(frontmatter, allow_unicode=True) + "---\n\n"
+        destino.write_text(fm_text + md_texto, encoding="utf-8")
         logging.info(f"[✓] {titulo} → {destino}")
 
     logging.info(f"Resumen: {len(bloques)} bloques procesados | {no_match_count} sin coincidencia")

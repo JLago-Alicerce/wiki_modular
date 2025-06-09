@@ -99,6 +99,12 @@ existen enlaces rotos, puede ejecutarse:
 python scripts/validar_sidebar_vs_fs.py
 ```
 
+6. Generar el índice de búsqueda:
+
+```bash
+python scripts/generar_indice_busqueda.py
+```
+
 Si prefiere automatizar la detección y el procesado de nuevos `.docx`, puede
 utilizar:
 
@@ -127,6 +133,13 @@ para ver el formato detallado y algunos ejemplos de uso.
 - `scripts/verificar_pre_ingesta.py`: comprueba consistencia entre el mapa y el índice. Con `--ignore-extra` sólo advierte por títulos faltantes.
 - `scripts/validar_sidebar_vs_fs.py`: asegura que `_sidebar.md` está sincronizado con los ficheros de la carpeta `wiki/`.
 - `scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
+- `scripts/generar_indice_busqueda.py`: crea `search_index.json` a partir de los Markdown de `wiki/`.
+
+## Búsqueda en la wiki
+
+Ejecuta `python scripts/generar_indice_busqueda.py` tras la ingesta para
+generar `search_index.json`. Este archivo lo utiliza Docsify a través del
+plugin de búsqueda configurado en `index.html`.
 
 ## Convención de nombres de ramas
 
