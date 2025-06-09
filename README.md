@@ -142,6 +142,11 @@ Ejecuta `python scripts/generar_indice_busqueda.py` tras la ingesta para
 generar `search_index.json`. Este archivo lo utiliza Docsify a través del
 plugin de búsqueda configurado en `index.html`.
 
+Para consultas más detalladas existe la página
+`buscar-avanzado.html`, que carga `search_index.json` mediante
+[Lunr.js](https://lunrjs.com/) y permite filtrar por `source_file` o
+`conversion_date`.
+
 ## Convención de nombres de ramas
 
 Para evitar problemas de compatibilidad entre sistemas y servidores Git,
