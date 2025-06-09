@@ -12,6 +12,7 @@ necesaria para considerar que un encabezado coincide con una entrada del índice
 Si no se alcanza, el bloque se envía a ``wiki/99_Nuevas_Secciones``.
 """
 
+import csv
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -96,6 +97,29 @@ def limpiar_nombre_archivo(texto: str) -> str:
     return texto[:128]
 
 
+def append_suggestion(path: Path, titulo: str, slug: str) -> None:
+    """Añade ``titulo`` y ``slug`` a ``path`` en formato CSV o YAML."""
+    try:
+        if path.suffix.lower() in {".yaml", ".yml"}:
+            data = {}
+            if path.exists():
+                data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            if titulo not in data:
+                data[titulo] = slug
+                path.write_text(
+                    yaml.safe_dump(data, allow_unicode=True), encoding="utf-8"
+                )
+        else:
+            new_file = not path.exists()
+            with path.open("a", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                if new_file:
+                    writer.writerow(["titulo", "slug"])
+                writer.writerow([titulo, slug])
+    except Exception as e:  # pragma: no cover - solo logueo
+        logging.error(f"No se pudo actualizar {path}: {e}")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Fragmenta tmp_full.md según mapa e índice."
@@ -115,6 +139,11 @@ def main():
         help="Overrides YAML (opcional)",
     )
     parser.add_argument(
+        "--suggestions",
+        default="_fuentes/alias_suggestions.csv",
+        help="Archivo CSV o YAML donde registrar titulos sin coincidencia",
+    )
+    parser.add_argument(
         "--cutoff", type=float, default=0.5, help="Umbral fuzzy matching"
     )
     parser.add_argument("--docx", default="", help="Ruta al archivo .docx original")
@@ -128,6 +157,7 @@ def main():
     index_file = Path(args.index)
     tmp_file = Path(args.fuente)
     override_file = Path(args.alias)
+    suggest_file = Path(args.suggestions)
 
     # 1) Cargar alias_override (si existe)
     alias_map = {}
@@ -182,6 +212,7 @@ def main():
             nombre_def = limpiar_nombre_archivo(titulo)
             destino = wiki_path / "99_Nuevas_Secciones" / f"{nombre_def}.md"
             no_match_count += 1
+            append_suggestion(suggest_file, titulo, limpiar_slug(titulo))
 
         destino.parent.mkdir(parents=True, exist_ok=True)
 

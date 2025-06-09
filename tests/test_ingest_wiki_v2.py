@@ -1,8 +1,11 @@
-import scripts.ingest_wiki_v2 as ingest
-from pathlib import Path
-import yaml
+import csv
 import sys
 from datetime import datetime
+from pathlib import Path
+
+import yaml
+
+import scripts.ingest_wiki_v2 as ingest
 
 
 def sample_index():
@@ -54,7 +57,9 @@ def test_main_generates_frontmatter(tmp_path, monkeypatch):
     mapa_file = tmp_path / "mapa.yaml"
     mapa_file.write_text(yaml.safe_dump(mapa), encoding="utf-8")
 
-    index = {"secciones": [{"id": 1, "titulo": "Intro", "slug": "intro", "subtemas": []}]}
+    index = {
+        "secciones": [{"id": 1, "titulo": "Intro", "slug": "intro", "subtemas": []}]
+    }
     index_file = tmp_path / "index.yaml"
     index_file.write_text(yaml.safe_dump(index), encoding="utf-8")
 
@@ -92,3 +97,43 @@ def test_main_generates_frontmatter(tmp_path, monkeypatch):
     meta = yaml.safe_load(parts[1])
     assert meta["source_file"] == "orig.docx"
     assert meta["conversion_date"] == datetime.now().strftime("%Y-%m-%d")
+
+
+def test_main_appends_suggestions(tmp_path, monkeypatch):
+    mapa = [{"titulo": "Nuevo", "start_line": 1, "h_level": 1}]
+    mapa_file = tmp_path / "mapa.yaml"
+    mapa_file.write_text(yaml.safe_dump(mapa), encoding="utf-8")
+
+    index = sample_index()
+    index_file = tmp_path / "index.yaml"
+    index_file.write_text(yaml.safe_dump(index), encoding="utf-8")
+
+    fuente = tmp_path / "full.md"
+    fuente.write_text("# Nuevo\n\ncontenido", encoding="utf-8")
+
+    alias = tmp_path / "alias.yaml"
+    alias.write_text("{}", encoding="utf-8")
+
+    suggest = tmp_path / "sug.csv"
+
+    monkeypatch.chdir(tmp_path)
+    args = [
+        "prog",
+        "--mapa",
+        str(mapa_file),
+        "--index",
+        str(index_file),
+        "--fuente",
+        str(fuente),
+        "--alias",
+        str(alias),
+        "--suggestions",
+        str(suggest),
+    ]
+    monkeypatch.setattr(sys, "argv", args)
+    ingest.main()
+
+    with suggest.open(encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    assert rows[-1]["titulo"] == "Nuevo"
+    assert rows[-1]["slug"] == "nuevo"
