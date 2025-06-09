@@ -137,10 +137,13 @@ espacios o caracteres especiales.
 
 ## Pruebas
 
-Instale las dependencias en modo editable con:
+Antes de ejecutar `pytest` asegúrsate de instalar las dependencias del
+proyecto con alguno de los siguientes comandos:
 
 ```bash
 pip install -e .
+# o
+pip install -r requirements.txt
 ```
 
 Luego ejecute todos los tests con:
