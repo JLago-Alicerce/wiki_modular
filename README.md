@@ -2,13 +2,18 @@
 
 Este repositorio contiene utilidades para fragmentar documentación en Markdown
 y construir una wiki lista para Docsify. Todas las funciones comunes se
-encuentran dentro del paquete `wiki_modular` y pueden instalarse con:
+encuentran dentro del paquete `wiki_modular` y se pueden instalar de dos
+maneras:
 
 ```bash
+# Versión publicada desde PyPI
+pip install wiki_modular
+
+# O bien la copia clonada para desarrollo
 pip install -e .
 ```
 
-> **Nota:** este comando instala el proyecto y todas las dependencias
+> **Nota:** el modo editable instala el proyecto y todas las dependencias
 > necesarias (por ejemplo `PyYAML`). Si se invocan los scripts sin haber
 > realizado esta instalación previa, es probable que falten paquetes y se
 > produzcan errores.
