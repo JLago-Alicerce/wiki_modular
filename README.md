@@ -141,7 +141,9 @@ proyectos con estructuras de directorio diferentes.
 El archivo `_fuentes/alias_override.yaml` permite definir emparejamientos de
 títulos con slugs personalizados cuando el algoritmo de coincidencia difusa no
 encuentra el destino correcto. Consulte [alias_override.md](alias_override.md)
-para ver el formato detallado y algunos ejemplos de uso.
+para ver el formato detallado y algunos ejemplos de uso. Además, los títulos
+sin coincidencia se anotan en `_fuentes/alias_suggestions.csv` junto con el slug
+propuesto para facilitar su revisión.
 
 ## Utilidades
 
