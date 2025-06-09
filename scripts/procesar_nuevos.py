@@ -1,12 +1,14 @@
 #!/usr/bin/env python
-"""Procesa automáticamente nuevos archivos en `_fuentes/_originales`.
+"""Procesa automáticamente nuevos archivos en ``_fuentes/_originales``.
 
-Revisa si existen archivos `.docx` nuevos en la carpeta y ejecuta la cadena de
-scripts definida en el README. Mantiene un log en `procesados.log` con la fecha
-de cada archivo procesado para evitar reprocesos.
+Detecta documentos ``.docx`` y ``.pdf``. Los PDF legibles se convierten a DOCX
+y se procesan con la misma cadena de scripts descrita en el README. Se mantiene
+un registro en ``procesados.log`` para evitar reprocesos y se anotan los PDF con
+errores en ``errores_pdf.csv``.
 """
 
 import argparse
+import csv
 import json
 import logging
 import subprocess
@@ -15,8 +17,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict
 
+from pdfminer.high_level import extract_text
+
 ORIG_DIR = Path('_fuentes/_originales')
 LOG_FILE = Path('procesados.log')
+PDF_ERRORS = Path('errores_pdf.csv')
 
 PIPELINE = [
     lambda doc: [
@@ -66,6 +71,38 @@ def append_log(filename: str) -> None:
         f.write(json.dumps(entry) + '\n')
 
 
+def registrar_error_pdf(filename: str, error: str) -> None:
+    """Añade ``filename,error`` a :data:`PDF_ERRORS`."""
+    with PDF_ERRORS.open('a', encoding='utf-8', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([filename, error])
+
+
+def convertir_pdf(pdf: Path) -> Path | None:
+    """Convierte ``pdf`` a DOCX si es legible.
+
+    Devuelve la ruta del DOCX generado o ``None`` si hay errores.
+    """
+    try:
+        texto = extract_text(str(pdf))
+        if not texto.strip():
+            raise ValueError('sin texto extraído')
+    except Exception as exc:  # noqa: BLE001
+        registrar_error_pdf(pdf.name, str(exc))
+        logging.error('No se pudo leer %s: %s', pdf.name, exc)
+        return None
+
+    docx_path = pdf.with_suffix('.docx')
+    cmd = ['pandoc', str(pdf), '-o', str(docx_path)]
+    logging.info('Convirtiendo %s a %s', pdf.name, docx_path.name)
+    result = subprocess.run(cmd)
+    if result.returncode != 0:
+        registrar_error_pdf(pdf.name, 'pandoc error')
+        logging.error('Fallo convirtiendo %s', pdf.name)
+        return None
+    return docx_path
+
+
 def run_pipeline(doc: Path) -> None:
     for build_cmd in PIPELINE:
         cmd = build_cmd(doc)
@@ -76,7 +113,9 @@ def run_pipeline(doc: Path) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Procesa automáticamente nuevos .docx")
+    parser = argparse.ArgumentParser(
+        description="Procesa automáticamente nuevos .docx o .pdf"
+    )
     parser.add_argument(
         "--clean",
         action="store_true",
@@ -93,6 +132,13 @@ def main() -> None:
             raise RuntimeError('resetear_entorno.py fallo')
 
     processed = load_log()
+
+    # Convertir PDFs a DOCX antes de buscar nuevos archivos
+    for pdf in sorted(ORIG_DIR.glob('*.pdf')):
+        docx_dest = pdf.with_suffix('.docx')
+        if not docx_dest.exists():
+            convertir_pdf(pdf)
+
     new_files = []
 
     for doc in sorted(ORIG_DIR.glob('*.docx')):

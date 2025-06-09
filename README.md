@@ -78,6 +78,7 @@ python scripts/ingest_wiki_v2.py \
   --fuente _fuentes/tmp_full.md \
   --alias _fuentes/alias_override.yaml \
  --cutoff 0.5
+  --metadata
 ```
 
 4. Generar el sidebar (puede personalizar las rutas con `--index` y `--out`):
@@ -105,7 +106,7 @@ python scripts/validar_sidebar_vs_fs.py
 python scripts/generar_indice_busqueda.py
 ```
 
-Si prefiere automatizar la detección y el procesado de nuevos `.docx`, puede
+Si prefiere automatizar la detección y el procesado de nuevos `.docx` o `.pdf`, puede
 utilizar:
 
 ```bash
@@ -113,7 +114,8 @@ python scripts/procesar_nuevos.py --clean
 ```
 
 El indicador `--clean` ejecuta `resetear_entorno.py` para garantizar que la
-wiki se regenere desde cero.
+wiki se regenere desde cero. Los PDF legibles se convierten primero a DOCX y
+los que no puedan procesarse se anotarán en `errores_pdf.csv`.
 
 ### Personalización de rutas
 
@@ -134,12 +136,18 @@ para ver el formato detallado y algunos ejemplos de uso.
 - `scripts/validar_sidebar_vs_fs.py`: asegura que `_sidebar.md` está sincronizado con los ficheros de la carpeta `wiki/`.
 - `scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
 - `scripts/generar_indice_busqueda.py`: crea `search_index.json` a partir de los Markdown de `wiki/`.
+- `scripts/mover_huerfanos.py`: tras comparar el índice y el sidebar, mueve los archivos Markdown no referenciados a `wiki/_deprecated/`.
 
 ## Búsqueda en la wiki
 
 Ejecuta `python scripts/generar_indice_busqueda.py` tras la ingesta para
 generar `search_index.json`. Este archivo lo utiliza Docsify a través del
 plugin de búsqueda configurado en `index.html`.
+
+Para consultas más detalladas existe la página
+`buscar-avanzado.html`, que carga `search_index.json` mediante
+[Lunr.js](https://lunrjs.com/) y permite filtrar por `source_file` o
+`conversion_date`.
 
 ## Convención de nombres de ramas
 

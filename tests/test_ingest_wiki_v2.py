@@ -2,6 +2,7 @@ import scripts.ingest_wiki_v2 as ingest
 from pathlib import Path
 import yaml
 import sys
+from datetime import datetime
 
 
 def sample_index():
@@ -63,6 +64,9 @@ def test_main_generates_frontmatter(tmp_path, monkeypatch):
     alias = tmp_path / "alias.yaml"
     alias.write_text("{}", encoding="utf-8")
 
+    docx = tmp_path / "orig.docx"
+    docx.write_text("dummy", encoding="utf-8")
+
     monkeypatch.chdir(tmp_path)
     args = [
         "prog",
@@ -75,7 +79,8 @@ def test_main_generates_frontmatter(tmp_path, monkeypatch):
         "--alias",
         str(alias),
         "--docx",
-        "orig.docx",
+        str(docx),
+        "--metadata",
     ]
     monkeypatch.setattr(sys, "argv", args)
     ingest.main()
@@ -85,4 +90,5 @@ def test_main_generates_frontmatter(tmp_path, monkeypatch):
     assert text.startswith("---")
     parts = text.split("---", 2)
     meta = yaml.safe_load(parts[1])
-    assert meta["source"] == "orig.docx"
+    assert meta["source_file"] == "orig.docx"
+    assert meta["conversion_date"] == datetime.now().strftime("%Y-%m-%d")
