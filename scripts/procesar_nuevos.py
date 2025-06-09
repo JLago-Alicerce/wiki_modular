@@ -27,7 +27,13 @@ PIPELINE = [
     ],
     lambda _doc: [sys.executable, 'scripts/limpiar_md.py', '_fuentes/tmp_full.md'],
     lambda _doc: [sys.executable, 'scripts/generar_mapa_encabezados.py'],
-    lambda _doc: [sys.executable, 'scripts/generar_index_desde_encabezados.py', '--precheck'],
+    lambda _doc: [
+        sys.executable,
+        'scripts/generar_index_desde_encabezados.py',
+        '--precheck',
+        '--output',
+        'index_PlataformaBBDD.yaml',
+    ],
     lambda _doc: [
         sys.executable, 'scripts/ingest_wiki_v2.py',
         '--mapa', '_fuentes/mapa_encabezados.yaml',

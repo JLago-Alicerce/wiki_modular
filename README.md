@@ -53,6 +53,11 @@ python scripts/generar_mapa_encabezados.py
 python scripts/generar_index_desde_encabezados.py --precheck
 ```
 
+Si `index_PlataformaBBDD.yaml` ya existe, el script añadirá las nuevas secciones
+al final manteniendo los `subtemas` previamente definidos. De esta forma es
+posible procesar varios documentos de forma incremental sin perder el índice
+anterior.
+
 El archivo `index_PlataformaBBDD.yaml` resultante contiene una lista de secciones con el siguiente esquema:
 
 ```yaml

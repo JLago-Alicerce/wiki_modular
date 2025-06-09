@@ -36,8 +36,18 @@ def generar_indice(input_file: Path, output_file: Path) -> dict:
         return {"bloques_totales": 0, "bloques_omitidos": 0, "bloques_incluidos": 0, "output_file": str(output_file)}
 
     index_data = {"secciones": []}
+    if output_file.exists():
+        try:
+            existente = load_yaml(output_file)
+            if isinstance(existente, dict) and isinstance(existente.get("secciones"), list):
+                index_data["secciones"] = existente["secciones"]
+        except Exception as e:  # pragma: no cover - fallo no crítico
+            logging.warning(f"No se pudo leer índice existente: {e}")
+
+    max_id = max((sec.get("id", 0) for sec in index_data["secciones"]), default=0)
     omitidos = 0
 
+    next_id = max_id
     for idx, bloque in enumerate(mapa, start=1):
         if not isinstance(bloque, dict) or "titulo" not in bloque:
             logging.warning(f"Bloque inválido u omisión en posición {idx}: {bloque}")
@@ -46,8 +56,9 @@ def generar_indice(input_file: Path, output_file: Path) -> dict:
 
         titulo = bloque["titulo"]
         slug = limpiar_slug(titulo)
+        next_id += 1
         index_data["secciones"].append({
-            "id": idx,
+            "id": next_id,
             "titulo": titulo,
             "slug": slug,
             "subtemas": []  # Puede completarse manualmente tras revisar índice
