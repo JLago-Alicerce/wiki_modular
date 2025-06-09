@@ -13,6 +13,7 @@ A continuación se resumen las utilidades disponibles en la carpeta `scripts/`. 
 | `limpiar_slug.py` | Normaliza cadenas a slugs seguros para usar como nombres de archivo. |
 | `procesar_nuevos.py` | Automatiza la detección y procesamiento de nuevos `.docx` en `_fuentes/_originales`. |
 | `resetear_entorno.py` | Borra la wiki y archivos generados para recomenzar una ingesta desde cero. |
+| `mover_huerfanos.py` | Mueve a `wiki/_deprecated/` los `.md` que no aparecen en el índice ni en el sidebar. |
 | `reubicar_nuevas_secciones.py` | Mueve las secciones creadas en `99_Nuevas_Secciones` a su destino definitivo según el índice. |
 | `validar_sidebar_vs_fs.py` | Verifica que todos los enlaces del `_sidebar.md` tengan un archivo correspondiente y viceversa. |
 | `verificar_pre_ingesta.py` | Comprueba que el mapa de encabezados y el índice estén sincronizados antes de ingerir. |

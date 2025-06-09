@@ -135,6 +135,7 @@ para ver el formato detallado y algunos ejemplos de uso.
 - `scripts/validar_sidebar_vs_fs.py`: asegura que `_sidebar.md` está sincronizado con los ficheros de la carpeta `wiki/`.
 - `scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
 - `scripts/generar_indice_busqueda.py`: crea `search_index.json` a partir de los Markdown de `wiki/`.
+- `scripts/mover_huerfanos.py`: tras comparar el índice y el sidebar, mueve los archivos Markdown no referenciados a `wiki/_deprecated/`.
 
 ## Búsqueda en la wiki
 
