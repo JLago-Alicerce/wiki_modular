@@ -17,4 +17,6 @@ A continuación se resumen las utilidades disponibles en la carpeta `scripts/`. 
 | `validar_sidebar_vs_fs.py` | Verifica que todos los enlaces del `_sidebar.md` tengan un archivo correspondiente y viceversa. |
 | `verificar_pre_ingesta.py` | Comprueba que el mapa de encabezados y el índice estén sincronizados antes de ingerir. |
 | `wiki_cli.py` | Interfaz de línea de comandos que agrupa los pasos habituales (convertir, indexar e ingerir). |
+| `clean_orphaned_files.py` | Elimina los `.md` de `wiki/` que no aparecen enlazados en `_sidebar.md`. |
+| `pipeline_codex.py` | Automatiza el flujo completo permitiendo una pausa para revisar el índice antes de la ingesta. |
 

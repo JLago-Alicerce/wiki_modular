@@ -27,6 +27,14 @@ El comando `full` limpiará el entorno, convertirá el documento, generará los
 `python scripts/wiki_cli.py reset` para borrar la wiki e índices antes de una
 nueva carga.
 
+Otra alternativa es `pipeline_codex.py`, que ejecuta los mismos pasos pero se
+detiene tras generar el mapa e índice para revisar los archivos antes de
+ingestar definitivamente:
+
+```bash
+python pipeline_codex.py _fuentes/_originales/archivo.docx
+```
+
 > **Nota**: si quiere reconstruir la wiki desde cero antes de procesar nuevos documentos, ejecute:
 >
 > ```bash
@@ -135,6 +143,8 @@ para ver el formato detallado y algunos ejemplos de uso.
 - `scripts/validar_sidebar_vs_fs.py`: asegura que `_sidebar.md` está sincronizado con los ficheros de la carpeta `wiki/`.
 - `scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
 - `scripts/generar_indice_busqueda.py`: crea `search_index.json` a partir de los Markdown de `wiki/`.
+- `scripts/clean_orphaned_files.py`: borra los `.md` que no estén enlazados en `_sidebar.md`.
+- `pipeline_codex.py`: alternativa a `wiki_cli.py` que pausa antes de ingerir para revisión manual.
 
 ## Búsqueda en la wiki
 

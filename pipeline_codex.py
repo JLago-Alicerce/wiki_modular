@@ -101,7 +101,7 @@ def main() -> None:
         ),
         (
             "validar_enlaces",
-            [sys.executable, "scripts/validar_enlaces_wiki.py"],
+            [sys.executable, "scripts/validar_sidebar_vs_fs.py"],
         ),
         (
             "limpiar_huerfanos",
