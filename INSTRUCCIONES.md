@@ -30,9 +30,12 @@ Este proyecto permite convertir documentos en Markdown y generar una wiki basada
 3. **Generar mapa e índice**
 
    ```bash
-   python scripts/generar_mapa_encabezados.py
-   python scripts/generar_index_desde_encabezados.py --precheck
+    python scripts/generar_mapa_encabezados.py
+   python scripts/generar_index_desde_encabezados.py --precheck --ignore-extra
    ```
+   La opción `--ignore-extra` permite continuar cuando existen entradas en
+   `index_PlataformaBBDD.yaml` que no aparecen en el mapa actual, lo cual es
+   útil al incorporar nueva documentación de manera incremental.
 
 4. **Ingestar la wiki**
 
@@ -63,4 +66,5 @@ python scripts/procesar_nuevos.py
 ```
 
 El script detecta documentos no procesados, aplica automáticamente la misma cadena de scripts anterior y actualiza la wiki conservando el contenido ya publicado.
+Si tiene varios `.docx` pendientes puede copiarlos juntos y ejecutar el comando una sola vez; se procesarán de forma secuencial manteniendo el índice existente.
 Si necesita una recarga completa, ejecute previamente `python scripts/resetear_entorno.py` o use `python scripts/procesar_nuevos.py --clean`.
