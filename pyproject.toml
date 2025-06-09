@@ -10,7 +10,12 @@ version = "0.1.0"
 description = "Herramientas para wikis basadas en Docsify"
 authors = [{name = "Equipo Docs"}]
 readme = "README.md"
-dependencies = ["pyyaml>=6.0", "pdfminer.six>=20221105"]
+dependencies = [
+    "pyyaml>=6.0",
+    "pdfminer.six>=20221105",
+    "pdf2image>=1.16.3",
+    "pytesseract>=0.3.10",
+]
 
 [tool.setuptools.packages.find]
 include = ["wiki_modular"]

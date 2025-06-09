@@ -68,5 +68,5 @@ python scripts/procesar_nuevos.py
 
 El script detecta documentos no procesados, aplica automáticamente la misma cadena de scripts anterior y actualiza la wiki conservando el contenido ya publicado.
 Si tiene varios archivos pendientes puede copiarlos juntos y ejecutar el comando una sola vez; se procesarán de forma secuencial manteniendo el índice existente.
-Los PDF legibles se convertirán automáticamente y los fallidos se registrarán en `errores_pdf.csv`.
+Los PDF se convertirán directamente a Markdown. Con la opción `--ocr` se intentará extraer texto mediante `pytesseract` cuando sea necesario. Los fallidos se registrarán en `errores_pdf.csv`.
 Si necesita una recarga completa, ejecute previamente `python scripts/resetear_entorno.py` o use `python scripts/procesar_nuevos.py --clean`.

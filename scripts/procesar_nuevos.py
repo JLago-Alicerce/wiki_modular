@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 """Procesa automáticamente nuevos archivos en ``_fuentes/_originales``.
 
-Detecta documentos ``.docx`` y ``.pdf``. Los PDF legibles se convierten a DOCX
-y se procesan con la misma cadena de scripts descrita en el README. Se mantiene
-un registro en ``procesados.log`` para evitar reprocesos y se anotan los PDF con
-errores en ``errores_pdf.csv``.
+Detecta documentos ``.docx`` y ``.pdf``. Los PDF se convierten directamente a
+Markdown: si contienen texto se extrae con ``pdfminer.six`` y, opcionalmente, se
+aplica OCR mediante ``pdf2image`` y ``pytesseract`` cuando el PDF es una imagen
+escaneada. Se mantiene un registro en ``procesados.log`` para evitar reprocesos
+y se anotan los fallos en ``errores_pdf.csv``.
 """
 
 import argparse
@@ -90,33 +91,49 @@ def registrar_error_pdf(filename: str, error: str) -> None:
         writer.writerow([filename, error])
 
 
-def convertir_pdf(pdf: Path) -> Path | None:
-    """Convierte ``pdf`` a DOCX si es legible.
+def convertir_pdf(pdf: Path, *, ocr: bool = False, dest: Path | None = None) -> Path | None:
+    """Convierte ``pdf`` a Markdown en ``dest``.
 
-    Devuelve la ruta del DOCX generado o ``None`` si hay errores.
+    Si ``ocr`` es ``True`` e inicialmente no se extrae texto, intentará
+    procesar cada página como imagen con ``pytesseract``.
+
+    Devuelve la ruta del archivo generado o ``None`` si hay errores.
     """
+    if dest is None:
+        dest = Path('_fuentes/tmp_full.md')
+
     try:
         texto = extract_text(str(pdf))
-        if not texto.strip():
-            raise ValueError('sin texto extraído')
     except Exception as exc:  # noqa: BLE001
         registrar_error_pdf(pdf.name, str(exc))
-        logging.error('No se pudo leer %s: %s', pdf.name, exc)
+        logging.error("No se pudo leer %s: %s", pdf.name, exc)
         return None
 
-    docx_path = pdf.with_suffix('.docx')
-    cmd = ['pandoc', str(pdf), '-o', str(docx_path)]
-    logging.info('Convirtiendo %s a %s', pdf.name, docx_path.name)
-    result = subprocess.run(cmd)
-    if result.returncode != 0:
-        registrar_error_pdf(pdf.name, 'pandoc error')
-        logging.error('Fallo convirtiendo %s', pdf.name)
+    if not texto.strip() and ocr:
+        try:  # Lazy imports para no requerir OCR siempre
+            from pdf2image import convert_from_path  # type: ignore
+            import pytesseract  # type: ignore
+
+            images = convert_from_path(str(pdf))
+            texto = "\n".join(pytesseract.image_to_string(img) for img in images)
+        except Exception as exc:  # noqa: BLE001
+            registrar_error_pdf(pdf.name, f"ocr: {exc}")
+            logging.error("OCR fallido en %s: %s", pdf.name, exc)
+            return None
+
+    if not texto.strip():
+        registrar_error_pdf(pdf.name, "sin texto extraido")
+        logging.error("No se extrajo texto de %s", pdf.name)
         return None
-    return docx_path
+
+    dest.write_text(texto, encoding="utf-8")
+    return dest
 
 
-def run_pipeline(doc: Path) -> None:
-    for build_cmd in PIPELINE:
+def run_pipeline(doc: Path, *, skip_pandoc: bool = False) -> None:
+    for i, build_cmd in enumerate(PIPELINE):
+        if skip_pandoc and i == 0:
+            continue
         cmd = build_cmd(doc)
         logging.info("Ejecutando: %s", " ".join(cmd))
         result = subprocess.run(cmd)
@@ -133,6 +150,11 @@ def main() -> None:
         action="store_true",
         help="Ejecutar resetear_entorno.py antes de procesar",
     )
+    parser.add_argument(
+        "--ocr",
+        action="store_true",
+        help="Intentar OCR en PDFs sin texto",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
@@ -145,13 +167,25 @@ def main() -> None:
 
     processed = load_log()
 
-    # Convertir PDFs a DOCX antes de buscar nuevos archivos
-    for pdf in sorted(ORIG_DIR.glob('*.pdf')):
-        docx_dest = pdf.with_suffix('.docx')
-        if not docx_dest.exists():
-            convertir_pdf(pdf)
+    new_files: list[Path] = []
 
-    new_files = []
+    for pdf in sorted(ORIG_DIR.glob("*.pdf")):
+        if pdf.name in processed:
+            logging.info("Ya procesado %s en %s", pdf.name, processed[pdf.name])
+            continue
+        logging.info("Procesando PDF %s", pdf.name)
+        md_path = convertir_pdf(pdf, ocr=args.ocr)
+        if not md_path:
+            logging.info("Ignorando %s por errores", pdf.name)
+            continue
+        try:
+            run_pipeline(pdf, skip_pandoc=True)
+        except Exception as e:
+            logging.error("Error procesando %s: %s", pdf.name, e)
+            raise
+        else:
+            append_log(pdf.name)
+            logging.info("Procesado correctamente: %s", pdf.name)
 
     for doc in sorted(ORIG_DIR.glob("*.docx")):
         if doc.name in processed:
@@ -160,7 +194,7 @@ def main() -> None:
             new_files.append(doc)
 
     if not new_files:
-        logging.info("No hay archivos nuevos en %s", ORIG_DIR)
+        logging.info("No hay archivos DOCX nuevos en %s", ORIG_DIR)
         return
 
     for doc in new_files:
