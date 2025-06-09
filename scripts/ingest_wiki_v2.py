@@ -15,6 +15,7 @@ Si no se alcanza, el bloque se envía a ``wiki/99_Nuevas_Secciones``.
 import sys
 import yaml
 from pathlib import Path
+from datetime import datetime
 
 # Permitir ejecutar el script sin instalar el paquete
 sys.path.append(str(Path(__file__).resolve().parents[1]))
@@ -93,6 +94,7 @@ def main():
     parser.add_argument("--alias",   default="_fuentes/alias_override.yaml", help="Overrides YAML (opcional)")
     parser.add_argument("--cutoff",  type=float, default=0.5,                help="Umbral fuzzy matching")
     parser.add_argument("--docx",   default="", help="Ruta al archivo .docx original")
+    parser.add_argument("--metadata", action="store_true", help="Incluir frontmatter con metadatos")
     args = parser.parse_args()
 
     wiki_path     = Path("wiki")
@@ -157,13 +159,25 @@ def main():
         else:
             md_texto = header_line + "\n\n" + "\n".join(contenido)
 
-        frontmatter = {
-            "source": args.docx,
-            "titulo": titulo,
-            "nivel": nivel,
-        }
-        fm_text = "---\n" + yaml.safe_dump(frontmatter, allow_unicode=True) + "---\n\n"
-        destino.write_text(fm_text + md_texto, encoding="utf-8")
+        if args.metadata:
+            source_name = Path(args.docx).name if args.docx else ""
+            source_date = ""
+            if args.docx and Path(args.docx).exists():
+                ts = Path(args.docx).stat().st_mtime
+                source_date = datetime.fromtimestamp(ts).strftime("%Y-%m-%d")
+            conversion_date = datetime.now().strftime("%Y-%m-%d")
+
+            frontmatter = {
+                "source_file": source_name,
+                "source_file_date": source_date,
+                "conversion_date": conversion_date,
+                "titulo": titulo,
+                "nivel": nivel,
+            }
+            fm_text = "---\n" + yaml.safe_dump(frontmatter, allow_unicode=True) + "---\n\n"
+            destino.write_text(fm_text + md_texto, encoding="utf-8")
+        else:
+            destino.write_text(md_texto, encoding="utf-8")
         logging.info(f"[✓] {titulo} → {destino}")
 
     logging.info(f"Resumen: {len(bloques)} bloques procesados | {no_match_count} sin coincidencia")

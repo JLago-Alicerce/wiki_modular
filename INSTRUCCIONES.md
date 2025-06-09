@@ -43,9 +43,10 @@ Este proyecto permite convertir documentos en Markdown y generar una wiki basada
    python scripts/ingest_wiki_v2.py \
      --mapa _fuentes/mapa_encabezados.yaml \
      --index index_PlataformaBBDD.yaml \
-     --fuente _fuentes/tmp_full.md \
-     --alias _fuentes/alias_override.yaml \
-     --cutoff 0.5
+    --fuente _fuentes/tmp_full.md \
+    --alias _fuentes/alias_override.yaml \
+    --cutoff 0.5
+    --metadata
    ```
 
 5. **Generar el sidebar y auditar**

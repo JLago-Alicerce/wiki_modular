@@ -78,6 +78,7 @@ python scripts/ingest_wiki_v2.py \
   --fuente _fuentes/tmp_full.md \
   --alias _fuentes/alias_override.yaml \
  --cutoff 0.5
+  --metadata
 ```
 
 4. Generar el sidebar (puede personalizar las rutas con `--index` y `--out`):
