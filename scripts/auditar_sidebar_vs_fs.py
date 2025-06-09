@@ -116,7 +116,7 @@ def main() -> None:
             w = csv.DictWriter(f, fieldnames=headers)
             w.writeheader()
         print("No se encontraron enlaces en _sidebar.md")
-        sys.exit(1)
+        return
 
     with out.open("w", newline="", encoding="utf8") as f:
         w = csv.DictWriter(f, fieldnames=rows[0].keys())
