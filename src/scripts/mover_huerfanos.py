@@ -6,8 +6,8 @@ import sys
 from pathlib import Path
 
 # Permitir ejecutar el script sin instalar el paquete
-sys.path.append(str(Path(__file__).resolve().parents[1]))
-from wiki_modular import load_yaml, limpiar_slug
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+from wiki_modular import limpiar_slug, load_yaml
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 WIKI_DIR = ROOT_DIR / "wiki"

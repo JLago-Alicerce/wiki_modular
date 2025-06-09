@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import yaml
 from pathlib import Path
 
+import yaml
+
 # Permitir ejecutar el script sin instalar el paquete
-sys.path.append(str(Path(__file__).resolve().parents[1]))
-from wiki_modular import load_yaml
-import logging
+sys.path.append(str(Path(__file__).resolve().parents[2]))
 import argparse
-from wiki_modular import limpiar_slug
+import logging
+
+from wiki_modular import limpiar_slug, load_yaml
 
 
 def generar_indice(input_file: Path, output_file: Path) -> dict:
@@ -29,17 +30,29 @@ def generar_indice(input_file: Path, output_file: Path) -> dict:
         mapa = load_yaml(input_file)
     except yaml.YAMLError as e:
         logging.error(f"Error parseando YAML: {e}")
-        return {"bloques_totales": 0, "bloques_omitidos": 0, "bloques_incluidos": 0, "output_file": str(output_file)}
+        return {
+            "bloques_totales": 0,
+            "bloques_omitidos": 0,
+            "bloques_incluidos": 0,
+            "output_file": str(output_file),
+        }
 
     if not isinstance(mapa, list):
         logging.warning("El YAML de entrada no es una lista de bloques.")
-        return {"bloques_totales": 0, "bloques_omitidos": 0, "bloques_incluidos": 0, "output_file": str(output_file)}
+        return {
+            "bloques_totales": 0,
+            "bloques_omitidos": 0,
+            "bloques_incluidos": 0,
+            "output_file": str(output_file),
+        }
 
     index_data = {"secciones": []}
     if output_file.exists():
         try:
             existente = load_yaml(output_file)
-            if isinstance(existente, dict) and isinstance(existente.get("secciones"), list):
+            if isinstance(existente, dict) and isinstance(
+                existente.get("secciones"), list
+            ):
                 index_data["secciones"] = existente["secciones"]
         except Exception as e:  # pragma: no cover - fallo no crítico
             logging.warning(f"No se pudo leer índice existente: {e}")
@@ -57,17 +70,24 @@ def generar_indice(input_file: Path, output_file: Path) -> dict:
         titulo = bloque["titulo"]
         slug = limpiar_slug(titulo)
         next_id += 1
-        index_data["secciones"].append({
-            "id": next_id,
-            "titulo": titulo,
-            "slug": slug,
-            "subtemas": []  # Puede completarse manualmente tras revisar índice
-        })
+        index_data["secciones"].append(
+            {
+                "id": next_id,
+                "titulo": titulo,
+                "slug": slug,
+                "subtemas": [],  # Puede completarse manualmente tras revisar índice
+            }
+        )
 
     try:
         with open(output_file, "w", encoding="utf-8") as f:
             yaml.dump(index_data, f, allow_unicode=True)
-        logging.info(f"[✓] {output_file.name} generado con {len(index_data['secciones'])} secciones. Omitidos: {omitidos}.")
+        logging.info(
+            "[✓] %s generado con %d secciones. Omitidos: %d.",
+            output_file.name,
+            len(index_data["secciones"]),
+            omitidos,
+        )
     except OSError as e:
         logging.error(f"No se pudo escribir en {output_file}: {e}")
 
@@ -75,14 +95,32 @@ def generar_indice(input_file: Path, output_file: Path) -> dict:
         "bloques_totales": len(mapa),
         "bloques_omitidos": omitidos,
         "bloques_incluidos": len(index_data["secciones"]),
-        "output_file": str(output_file)
+        "output_file": str(output_file),
     }
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Genera índice YAML desde mapa de encabezados.")
-    parser.add_argument("--input", type=str, default="_fuentes/mapa_encabezados.yaml", help="Archivo de entrada (mapa de encabezados).")
-    parser.add_argument("--output", type=str, default="index_PlataformaBBDD.yaml", help="Archivo de salida (índice).")
-    parser.add_argument("--log-level", type=str, default="INFO", choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"])
+    parser = argparse.ArgumentParser(
+        description="Genera índice YAML desde mapa de encabezados."
+    )
+    parser.add_argument(
+        "--input",
+        type=str,
+        default="_fuentes/mapa_encabezados.yaml",
+        help="Archivo de entrada (mapa de encabezados).",
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default="index_PlataformaBBDD.yaml",
+        help="Archivo de salida (índice).",
+    )
+    parser.add_argument(
+        "--log-level",
+        type=str,
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+    )
     parser.add_argument(
         "--precheck",
         action="store_true",
@@ -108,6 +146,7 @@ def main():
 
     if args.precheck:
         from subprocess import call
+
         cmd = [
             sys.executable,
             "scripts/verificar_pre_ingesta.py",
@@ -120,6 +159,7 @@ def main():
         if rc != 0:
             logging.error("Verificación previa falló")
             sys.exit(rc)
+
 
 if __name__ == "__main__":
     main()

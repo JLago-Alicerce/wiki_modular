@@ -18,10 +18,8 @@ dependencies = [
     "pytesseract>=0.3.10",
 ]
 
-[tool.setuptools.packages.find]
-include = ["wiki_modular"]
-
 [tool.setuptools]
+packages = {find = {where = ["src"]}}
 py-modules = []
 
 

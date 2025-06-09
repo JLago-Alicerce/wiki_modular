@@ -14,13 +14,14 @@ duplicadas; el modo tolerante omite esas comprobaciones.
 import sys
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).resolve().parents[1]))
+sys.path.append(str(Path(__file__).resolve().parents[2]))
 
 import argparse
-import yaml
 from typing import Any, Dict, List
 
-from wiki_modular import load_yaml, limpiar_slug
+import yaml
+
+from wiki_modular import limpiar_slug, load_yaml
 
 # --------------------------------------------------
 # Rutas de proyecto

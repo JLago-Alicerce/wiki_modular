@@ -13,24 +13,27 @@ Si no se alcanza, el bloque se envía a ``wiki/99_Nuevas_Secciones``.
 """
 
 import sys
-import yaml
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
+import yaml
 
 # Permitir ejecutar el script sin instalar el paquete
-sys.path.append(str(Path(__file__).resolve().parents[1]))
-from wiki_modular import load_yaml
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+import argparse
+import logging
 import re
 import unicodedata
-import logging
-import argparse
 from difflib import get_close_matches
-from wiki_modular import limpiar_slug
 
-logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
+from wiki_modular import limpiar_slug, load_yaml
+
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
 
-def buscar_destino(titulo: str, index_data: dict, alias_map: dict, fuzzy_cutoff: float) -> Path:
+def buscar_destino(
+    titulo: str, index_data: dict, alias_map: dict, fuzzy_cutoff: float
+) -> Path:
     """
     Decide la ruta destino para un bloque:
       1) Si título EXACTO está en alias_map → devuelve Path(alias_map[título]).
@@ -73,34 +76,57 @@ def buscar_destino(titulo: str, index_data: dict, alias_map: dict, fuzzy_cutoff:
     logging.warning(f"No match para '{titulo}' → normalizado: '{titulo_norm}'")
     return None
 
+
 def limpiar_nombre_archivo(texto: str) -> str:
     """
     Para bloques sin destino, crea un nombre de archivo a partir del título:
       - Normaliza a ASCII, quita numeración inicial, elimina caracteres no válidos,
         reemplaza espacios/guiones por "_", evita duplicados de "_", y limita a 128 caracteres.
     """
-    texto = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode("ascii").strip()
+    texto = (
+        unicodedata.normalize("NFKD", texto)
+        .encode("ascii", "ignore")
+        .decode("ascii")
+        .strip()
+    )
     texto = re.sub(r"^[0-9.]+\s*", "", texto)
     texto = re.sub(r'[\\/:*?"<>|]', "", texto)
-    texto = re.sub(r'[\s-]+', '_', texto)
-    texto = re.sub(r'_+', '_', texto).strip('_')
+    texto = re.sub(r"[\s-]+", "_", texto)
+    texto = re.sub(r"_+", "_", texto).strip("_")
     return texto[:128]
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Fragmenta tmp_full.md según mapa e índice.")
-    parser.add_argument("--mapa",    default="_fuentes/mapa_encabezados.yaml", help="YAML de encabezados")
-    parser.add_argument("--index",   default="index_PlataformaBBDD.yaml",    help="Índice maestro YAML")
-    parser.add_argument("--fuente",  default="_fuentes/tmp_full.md",         help="Markdown completo")
-    parser.add_argument("--alias",   default="_fuentes/alias_override.yaml", help="Overrides YAML (opcional)")
-    parser.add_argument("--cutoff",  type=float, default=0.5,                help="Umbral fuzzy matching")
-    parser.add_argument("--docx",   default="", help="Ruta al archivo .docx original")
-    parser.add_argument("--metadata", action="store_true", help="Incluir frontmatter con metadatos")
+    parser = argparse.ArgumentParser(
+        description="Fragmenta tmp_full.md según mapa e índice."
+    )
+    parser.add_argument(
+        "--mapa", default="_fuentes/mapa_encabezados.yaml", help="YAML de encabezados"
+    )
+    parser.add_argument(
+        "--index", default="index_PlataformaBBDD.yaml", help="Índice maestro YAML"
+    )
+    parser.add_argument(
+        "--fuente", default="_fuentes/tmp_full.md", help="Markdown completo"
+    )
+    parser.add_argument(
+        "--alias",
+        default="_fuentes/alias_override.yaml",
+        help="Overrides YAML (opcional)",
+    )
+    parser.add_argument(
+        "--cutoff", type=float, default=0.5, help="Umbral fuzzy matching"
+    )
+    parser.add_argument("--docx", default="", help="Ruta al archivo .docx original")
+    parser.add_argument(
+        "--metadata", action="store_true", help="Incluir frontmatter con metadatos"
+    )
     args = parser.parse_args()
 
-    wiki_path     = Path("wiki")
-    mapa_file     = Path(args.mapa)
-    index_file    = Path(args.index)
-    tmp_file      = Path(args.fuente)
+    wiki_path = Path("wiki")
+    mapa_file = Path(args.mapa)
+    index_file = Path(args.index)
+    tmp_file = Path(args.fuente)
     override_file = Path(args.alias)
 
     # 1) Cargar alias_override (si existe)
@@ -128,7 +154,11 @@ def main():
     # 3) Fragmentar en bloques según start_line/end_line
     for i, sec in enumerate(mapa):
         start = sec.get("start_line", 0) - 1
-        end = (mapa[i + 1].get("start_line", len(tmp_lines)+1) - 1) if (i + 1) < len(mapa) else len(tmp_lines)
+        end = (
+            (mapa[i + 1].get("start_line", len(tmp_lines) + 1) - 1)
+            if (i + 1) < len(mapa)
+            else len(tmp_lines)
+        )
         titulo = sec.get("titulo") or sec.get("title")
         nivel = sec.get("h_level", 1)
 
@@ -144,7 +174,9 @@ def main():
     # 4) Escribir cada bloque en su ruta destino (o 99_Nuevas_Secciones si no hay match)
     no_match_count = 0
     for titulo, nivel, contenido in bloques:
-        destino = buscar_destino(titulo, index_data, alias_map, fuzzy_cutoff=args.cutoff)
+        destino = buscar_destino(
+            titulo, index_data, alias_map, fuzzy_cutoff=args.cutoff
+        )
         if not destino:
             # Asignar a carpeta wildcard
             nombre_def = limpiar_nombre_archivo(titulo)
@@ -174,13 +206,18 @@ def main():
                 "titulo": titulo,
                 "nivel": nivel,
             }
-            fm_text = "---\n" + yaml.safe_dump(frontmatter, allow_unicode=True) + "---\n\n"
+            fm_text = (
+                "---\n" + yaml.safe_dump(frontmatter, allow_unicode=True) + "---\n\n"
+            )
             destino.write_text(fm_text + md_texto, encoding="utf-8")
         else:
             destino.write_text(md_texto, encoding="utf-8")
         logging.info(f"[✓] {titulo} → {destino}")
 
-    logging.info(f"Resumen: {len(bloques)} bloques procesados | {no_match_count} sin coincidencia")
+    logging.info(
+        f"Resumen: {len(bloques)} bloques procesados | {no_match_count} sin coincidencia"
+    )
+
 
 if __name__ == "__main__":
     main()
