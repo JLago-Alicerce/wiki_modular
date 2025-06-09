@@ -101,7 +101,8 @@ def main() -> None:
     final_steps = [
         (
             "generar_sidebar",
-            [sys.executable, "scripts/generar_sidebar_desde_index.py"],
+            # Genera el _sidebar.md a partir del índice
+            [sys.executable, "scripts/generar_sidebar.py"],
         ),
         (
             "validar_enlaces",
