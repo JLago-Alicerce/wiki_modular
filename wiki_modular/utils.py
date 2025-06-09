@@ -11,6 +11,7 @@ __all__ = [
     "limpiar_archivo_markdown",
 ]
 
+
 def limpiar_slug(texto: str) -> str:
     """Devuelve un slug idempotente para nombres de archivo."""
     if not isinstance(texto, str):
