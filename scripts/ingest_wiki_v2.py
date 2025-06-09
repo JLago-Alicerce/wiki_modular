@@ -98,7 +98,7 @@ def main():
     parser.add_argument("--metadata", action="store_true", help="Incluir frontmatter con metadatos")
     parser.add_argument(
         "--suggest",
-        default="alias_suggestions.csv",
+        default="_fuentes/alias_suggestions.csv",
         help="Ruta del CSV para sugerencias de alias_override",
     )
     args = parser.parse_args()

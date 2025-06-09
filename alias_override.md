@@ -18,8 +18,15 @@ De este modo se pueden resolver manualmente excepciones o nombres ambiguos.
 
 Cuando `ingest_wiki_v2.py` no encuentra destino para un título, el script lo
 guarda en `wiki/99_Nuevas_Secciones` y añade una fila al archivo
-`alias_suggestions.csv` con dos columnas: el título original y el slug
-sugerido. Tras revisar estas entradas se pueden copiar al
-`_fuentes/alias_override.yaml` para fijar la ruta definitiva y volver a ejecutar
-la ingesta.
+`_fuentes/alias_suggestions.csv` con dos columnas: el título original y el slug
+sugerido. Para incorporarlas:
+
+1. Abra `_fuentes/alias_suggestions.csv` en un editor de texto o una hoja de
+   cálculo.
+2. Revise cada par título/slug y decida la ruta definitiva deseada.
+3. Añada esas entradas en `_fuentes/alias_override.yaml` con la sintaxis
+   `"Título": "ruta/slug"`.
+4. Vuelva a ejecutar la ingesta especificando `--alias _fuentes/alias_override.yaml`.
+
+Tras incorporar las sugerencias puede eliminar el CSV o dejarlo para referencia.
 
