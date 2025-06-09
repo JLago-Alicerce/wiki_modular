@@ -106,7 +106,7 @@ python scripts/validar_sidebar_vs_fs.py
 python scripts/generar_indice_busqueda.py
 ```
 
-Si prefiere automatizar la detección y el procesado de nuevos `.docx`, puede
+Si prefiere automatizar la detección y el procesado de nuevos `.docx` o `.pdf`, puede
 utilizar:
 
 ```bash
@@ -114,7 +114,8 @@ python scripts/procesar_nuevos.py --clean
 ```
 
 El indicador `--clean` ejecuta `resetear_entorno.py` para garantizar que la
-wiki se regenere desde cero.
+wiki se regenere desde cero. Los PDF legibles se convierten primero a DOCX y
+los que no puedan procesarse se anotarán en `errores_pdf.csv`.
 
 ### Personalización de rutas
 
