@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Verifica consistencia entre mapa de encabezados e índice antes de la ingesta."""
 import sys
+import argparse
 import yaml
 from pathlib import Path
 from typing import Set
@@ -19,7 +20,8 @@ def load_titles(path: Path, key: str) -> Set[str]:
     return set()
 
 
-def main(mapa_path: str, index_path: str) -> int:
+def main(mapa_path: str, index_path: str, ignore_extra: bool = False) -> int:
+    """Compara el mapa con el índice y retorna ``1`` si hay inconsistencias."""
     mapa_titulos = load_titles(Path(mapa_path), "titulo")
     index_titulos = load_titles(Path(index_path), "titulo")
 
@@ -31,11 +33,32 @@ def main(mapa_path: str, index_path: str) -> int:
     for t in sorted(huérfanos):
         print(f"INDEX_SIN_ENCABEZADO | {t}")
 
-    return 1 if faltantes or huérfanos else 0
+    extras_error = huérfanos and not ignore_extra
+
+    return 1 if faltantes or extras_error else 0
 
 
 if __name__ == "__main__":
-    mapa = sys.argv[1] if len(sys.argv) > 1 else "_fuentes/mapa_encabezados.yaml"
-    index = sys.argv[2] if len(sys.argv) > 2 else "index_PlataformaBBDD.yaml"
-    sys.exit(main(mapa, index))
+    parser = argparse.ArgumentParser(
+        description="Compara el mapa de encabezados con el índice de secciones"
+    )
+    parser.add_argument(
+        "mapa",
+        nargs="?",
+        default="_fuentes/mapa_encabezados.yaml",
+        help="Ruta al YAML de mapa de encabezados",
+    )
+    parser.add_argument(
+        "index",
+        nargs="?",
+        default="index_PlataformaBBDD.yaml",
+        help="Ruta al índice YAML",
+    )
+    parser.add_argument(
+        "--ignore-extra",
+        action="store_true",
+        help="Ignorar entradas extra del índice que no estén en el mapa",
+    )
+    args = parser.parse_args()
+    sys.exit(main(args.mapa, args.index, args.ignore_extra))
 
