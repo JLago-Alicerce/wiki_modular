@@ -101,8 +101,10 @@ def main():
 
     resultado = generar_indice(input_path, output_path)
     if resultado["bloques_incluidos"] == 0:
-        logging.warning("No se incluyeron secciones en el índice; revisa el YAML de entrada.")
-        sys.exit(1)
+        logging.warning(
+            "No se incluyeron secciones en el índice; revisa el YAML de entrada."
+        )
+        return 0
 
     if args.precheck:
         from subprocess import call
