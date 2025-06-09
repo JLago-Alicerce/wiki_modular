@@ -10,33 +10,39 @@ import sys
 from pathlib import Path
 
 # --- Config ---
-ROOT = Path(__file__).resolve().parent.parent           # ..\Conocimiento_Tecnico_Navantia
-WIKI_DIR = ROOT / "wiki"                               # raíz de .md
-SIDEBAR = WIKI_DIR / "_sidebar.md"                         # sidebar global
+ROOT = Path(__file__).resolve().parent.parent  # ..\Conocimiento_Tecnico_Navantia
+WIKI_DIR = ROOT / "wiki"  # raíz de .md
+SIDEBAR = WIKI_DIR / "_sidebar.md"  # sidebar global
+
 
 def limpiar_path(ruta: str) -> str:
     partes = []
     for seg in ruta.split("/"):
         if seg.lower().endswith(".md"):
             nombre = seg[:-3]  # sin .md
-            nombre = unicodedata.normalize("NFKD", nombre).encode("ascii","ignore").decode()
+            nombre = (
+                unicodedata.normalize("NFKD", nombre).encode("ascii", "ignore").decode()
+            )
             nombre = re.sub(r"[^\w\s\-]", "", nombre)
             nombre = nombre.replace(" ", "_").replace("-", "_")
             nombre = re.sub(r"_+", "_", nombre).strip("_").lower()
             partes.append(nombre + ".md")
         else:
-            nombre = unicodedata.normalize("NFKD", seg).encode("ascii","ignore").decode()
+            nombre = (
+                unicodedata.normalize("NFKD", seg).encode("ascii", "ignore").decode()
+            )
             nombre = re.sub(r"[^\w\s\-]", "", nombre)
             nombre = nombre.replace(" ", "_").replace("-", "_")
             nombre = re.sub(r"_+", "_", nombre).strip("_").lower()
             partes.append(nombre)
     return "/".join(partes)
 
+
 def main() -> None:
     """Ejecuta la auditoría del sidebar vs. los archivos físicos."""
     if not SIDEBAR.exists():
         print(
-            "No se encontró _sidebar.md; ejecute generar_sidebar_desde_index.py primero",
+            "No se encontró _sidebar.md; ejecute generar_sidebar.py primero",
             file=sys.stderr,
         )
         sys.exit(1)
@@ -82,13 +88,15 @@ def main() -> None:
                 if base_fs == base_link:
                     match = fs_path
                     break
-        rows.append({
-            "enlace_sidebar": link,
-            "coincidencia_fs": match or "",
-            "slug_sidebar": norm_link,
-            "slug_fs": limpiar_path(match) if match else "",
-            "status": "OK" if match else "NO_MATCH"
-        })
+        rows.append(
+            {
+                "enlace_sidebar": link,
+                "coincidencia_fs": match or "",
+                "slug_sidebar": norm_link,
+                "slug_fs": limpiar_path(match) if match else "",
+                "status": "OK" if match else "NO_MATCH",
+            }
+        )
 
     # --- 4) Exporta CSV ---
     out = ROOT / "mismatch_report.csv"
@@ -112,13 +120,12 @@ def main() -> None:
 
     with out.open("w", newline="", encoding="utf8") as f:
         w = csv.DictWriter(f, fieldnames=rows[0].keys())
-        w.writeheader(); w.writerows(rows)
+        w.writeheader()
+        w.writerows(rows)
 
     mismatches = [r for r in rows if r["status"] == "NO_MATCH"]
     if mismatches:
-        print(
-            f"❌ Se encontraron {len(mismatches)} enlaces sin correspondencia"
-        )
+        print(f"❌ Se encontraron {len(mismatches)} enlaces sin correspondencia")
         sys.exit(1)
     else:
         print("✅ Auditoría OK: no hay rutas rotas.")
