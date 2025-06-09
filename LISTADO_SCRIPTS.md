@@ -18,3 +18,4 @@ A continuación se resumen las utilidades disponibles en la carpeta `scripts/`. 
 | `verificar_pre_ingesta.py` | Comprueba que el mapa de encabezados y el índice estén sincronizados antes de ingerir. |
 | `wiki_cli.py` | Interfaz de línea de comandos que agrupa los pasos habituales (convertir, indexar e ingerir). |
 
+| `exportar_modulo.py` | Convierte todos los `.md` de una carpeta en un PDF único utilizando Pandoc. |
