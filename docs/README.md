@@ -40,6 +40,13 @@ ingestar definitivamente:
 python pipeline_codex.py _fuentes/_originales/archivo.docx
 ```
 
+Si se prefiere una guía interactiva existe `wizard_publicacion.py`, que
+permite avanzar y retroceder por cada etapa antes de publicar:
+
+```bash
+python scripts/wizard_publicacion.py
+```
+
 > **Nota**: si quiere reconstruir la wiki desde cero antes de procesar nuevos documentos, ejecute:
 >
 > ```bash
