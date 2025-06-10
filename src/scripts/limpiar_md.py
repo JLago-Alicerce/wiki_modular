@@ -3,8 +3,9 @@
 import sys
 from pathlib import Path
 
-# Permitir ejecutar el script sin instalar el paquete
-sys.path.append(str(Path(__file__).resolve().parents[2]))
+from utils.entorno import add_src_to_path
+
+add_src_to_path()
 from wiki_modular import limpiar_archivo_markdown
 
 
