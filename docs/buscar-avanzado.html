@@ -17,13 +17,19 @@
     <input type="text" id="query" placeholder="Término" />
     <input type="text" id="source" placeholder="source_file" />
     <input type="date" id="date" />
+    <select id="level">
+      <option value="">Nivel</option>
+      <option value="2">H2</option>
+      <option value="3">H3</option>
+      <option value="4">H4</option>
+    </select>
     <button id="btn-search">Buscar</button>
   </div>
   <div id="results"></div>
 
   <script src="https://unpkg.com/lunr/lunr.js"></script>
   <script>
-    let idx; let docs = [];
+    let idx; let headerIdx; let docs = []; let headers = [];
 
     async function init() {
       const res = await fetch('search_index.json');
@@ -38,6 +44,14 @@
           conversion_date: meta.conversion_date || ''
         };
       });
+      headers = Object.entries(json).flatMap(([id, info]) =>
+        (info.headers || []).map(h => ({
+          ref: id + '#' + h.slug,
+          header: h.text,
+          level: h.level,
+          url: 'index.html#/' + id.replace(/\.md$/, '') + '#' + h.slug
+        }))
+      );
 
       idx = lunr(function() {
         this.ref('id');
@@ -46,22 +60,36 @@
         this.field('conversion_date');
         docs.forEach(d => this.add(d));
       });
+      headerIdx = lunr(function() {
+        this.ref('ref');
+        this.field('header');
+        headers.forEach(h => this.add(h));
+      });
     }
 
     function doSearch() {
       const q = document.getElementById('query').value;
       const source = document.getElementById('source').value.toLowerCase();
       const date = document.getElementById('date').value;
+      const level = document.getElementById('level').value;
       let res = q ? idx.search(q) : docs.map(d => ({ ref: d.id }));
       res = res.map(r => docs.find(d => d.id === r.ref));
       res = res.filter(d => (!source || d.source_file.toLowerCase().includes(source)) &&
                             (!date || d.conversion_date === date));
-      const list = res.map(d => `<li><a href="${d.url}">${d.id}</a>`+
+      let headerRes = q ? headerIdx.search(q) : headers.map(h => ({ ref: h.ref }));
+      headerRes = headerRes.map(r => headers.find(h => h.ref === r.ref));
+      headerRes = headerRes.filter(h => (!level || String(h.level) === level));
+
+      const listDocs = res.map(d => `<li><a href="${d.url}">${d.id}</a>`+
          ` <small>${d.source_file} - ${d.conversion_date}</small></li>`).join('');
-      document.getElementById('results').innerHTML = `<ul>${list}</ul>`;
+      const listHeaders = headerRes.map(h => `<li><a href="${h.url}">${h.header}</a>`+
+         ` <small>(H${h.level})</small></li>`).join('');
+      const html = `<h3>Documentos</h3><ul>${listDocs}</ul><h3>Encabezados</h3><ul>${listHeaders}</ul>`;
+      document.getElementById('results').innerHTML = html;
     }
 
     document.getElementById('btn-search').addEventListener('click', doSearch);
+    document.getElementById('query').addEventListener('input', doSearch);
     init();
   </script>
 </body>
