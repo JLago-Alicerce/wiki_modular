@@ -2,11 +2,12 @@
 
 Este proyecto permite convertir documentos en Markdown y generar una wiki basada en Docsify.
 La forma más sencilla de ejecutar todo el proceso es a través de
-`wiki_cli.py`, que automatiza la limpieza, conversión e ingesta. También
-existen utilidades para revisar el resultado antes de publicar.
+`wiki_cli.py`, que automatiza la limpieza, conversión e ingesta. A partir de
+esta versión acepta un archivo individual o una carpeta con varios `.docx` o
+`.pdf`. También existen utilidades para revisar el resultado antes de publicar.
 
 ```bash
-python src/scripts/wiki_cli.py full _fuentes/_originales/archivo.docx
+python src/scripts/wiki_cli.py full _fuentes/_originales
 ```
 
 Con `full` se realiza la carga completa. Puede utilizar `reset` para vaciar

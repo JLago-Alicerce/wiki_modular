@@ -24,11 +24,12 @@ Si prefiere ejecutar todos los pasos de forma automática puede utilizar la
 interfaz unificada:
 
 ```bash
-python src/scripts/wiki_cli.py full _fuentes/_originales/archivo.docx
+python src/scripts/wiki_cli.py full _fuentes/_originales
 ```
 
-El comando `full` limpiará el entorno, convertirá el documento, generará los
-índices, realizará la ingesta y validará el resultado. También existe
+El comando `full` limpiará el entorno, procesará un archivo individual o todos
+los `.docx` y `.pdf` de la carpeta indicada, generará los índices, realizará la
+ingesta y validará el resultado. También existe
 `python src/scripts/wiki_cli.py reset` para borrar la wiki e índices antes de una
 nueva carga.
 
