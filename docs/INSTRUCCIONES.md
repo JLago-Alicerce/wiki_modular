@@ -1,6 +1,31 @@
 # Guía rápida de uso
 
-Este proyecto permite convertir documentos en Markdown y generar una wiki basada en Docsify. A continuación se describen los pasos para arrancar una carga desde cero y para añadir nueva documentación sin borrar la existente.
+Este proyecto permite convertir documentos en Markdown y generar una wiki basada en Docsify.
+La forma más sencilla de ejecutar todo el proceso es a través de
+`wiki_cli.py`, que automatiza la limpieza, conversión e ingesta. También
+existen utilidades para revisar el resultado antes de publicar.
+
+```bash
+python scripts/wiki_cli.py full _fuentes/_originales/archivo.docx
+```
+
+Con `full` se realiza la carga completa. Puede utilizar `reset` para vaciar
+la wiki antes de comenzar. Si prefiere revisar los archivos generados antes
+de ingerir, ejecute:
+
+```bash
+python pipeline_codex.py _fuentes/_originales/archivo.docx
+```
+
+Otra alternativa interactiva es `wizard_publicacion.py`, que guía paso a
+paso y muestra una vista previa del Markdown:
+
+```bash
+python scripts/wizard_publicacion.py
+```
+
+Los apartados siguientes describen el proceso manual si necesita ejecutar
+los scripts por separado.
 
 ## Reiniciar y cargar desde cero
 
@@ -70,3 +95,10 @@ El script detecta documentos no procesados, aplica automáticamente la misma cad
 Si tiene varios archivos pendientes puede copiarlos juntos y ejecutar el comando una sola vez; se procesarán de forma secuencial manteniendo el índice existente.
 Los PDF se convertirán directamente a Markdown. Con la opción `--ocr` se intentará extraer texto mediante `pytesseract` cuando sea necesario. Los fallidos se registrarán en `errores_pdf.csv`.
 Si necesita una recarga completa, ejecute previamente `python scripts/resetear_entorno.py` o use `python scripts/procesar_nuevos.py --clean`.
+
+## Utilidades adicionales
+
+- `scripts/web_uploader.py` permite cargar documentos mediante una pequeña
+  interfaz web con drag & drop.
+- `scripts/editor_markdown.py` abre un editor con vista previa para modificar
+  los `.md` antes de publicarlos.
