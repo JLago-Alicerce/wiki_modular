@@ -22,6 +22,8 @@ def limpiar_slug(texto: str) -> str:
         texto = str(texto)
     ascii_text = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode()
     ascii_text = ascii_text.lower()
+    # Remove anchors like '_toc1234' that may appear in headings
+    ascii_text = re.sub(r"_toc\d+", "", ascii_text)
     ascii_text = ascii_text.replace(" ", "_").replace("/", "_")
     ascii_text = re.sub(r"[^a-z0-9_-]", "", ascii_text)
     ascii_text = re.sub(r"_+", "_", ascii_text).strip("_")

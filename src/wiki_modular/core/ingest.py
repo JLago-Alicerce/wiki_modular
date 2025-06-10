@@ -54,6 +54,8 @@ def limpiar_nombre_archivo(texto: str) -> str:
         .decode("ascii")
         .strip()
     )
+    # Remove anchors like '#_Toc1234' that come from Word indices
+    texto = re.sub(r"#?_toc\d+", "", texto, flags=re.IGNORECASE)
     texto = re.sub(r"^[0-9.]+\s*", "", texto)
     texto = re.sub(r'[\\/:*?"<>|]', "", texto)
     texto = re.sub(r"[\s-]+", "_", texto)

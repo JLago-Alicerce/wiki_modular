@@ -11,6 +11,10 @@ def test_limpiar_slug_non_ascii():
     assert wiki_modular.limpiar_slug("Sección/Especial") == "seccion_especial"
 
 
+def test_limpiar_slug_toc():
+    assert wiki_modular.limpiar_slug("#_Toc9876 Sección") == "seccion"
+
+
 def test_remover_indice_markdown(tmp_path):
     md = tmp_path / "doc.md"
     md.write_text(
