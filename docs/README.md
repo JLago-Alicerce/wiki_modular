@@ -164,8 +164,10 @@ plugin de búsqueda configurado en `index.html`.
 
 Para consultas más detalladas existe la página
 `buscar-avanzado.html`, que carga `search_index.json` mediante
-[Lunr.js](https://lunrjs.com/) y permite filtrar por `source_file` o
-`conversion_date`.
+[Lunr.js](https://lunrjs.com/) y permite filtrar por `source_file`,
+`conversion_date` o el nivel de encabezado (`H2`, `H3`, etc.). El
+campo principal responde al momento de escribir para mostrar los
+resultados dinámicamente.
 
 ## Convención de nombres de ramas
 
