@@ -19,6 +19,7 @@ dependencies = [
     "markdown2>=2.4.0",
     "streamlit>=1.32",
     "Flask>=3.0",
+    "python-docx>=0.8.11",
 ]
 
 [tool.setuptools]
