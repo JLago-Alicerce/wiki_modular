@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Genera el índice maestro a partir de un mapa de encabezados."""
 
 import sys
 from pathlib import Path
@@ -16,7 +17,8 @@ from wiki_modular import limpiar_slug, load_yaml
 
 
 def generar_indice(input_file: Path, output_file: Path) -> dict:
-    """
+    """Genera el índice maestro desde un mapa de encabezados.
+
     Lee un YAML de encabezados (lista de dicts con 'titulo' y 'ruta') y
     construye un índice maestro (index_PlataformaBBDD.yaml) con:
       - id: número secuencial según orden en lista

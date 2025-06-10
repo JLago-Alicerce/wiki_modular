@@ -3,8 +3,6 @@
 from pathlib import Path
 from typing import Any, Dict, List
 
-import yaml
-
 from wiki_modular import limpiar_slug, load_yaml
 
 
@@ -27,7 +25,9 @@ def load_index(path: Path) -> Dict[str, Any]:
 def validate_index_schema(data: Dict[str, Any], *, tolerant: bool = False) -> None:
     """Valida que ``data`` cumpla el formato requerido por el índice."""
     if "secciones" not in data or not isinstance(data["secciones"], list):
-        raise InvalidIndexSchemaError("El YAML debe contener clave 'secciones' como lista.")
+        raise InvalidIndexSchemaError(
+            "El YAML debe contener clave 'secciones' como lista."
+        )
 
     for idx, seccion in enumerate(data["secciones"], start=1):
         if not isinstance(seccion, dict):
@@ -35,7 +35,9 @@ def validate_index_schema(data: Dict[str, Any], *, tolerant: bool = False) -> No
                 f"La sección en posición {idx} no es un mapeo válido."
             )
         if "titulo" not in seccion:
-            raise InvalidIndexSchemaError(f"Falta 'titulo' en la sección de índice {idx}.")
+            raise InvalidIndexSchemaError(
+                f"Falta 'titulo' en la sección de índice {idx}."
+            )
         if not tolerant and "id" not in seccion:
             raise InvalidIndexSchemaError(
                 "Falta 'id' en la sección de índice "

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 """Utilidades para normalizar y limpiar cadenas a slugs idempotentes."""
-import sys
-from pathlib import Path
 
 from utils.entorno import add_src_to_path
 

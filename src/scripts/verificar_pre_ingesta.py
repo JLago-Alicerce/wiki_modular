@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 """Verifica consistencia entre mapa de encabezados e índice antes de la ingesta."""
-import sys
 import argparse
-import yaml
+import sys
 from pathlib import Path
 from typing import Set
 
+import yaml
+
 
 def load_titles(path: Path, key: str) -> Set[str]:
-    """Carga títulos desde YAML"""
+    """Carga títulos desde YAML."""
     if not path.exists():
         print(f"[ERROR] No encontrado: {path}")
         return set()
@@ -16,7 +17,11 @@ def load_titles(path: Path, key: str) -> Set[str]:
     if isinstance(data, list):
         return {item.get(key, "") for item in data if isinstance(item, dict)}
     if isinstance(data, dict):
-        return {item.get("titulo", "") for item in data.get("secciones", []) if isinstance(item, dict)}
+        return {
+            item.get("titulo", "")
+            for item in data.get("secciones", [])
+            if isinstance(item, dict)
+        }
     return set()
 
 
@@ -61,4 +66,3 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     sys.exit(main(args.mapa, args.index, args.ignore_extra))
-

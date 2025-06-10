@@ -1,6 +1,3 @@
-import sys
-from pathlib import Path
-
 import scripts.editor_markdown as editor
 
 
