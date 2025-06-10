@@ -14,6 +14,12 @@
   --font-base: 'Open Sans', sans-serif;
 }
 
+html.dark {
+  --color-primary: #90caf9;
+  --color-bg: #121212;
+  --color-sidebar-bg: #1e1e1e;
+}
+
 body {
   font-family: var(--font-base);
   background: var(--color-bg);
@@ -21,9 +27,17 @@ body {
   margin: 0;
 }
 
+html.dark body {
+  color: #eee;
+}
+
 .markdown-section {
   padding: 16px;
   margin: 0 auto;
+}
+
+html.dark .markdown-section {
+  color: #eee;
 }
 
 h1 {
@@ -87,6 +101,10 @@ h4 {
   z-index: 1100; /* keep menu above other elements */
 }
 
+html.dark .sidebar {
+  color: #eee;
+}
+
 /* Active item in sidebar */
 .sidebar-nav li.active > a {
   border-left: 4px solid var(--color-primary);
@@ -111,6 +129,10 @@ h4 {
 
 /* Links and active elements */
 a {
+  color: var(--color-primary);
+}
+
+html.dark a {
   color: var(--color-primary);
 }
 
@@ -167,6 +189,11 @@ a:hover {
   color: #333;
 }
 
+html.dark .markdown-section table {
+  background-color: #1e1e1e;
+  color: #eee;
+}
+
 
 .markdown-section th {
   background-color: #e0e0e0;
@@ -178,6 +205,12 @@ a:hover {
   vertical-align: top;
 }
 
+html.dark .markdown-section th {
+  background-color: #2d2d2d;
+  border-color: #444;
+  color: #eee;
+}
+
 .markdown-section td {
   padding: 8px 12px;
   border: 1px solid #ddd;
@@ -186,8 +219,17 @@ a:hover {
   vertical-align: top;
 }
 
+html.dark .markdown-section td {
+  border-color: #444;
+  color: #eee;
+}
+
 .markdown-section tr:nth-child(even) {
   background-color: #fafafa;
+}
+
+html.dark .markdown-section tr:nth-child(even) {
+  background-color: #1a1a1a;
 }
 
 /* Remove left highlight from cells if any */
@@ -241,3 +283,26 @@ a:hover {
   font-size: 12px;
   margin-top: 2rem;
 }
+
+html.dark .page-footer {
+  color: #bbb;
+}
+
+/* Theme toggle button */
+#theme-toggle {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+html.dark #theme-toggle {
+  background: var(--color-primary);
+  color: #fff;
+}
+

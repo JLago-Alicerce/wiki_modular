@@ -26,6 +26,7 @@
     <button id="btn-search">Buscar</button>
   </div>
   <div id="results"></div>
+  <button id="theme-toggle" aria-label="Cambiar tema"></button>
 
   <script src="https://unpkg.com/lunr/lunr.js"></script>
   <script>
@@ -92,5 +93,6 @@
     document.getElementById('query').addEventListener('input', doSearch);
     init();
   </script>
+  <script src="theme.js"></script>
 </body>
 </html>
