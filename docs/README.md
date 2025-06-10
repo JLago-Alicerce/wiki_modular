@@ -41,7 +41,8 @@ python pipeline_codex.py _fuentes/_originales/archivo.docx
 ```
 
 Si se prefiere una guía interactiva existe `wizard_publicacion.py`, que
-permite avanzar y retroceder por cada etapa antes de publicar:
+permite avanzar y retroceder por cada etapa y ahora muestra una
+previsualización del Markdown antes de publicar:
 
 ```bash
 python scripts/wizard_publicacion.py
