@@ -154,7 +154,28 @@ a:hover {
 
 /* Ensure hamburger icon is visible above content */
 .sidebar-toggle {
+  position: fixed;
+  top: 10px;
+  left: 10px;
   z-index: 1200;
+  padding: 8px;
+  cursor: pointer;
+  background: transparent;
+  display: none;
+}
+
+.sidebar-toggle span {
+  display: block;
+  width: 22px;
+  height: 3px;
+  margin: 4px 0;
+  background: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .sidebar-toggle {
+    display: block;
+  }
 }
 
 /* Table styling according to ALTIA guidelines */
@@ -165,6 +186,14 @@ a:hover {
   width: 100%;
   background-color: #f5f5f5;
   color: #333;
+  display: block;
+  overflow-x: auto;
+}
+
+.markdown-section pre {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: pre;
 }
 
 
