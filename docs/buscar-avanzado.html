@@ -58,7 +58,7 @@
         const meta = info.metadata || {};
         const doc = {
           id: id,
-          url: 'index.html#/' + id.replace(/\.md$/, ''),
+          url: '../index.html#/' + id.replace(/\.md$/, ''),
           content: info.content || '',
           source_file: meta.source_file || '',
           conversion_date: meta.conversion_date || ''
@@ -73,7 +73,7 @@
             ref: id + '#' + h.slug,
             header: h.text,
             level: h.level,
-            url: 'index.html#/' + id.replace(/\.md$/, '') + '#' + h.slug,
+            url: '../index.html#/' + id.replace(/\.md$/, '') + '#' + h.slug,
             doc: id,
             pos: headerPosition(info.content || '', h.level, h.text)
           });
