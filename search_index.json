@@ -1,0 +1,28 @@
+{
+  "README.md": {
+    "metadata": {},
+    "content": "# Bienvenido a la wiki modular\n\nEsta wiki ha sido generada a partir del histórico de documentación disponible\npara agrupar el conocimiento y presentarlo de forma ordenada. Aquí podrás\nconsultar manuales técnicos, procedimientos y referencias organizados en\nsecciones fáciles de explorar.\n\n## Estructura general\n\n- **Documentación en Markdown**: cada artículo se almacena en formato Markdown\n  para facilitar su edición y mantenimiento.\n- **Barra lateral**: desde el menú lateral podrás navegar por las diferentes\n  secciones y subsecciones.\n- **Recursos incorporados**: las imágenes y archivos multimedia relacionados se\n  encuentran integrados directamente en los artículos.\n\n## Visualización\n\nPara acceder a la wiki simplemente abre el archivo `index.html` ubicado en\nla raíz del proyecto. Este archivo carga todo el contenido de la carpeta `wiki/`\nmediante Docsify, ofreciendo una experiencia de navegación dinámica y\nliviana.\n\n## Objetivo\n\nEl propósito de esta wiki es centralizar el conocimiento generado en diversos\nproyectos para que pueda consultarse de forma rápida y coherente. Al\nestructurar la información en una única web local, es posible reutilizar\ncontenido y mantener un histórico accesible sin depender de herramientas\nexternas.\n",
+    "headers": [
+      {
+        "level": 2,
+        "text": "Estructura general",
+        "slug": "estructura_general"
+      },
+      {
+        "level": 2,
+        "text": "Visualización",
+        "slug": "visualizacion"
+      },
+      {
+        "level": 2,
+        "text": "Objetivo",
+        "slug": "objetivo"
+      }
+    ]
+  },
+  "_sidebar.md": {
+    "metadata": {},
+    "content": "* [Inicio](README.md)\n",
+    "headers": []
+  }
+}
