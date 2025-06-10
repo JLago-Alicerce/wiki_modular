@@ -160,6 +160,7 @@ propuesto para facilitar su revisión.
 - `scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
 - `scripts/generar_indice_busqueda.py`: crea `search_index.json` a partir de los Markdown de `wiki/`.
 - `scripts/clean_orphaned_files.py`: borra los `.md` que no estén enlazados en `_sidebar.md`.
+- `scripts/web_uploader.py`: lanza un servidor sencillo para cargar `.docx` o `.md` mediante drag & drop.
 - `pipeline_codex.py`: alternativa a `wiki_cli.py` que pausa antes de ingerir para revisión manual.
 - `scripts/mover_huerfanos.py`: tras comparar el índice y el sidebar, mueve los archivos Markdown no referenciados a `wiki/_deprecated/`.
 

@@ -23,3 +23,4 @@ A continuación se resumen las utilidades disponibles en la carpeta `scripts/`. 
 | `wizard_publicacion.py` | Asistente interactivo que guía paso a paso desde la carga hasta la publicación. |
 
 | `exportar_modulo.py` | Convierte todos los `.md` de una carpeta en un PDF único utilizando Pandoc. |
+| `web_uploader.py` | Inicia un pequeño servidor para cargar `.docx` o `.md` mediante drag & drop. |
