@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-generar_sidebar.py
-------------------
-Genera el archivo ``_sidebar.md`` a partir de ``index_PlataformaBBDD.yaml``.
+"""Genera el archivo `_sidebar.md` a partir de `index_PlataformaBBDD.yaml`.
 
 Permite operar en modo estricto o tolerante mediante ``--tolerant``. El modo
-estricto exige que cada sección tenga un ``id`` único y detecta rutas
+estricto exige que cada seccion tenga un ``id`` unico y detecta rutas
 duplicadas; el modo tolerante omite esas comprobaciones.
 """
 
@@ -18,7 +15,6 @@ from pathlib import Path
 import yaml
 
 from wiki_modular.config import ROOT_DIR, WIKI_DIR
-
 from wiki_modular.core.sidebar import (
     IndexFileNotFoundError,
     InvalidIndexSchemaError,
@@ -26,7 +22,6 @@ from wiki_modular.core.sidebar import (
     load_index,
     validate_index_schema,
 )
-
 
 # --------------------------------------------------
 # Rutas de proyecto

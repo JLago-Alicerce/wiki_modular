@@ -15,7 +15,6 @@ import wiki_modular.config as config
 
 def run(cmd: list[str]) -> int:
     """Execute a command and return its exit code."""
-
     logging.info("$ %s", " ".join(cmd))
     result = subprocess.run(cmd)
     logging.info("return code: %s", result.returncode)
@@ -24,7 +23,6 @@ def run(cmd: list[str]) -> int:
 
 def main() -> None:
     """Run the full wiki generation pipeline."""
-
     parser = argparse.ArgumentParser(
         description="Ejecuta pipeline completo de Codex",
     )

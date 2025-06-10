@@ -1,5 +1,5 @@
-import subprocess
 from pathlib import Path
+
 from scripts import resetear_entorno as reset
 
 

@@ -2,16 +2,12 @@
 """Detecta archivos Markdown huérfanos y los mueve a ``wiki/_deprecated``."""
 import csv
 import re
-import sys
 from pathlib import Path
 
-from utils.entorno import add_src_to_path, ROOT_DIR, WIKI_DIR
+from utils.entorno import ROOT_DIR, WIKI_DIR, add_src_to_path
 
 add_src_to_path()
 from wiki_modular import limpiar_slug, load_yaml
-from wiki_modular.config import WIKI_DIR
-
-ROOT_DIR = Path(__file__).resolve().parent.parent
 
 INDEX_FILE = ROOT_DIR / "index_PlataformaBBDD.yaml"
 SIDEBAR_FILE = WIKI_DIR / "_sidebar.md"

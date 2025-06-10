@@ -1,5 +1,5 @@
 import subprocess
-from pathlib import Path
+
 from scripts import iniciar_entorno as start
 
 

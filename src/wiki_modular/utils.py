@@ -1,8 +1,11 @@
+"""Funciones utilitarias de apoyo para la generación de la wiki."""
+
 import re
-import yaml
 import unicodedata
 from pathlib import Path
 from typing import Any
+
+import yaml
 
 __all__ = [
     "limpiar_slug",

@@ -1,6 +1,5 @@
 """Herramientas para generar el índice de búsqueda."""
 
-import json
 from pathlib import Path
 from typing import Dict, Tuple
 

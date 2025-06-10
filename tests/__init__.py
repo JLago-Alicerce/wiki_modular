@@ -1,3 +1,5 @@
+"""Configuración común para la suite de pruebas."""
+
 import sys
 from pathlib import Path
 

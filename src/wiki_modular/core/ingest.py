@@ -10,7 +10,7 @@ from typing import Any
 
 import yaml
 
-from wiki_modular import limpiar_slug, load_yaml
+from wiki_modular import limpiar_slug
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
@@ -49,7 +49,10 @@ def buscar_destino(
 def limpiar_nombre_archivo(texto: str) -> str:
     """Genera un nombre de archivo válido a partir de ``texto``."""
     texto = (
-        unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode("ascii").strip()
+        unicodedata.normalize("NFKD", texto)
+        .encode("ascii", "ignore")
+        .decode("ascii")
+        .strip()
     )
     texto = re.sub(r"^[0-9.]+\s*", "", texto)
     texto = re.sub(r'[\\/:*?"<>|]', "", texto)
@@ -67,7 +70,9 @@ def append_suggestion(path: Path, titulo: str, slug: str) -> None:
                 data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
             if titulo not in data:
                 data[titulo] = slug
-                path.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
+                path.write_text(
+                    yaml.safe_dump(data, allow_unicode=True), encoding="utf-8"
+                )
         else:
             new_file = not path.exists()
             with path.open("a", newline="", encoding="utf-8") as f:

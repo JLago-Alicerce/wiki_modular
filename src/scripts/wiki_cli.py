@@ -3,20 +3,16 @@
 import argparse
 import logging
 import os
-import subprocess
 import sys
 from pathlib import Path
 
 import wiki_modular.config as config
-
 from utils.entorno import run as exec_cmd
 
 
 def run(cmd: list[str]) -> None:
     """Execute ``cmd`` using :func:`utils.entorno.run`."""
     exec_cmd(cmd)
-
-
 
 
 def step_convert(doc: Path) -> None:
@@ -42,7 +38,6 @@ def step_convert(doc: Path) -> None:
 
 
 def step_generate_index() -> None:
-
     """Genera mapa de encabezados e índice maestro."""
     run([sys.executable, "scripts/generar_mapa_encabezados.py"])
     run(
@@ -78,8 +73,6 @@ def step_sidebar() -> None:
     """Genera el sidebar y ejecuta la auditoría básica."""
     run([sys.executable, "scripts/generar_sidebar.py", "--tolerant"])
     run([sys.executable, "scripts/auditar_sidebar_vs_fs.py"])
-
-
 
 
 def main() -> None:

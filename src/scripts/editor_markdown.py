@@ -48,22 +48,26 @@ HTML_TEMPLATE = """
 
 @app.route("/")
 def index():
+    """Renderiza el editor de Markdown."""
     return render_template_string(HTML_TEMPLATE)
 
 
 @app.route("/load")
 def load_content():
+    """Devuelve el contenido actual del archivo."""
     return FILE.read_text(encoding="utf-8")
 
 
 @app.route("/save", methods=["POST"])
 def save_content():
+    """Guarda el archivo y actualiza el índice de búsqueda."""
     FILE.write_text(request.get_data(as_text=True), encoding="utf-8")
     run([sys.executable, str(script_path("generar_indice_busqueda.py"))])
     return "Guardado"
 
 
 def main() -> None:
+    """Lanza la aplicación de edición."""
     parser = argparse.ArgumentParser(description="Editor visual para Markdown")
     parser.add_argument("file", type=Path, help="Archivo .md a editar")
     args = parser.parse_args()

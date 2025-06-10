@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""Genera un mapa de encabezados a partir de un archivo Markdown."""
 
 import re
 import sys

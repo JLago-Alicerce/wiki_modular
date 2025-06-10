@@ -1,7 +1,5 @@
 import json
 import sys
-from pathlib import Path
-import yaml
 
 import scripts.generar_indice_busqueda as gen
 
@@ -17,7 +15,9 @@ def test_generar_indice_creates_json(tmp_path, monkeypatch):
 
     out = tmp_path / "index.json"
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr(sys, "argv", ["prog", "--wiki", str(wiki), "--output", str(out)])
+    monkeypatch.setattr(
+        sys, "argv", ["prog", "--wiki", str(wiki), "--output", str(out)]
+    )
     gen.main()
 
     data = json.loads(out.read_text(encoding="utf-8"))
