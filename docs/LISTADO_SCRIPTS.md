@@ -17,7 +17,7 @@ A continuación se resumen las utilidades disponibles en la carpeta `src/scripts
 | `reubicar_nuevas_secciones.py` | Mueve las secciones creadas en `99_Nuevas_Secciones` a su destino definitivo según el índice. |
 | `validar_sidebar_vs_fs.py` | Verifica que todos los enlaces del `_sidebar.md` tengan un archivo correspondiente y viceversa. |
 | `verificar_pre_ingesta.py` | Comprueba que el mapa de encabezados y el índice estén sincronizados antes de ingerir. |
-| `wiki_cli.py` | Interfaz de línea de comandos que agrupa los pasos habituales (convertir, indexar e ingerir). |
+| `wiki_cli.py` | Interfaz de línea de comandos que agrupa los pasos habituales (convertir, indexar e ingerir) y permite procesar un archivo o carpeta con `.docx` y `.pdf`. |
 | `clean_orphaned_files.py` | Elimina los `.md` de `wiki/` que no aparecen enlazados en `_sidebar.md`. |
 | `pipeline_codex.py` | Automatiza el flujo completo permitiendo una pausa para revisar el índice antes de la ingesta. |
 | `wizard_publicacion.py` | Asistente interactivo que guía paso a paso desde la carga hasta la publicación e incluye vista previa del Markdown. |

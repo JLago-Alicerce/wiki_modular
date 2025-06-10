@@ -83,3 +83,37 @@ def test_wiki_cli_full_flow(tmp_path, monkeypatch):
         "auditar_sidebar_vs_fs.py",
     ]
     assert len(calls) == 9
+
+
+def test_wiki_cli_full_directory(tmp_path, monkeypatch):
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "a.docx").write_text("dummy", encoding="utf-8")
+    (src / "b.pdf").write_text("dummy", encoding="utf-8")
+
+    called: list[str] = []
+
+    monkeypatch.setattr(wiki_cli, "process_doc", lambda p, c: called.append(p.name))
+    monkeypatch.setattr(wiki_cli, "run", lambda cmd: None)
+    monkeypatch.setattr(sys, "argv", ["prog", "full", str(src)])
+
+    wiki_cli.main()
+
+    assert called == ["a.docx", "b.pdf"]
+
+
+def test_wiki_cli_full_pdf(tmp_path, monkeypatch):
+    pdf = tmp_path / "file.pdf"
+    pdf.write_text("data", encoding="utf-8")
+
+    calls = []
+
+    monkeypatch.setattr(wiki_cli, "run", lambda cmd: calls.append(cmd))
+    monkeypatch.setattr(wiki_cli.pn, "convertir_pdf", lambda p: tmp_path / "tmp.md")
+    monkeypatch.setattr(sys, "argv", ["prog", "full", str(pdf)])
+
+    wiki_cli.main()
+
+    names = [Path(cmd[1]).name if cmd[0] != "pandoc" else "pandoc" for cmd in calls]
+    assert "limpiar_md.py" in names
+    assert "pandoc" not in names

@@ -6,11 +6,12 @@ La forma más sencilla de ejecutar todo el proceso es a través de
 existen utilidades para revisar el resultado antes de publicar.
 
 ```bash
-python src/scripts/wiki_cli.py full _fuentes/_originales/archivo.docx
+python src/scripts/wiki_cli.py full _fuentes/_originales/
 ```
 
-Con `full` se realiza la carga completa. Puede utilizar `reset` para vaciar
-la wiki antes de comenzar. Si prefiere revisar los archivos generados antes
+Con `full` se realiza la carga completa sobre todos los `.docx` y `.pdf` de la
+carpeta indicada (o sobre un único archivo si se especifica). Puede utilizar
+`reset` para vaciar la wiki antes de comenzar. Si prefiere revisar los archivos generados antes
 de ingerir, ejecute:
 
 ```bash

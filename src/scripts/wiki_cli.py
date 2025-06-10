@@ -151,8 +151,8 @@ def main() -> None:
             else:
                 if not args.doc.exists() or not args.doc.is_file():
                     parser.error(f"El archivo {args.doc} no existe")
-                if args.doc.suffix.lower() != ".docx":
-                    parser.error("El documento debe tener extensi\u00f3n .docx")
+                if args.doc.suffix.lower() not in {".docx", ".pdf"}:
+                    parser.error("El documento debe ser .docx o .pdf")
                 process_doc(args.doc, args.cutoff)
         except Exception as exc:
             logging.error("Ejecución interrumpida: %s", exc)

@@ -12,7 +12,7 @@ A nivel de uso diario se recomienda:
    - El alimentador registrará cada archivo en `procesados.log` para no repetir trabajos.
 2. **Ejecutar el alimentador desde un entorno limpio**
    - Si es la primera carga o se han eliminado archivos manualmente, corra `resetear_entorno.py` antes de procesar.
-   - Utilice `wiki_cli.py full <docx>` si desea realizar todo el flujo de una sola vez.
+   - Utilice `wiki_cli.py full <archivo_o_carpeta>` si desea realizar todo el flujo de una sola vez, procesando tanto `.docx` como `.pdf`.
 3. **Revisar los mensajes del alimentador**
    - Ante cualquier advertencia sobre coincidencias difusas, revise `alias_override.yaml` para forzar rutas correctas.
 4. **Validar el índice periódicamente**
