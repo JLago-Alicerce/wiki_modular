@@ -10,6 +10,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from utils.entorno import script_path
+
 import wiki_modular.config as config
 
 
@@ -68,15 +70,15 @@ def main() -> None:
         ),
         (
             "limpiar_md",
-            [sys.executable, "scripts/limpiar_md.py", "_fuentes/tmp_full.md"],
+            [sys.executable, str(script_path("limpiar_md.py")), "_fuentes/tmp_full.md"],
         ),
         (
             "mapa_encabezados",
-            [sys.executable, "scripts/generar_mapa_encabezados.py"],
+            [sys.executable, str(script_path("generar_mapa_encabezados.py"))],
         ),
         (
             "generar_index",
-            [sys.executable, "scripts/generar_index_desde_encabezados.py"],
+            [sys.executable, str(script_path("generar_index_desde_encabezados.py"))],
         ),
     ]
 
@@ -93,7 +95,7 @@ def main() -> None:
 
     ingest_cmd = [
         sys.executable,
-        "scripts/ingest_wiki_v2.py",
+        str(script_path("ingest_wiki_v2.py")),
         "--mapa",
         "_fuentes/mapa_encabezados.yaml",
         "--index",
@@ -114,15 +116,15 @@ def main() -> None:
         (
             "generar_sidebar",
             # Genera el _sidebar.md a partir del índice
-            [sys.executable, "scripts/generar_sidebar.py"],
+            [sys.executable, str(script_path("generar_sidebar.py"))],
         ),
         (
             "validar_enlaces",
-            [sys.executable, "scripts/validar_sidebar_vs_fs.py"],
+            [sys.executable, str(script_path("validar_sidebar_vs_fs.py"))],
         ),
         (
             "limpiar_huerfanos",
-            [sys.executable, "scripts/clean_orphaned_files.py"],
+            [sys.executable, str(script_path("clean_orphaned_files.py"))],
         ),
     ]
 
