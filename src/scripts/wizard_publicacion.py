@@ -13,6 +13,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from scripts.preview_md import preview_markdown
+
 ROOT_DIR = Path(__file__).resolve().parents[2]
 
 
@@ -20,14 +22,17 @@ class Wizard:
     """Implementación del asistente de publicación."""
 
     def __init__(self) -> None:
+        """Inicializa la secuencia de pasos del asistente."""
         self.steps = [
             ("Cargar", self.step_load),
             ("Procesar", self.step_process),
             ("Revisar", self.step_review),
+            ("Previsualizar", self.step_preview),
             ("Publicar", self.step_publish),
         ]
         self.index = 0
         self.docx: Path | None = None
+        self.preview_action: str | None = None
         logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
     # --------------------------------------------------
@@ -82,8 +87,22 @@ class Wizard:
     # --------------------------------------------------
     def step_review(self) -> None:
         """Pausa para que el usuario revise el mapa e índice."""
-        print("\nRevisa los archivos generados en '_fuentes/' y 'index_PlataformaBBDD.yaml'.")
+        print(
+            "\nRevisa los archivos generados en '_fuentes/' y 'index_PlataformaBBDD.yaml'."
+        )
         input("Pulsa Enter para continuar...")
+
+    # --------------------------------------------------
+    def step_preview(self) -> None:
+        """Muestra el Markdown procesado y solicita confirmación."""
+        md = Path("_fuentes/tmp_full.md")
+        if not md.exists():
+            print("No se encontró '_fuentes/tmp_full.md'")
+            self.preview_action = "edit"
+            return
+        self.preview_action = preview_markdown(md)
+        if self.preview_action == "edit":
+            print("Se eligió volver a editar")
 
     # --------------------------------------------------
     def step_publish(self) -> None:
@@ -114,6 +133,7 @@ class Wizard:
 
     # --------------------------------------------------
     def loop(self) -> None:
+        """Itera sobre los pasos permitiendo avanzar o retroceder."""
         while self.index < len(self.steps):
             name, func = self.steps[self.index]
             print(f"\n=== Paso {self.index + 1}: {name} ===")
@@ -121,6 +141,9 @@ class Wizard:
                 func()
             except Exception as exc:  # noqa: BLE001
                 print(f"[ERROR] {exc}")
+            if name == "Previsualizar" and self.preview_action == "edit":
+                self.index = 1  # volver al paso Procesar
+                continue
             action = input("[N]ext, [B]ack, [R]epeat, [Q]uit > ").lower().strip()
             if action == "b":
                 if self.index > 0:
@@ -135,6 +158,7 @@ class Wizard:
 
 
 def main() -> None:
+    """Punto de entrada para el asistente interactivo."""
     Wizard().loop()
 
 
