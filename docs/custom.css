@@ -37,6 +37,16 @@ body {
   margin: 0;
 }
 
+/* Breadcrumb navigation */
+.breadcrumbs {
+  font-size: 0.9rem;
+  margin: 0.5rem 1rem;
+}
+.breadcrumbs a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
 .markdown-section {
   padding: 16px;
   margin: 0 auto;

@@ -24,7 +24,8 @@
      
   </head>
   <body>
-    
+
+    <nav class="breadcrumbs"></nav>
     <div id="app"></div>
     <script>
       window.$docsify = {
@@ -39,7 +40,9 @@
         search: "search_index.json", // Índice de búsqueda precalculado
         plugins: [
           function (hook, vm) {
+
             var pageMeta = {};
+
             hook.beforeEach(function (markdown) {
               var fmPattern = /^---\n([\s\S]*?)\n---\n?/;
               var match = fmPattern.exec(markdown);
@@ -54,6 +57,30 @@
               }
               return markdown;
             });
+
+
+            var container;
+            function updateBreadcrumbs() {
+              if (!container) return;
+              var path = vm.route.path.split("/").filter(Boolean);
+              var crumbs = [
+                '<a href="#/">Inicio</a>'
+              ];
+              var acc = "";
+              path.forEach(function (part) {
+                acc += "/" + part;
+                var title = decodeURIComponent(part.replace(/\.md$/, "")).replace(/_/g, " ");
+                crumbs.push('<a href="#'+acc+'">'+title+'</a>');
+              });
+              container.innerHTML = crumbs.join(" / ");
+            }
+
+            hook.ready(function () {
+              container = document.querySelector("nav.breadcrumbs");
+              updateBreadcrumbs();
+            });
+
+            hook.doneEach(updateBreadcrumbs);
 
             hook.afterEach(function (html, next) {
               var estado = "";
@@ -82,6 +109,7 @@
               }
               next(html);
             });
+
           },
         ],
       };
