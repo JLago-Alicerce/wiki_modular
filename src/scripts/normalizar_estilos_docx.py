@@ -1,5 +1,11 @@
 #!/usr/bin/env python
-"""Normaliza estilos de encabezado en archivos .docx."""
+"""Normaliza estilos de encabezado en archivos .docx.
+
+Detecta numeraciones como ``1.``, ``2.1.``, ``3.4.5.`` y aplica
+autom\u00e1ticamente los estilos ``T\u00edtulo 1``, ``T\u00edtulo 2`` y
+``T\u00edtulo 3`` sobre el documento resultante. Es idempotente y
+puede ejecutarse varias veces sin degradar los estilos existentes.
+"""
 
 from __future__ import annotations
 
@@ -12,7 +18,7 @@ from docx import Document
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Detecta títulos simulados y aplica estilos Word"
+        description="Detecta encabezados numerados y aplica estilos Word"
     )
     parser.add_argument("file", type=Path, help="Documento .docx a normalizar")
     parser.add_argument(
@@ -23,20 +29,32 @@ def main() -> None:
     doc = Document(str(args.file))
     headings: list[tuple[str, str]] = []
 
+    patterns = [
+        (r"^\d+\.\d+\.\d+\.\s", "Heading 3", "T\u00edtulo 3"),
+        (r"^\d+\.\d+\.\s", "Heading 2", "T\u00edtulo 2"),
+        (r"^\d+\.\s", "Heading 1", "T\u00edtulo 1"),
+    ]
+
     for para in doc.paragraphs:
         text = para.text.strip()
-        if re.match(r"^\d+\.\s", text):
-            headings.append(("H1", text))
-            if not args.dry_run:
-                para.style = "Heading 1"
-        elif re.match(r"^\d+\.\d+\s", text):
-            headings.append(("H2", text))
-            if not args.dry_run:
+        matched = False
+        for pattern, style_name, label in patterns:
+            if re.match(pattern, text):
+                headings.append((style_name, text))
+                matched = True
+                if not args.dry_run and para.style.name != style_name:
+                    para.style = style_name
+                    print(f"[\u2713] Se aplic\u00f3 {label}: \"{text}\"")
+                break
+
+        if matched:
+            continue
+
+        if para.runs and para.runs[0].bold and len(text.split()) < 12:
+            headings.append(("Heading 2", text))
+            if not args.dry_run and para.style.name != "Heading 2":
                 para.style = "Heading 2"
-        elif para.runs and para.runs[0].bold and len(text.split()) < 12:
-            headings.append(("H2", text))
-            if not args.dry_run:
-                para.style = "Heading 2"
+                print(f"[\u2713] Se aplic\u00f3 T\u00edtulo 2: \"{text}\"")
 
     if args.dry_run:
         for level, title in headings:
