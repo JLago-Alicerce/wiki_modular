@@ -11,21 +11,13 @@ estricto exige que cada sección tenga un ``id`` único y detecta rutas
 duplicadas; el modo tolerante omite esas comprobaciones.
 """
 
+import argparse
 import sys
 from pathlib import Path
 
-from utils.entorno import add_src_to_path, ROOT_DIR, WIKI_DIR
-
-add_src_to_path()
-
-import argparse
-from typing import Any, Dict, List
-
 import yaml
 
-
-from wiki_modular import limpiar_slug, load_yaml
-from wiki_modular.config import WIKI_DIR
+from wiki_modular.config import ROOT_DIR, WIKI_DIR
 
 from wiki_modular.core.sidebar import (
     IndexFileNotFoundError,
@@ -39,8 +31,6 @@ from wiki_modular.core.sidebar import (
 # --------------------------------------------------
 # Rutas de proyecto
 # --------------------------------------------------
-
-ROOT_DIR = Path(__file__).resolve().parent.parent
 
 INDEX_FILE = ROOT_DIR / "index_PlataformaBBDD.yaml"
 SIDEBAR_FILE = WIKI_DIR / "_sidebar.md"
