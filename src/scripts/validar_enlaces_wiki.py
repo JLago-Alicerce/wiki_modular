@@ -70,7 +70,7 @@ def main() -> int:
     if not SIDEBAR.exists():
         print(
             "No se encontró _sidebar.md; ejecute "
-            "generar_sidebar_desde_index.py primero",
+            "generar_sidebar.py primero",
             file=sys.stderr,
         )
         return 1

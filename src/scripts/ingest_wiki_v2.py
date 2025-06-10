@@ -12,7 +12,6 @@ necesaria para considerar que un encabezado coincide con una entrada del índice
 Si no se alcanza, el bloque se envía a ``wiki/99_Nuevas_Secciones``.
 """
 
-import csv
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -24,101 +23,15 @@ import yaml
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 import argparse
 import logging
-import re
-import unicodedata
-from difflib import get_close_matches
 
 from wiki_modular import limpiar_slug, load_yaml
+from wiki_modular.core.ingest import (
+    append_suggestion,
+    buscar_destino,
+    limpiar_nombre_archivo,
+)
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
-
-
-def buscar_destino(
-    titulo: str, index_data: dict, alias_map: dict, fuzzy_cutoff: float
-) -> Path:
-    """
-    Decide la ruta destino para un bloque:
-      1) Si título EXACTO está en alias_map → devuelve Path(alias_map[título]).
-      2) Sino, construye un mapa de “clave normalizada” → Path desde index_data.
-      3) Aplica fuzzy matching sobre las claves con cutoff; devuelve match si existe.
-      4) Si no hay match, retorna None.
-    """
-    # 1) Override manual
-    if titulo in alias_map:
-        return Path(alias_map[titulo])
-
-    # 2) Construir diccionario de slugs desde índice
-    ruta_map = {}
-    candidatos = []
-
-    for sec in index_data.get("secciones", []):
-        sec_titulo = sec.get("titulo", "")
-        sec_slug = sec.get("slug", limpiar_slug(sec_titulo))
-        id_prefix = f"{sec.get('id')}_{sec_slug}" if "id" in sec else sec_slug
-
-        # Ruta de sección principal
-        key_sec = limpiar_slug(sec_titulo)
-        ruta_map[key_sec] = Path(f"wiki/{id_prefix}.md")
-        candidatos.append(key_sec)
-
-        # Cada subtema (si existe)
-        for sub in sec.get("subtemas", []):
-            key_sub = limpiar_slug(sub)
-            # Si sub contiene “sql”, carpeta específica; else carpeta = slug de sección
-            carpeta = "02_Instancias_SQL" if "sql" in key_sub else sec_slug
-            ruta_map[key_sub] = Path(f"wiki/{carpeta}/{limpiar_slug(sub)}.md")
-            candidatos.append(key_sub)
-
-    # 3) Fuzzy matching
-    titulo_norm = limpiar_slug(titulo)
-    match = get_close_matches(titulo_norm, candidatos, n=1, cutoff=fuzzy_cutoff)
-    if match:
-        return ruta_map[match[0]]
-
-    logging.warning(f"No match para '{titulo}' → normalizado: '{titulo_norm}'")
-    return None
-
-
-def limpiar_nombre_archivo(texto: str) -> str:
-    """
-    Para bloques sin destino, crea un nombre de archivo a partir del título:
-      - Normaliza a ASCII, quita numeración inicial, elimina caracteres no válidos,
-        reemplaza espacios/guiones por "_", evita duplicados de "_", y limita a 128 caracteres.
-    """
-    texto = (
-        unicodedata.normalize("NFKD", texto)
-        .encode("ascii", "ignore")
-        .decode("ascii")
-        .strip()
-    )
-    texto = re.sub(r"^[0-9.]+\s*", "", texto)
-    texto = re.sub(r'[\\/:*?"<>|]', "", texto)
-    texto = re.sub(r"[\s-]+", "_", texto)
-    texto = re.sub(r"_+", "_", texto).strip("_")
-    return texto[:128]
-
-
-def append_suggestion(path: Path, titulo: str, slug: str) -> None:
-    """Añade ``titulo`` y ``slug`` a ``path`` en formato CSV o YAML."""
-    try:
-        if path.suffix.lower() in {".yaml", ".yml"}:
-            data = {}
-            if path.exists():
-                data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-            if titulo not in data:
-                data[titulo] = slug
-                path.write_text(
-                    yaml.safe_dump(data, allow_unicode=True), encoding="utf-8"
-                )
-        else:
-            new_file = not path.exists()
-            with path.open("a", newline="", encoding="utf-8") as f:
-                writer = csv.writer(f)
-                if new_file:
-                    writer.writerow(["titulo", "slug"])
-                writer.writerow([titulo, slug])
-    except Exception as e:  # pragma: no cover - solo logueo
-        logging.error(f"No se pudo actualizar {path}: {e}")
 
 
 def main():

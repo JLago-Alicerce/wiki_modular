@@ -1,6 +1,9 @@
 name: CI
 
 on:
+  push:
+    branches:
+      - '**'
   pull_request:
     branches:
       - main
@@ -35,15 +38,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -e .
-          pip install pytest pytest-cov flake8 black
+          pip install pytest pytest-cov pre-commit
 
-      # Linter
-      - name: Lint with flake8
-        run: flake8 .
-
-      # Formateo (solo chequeo)
-      - name: Check formatting with black
-        run: black --check .
+      # Ejecuta validaciones de pre-commit
+      - name: Run pre-commit
+        run: pre-commit run --all-files --show-diff-on-failure --color always
 
       # Ejecuta tests con cobertura
       - name: Run tests with coverage

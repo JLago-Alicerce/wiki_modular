@@ -11,10 +11,15 @@ from wiki_modular.config import ASSETS_DIR
 
 def run(cmd: list[str]) -> None:
     """Execute ``cmd`` and abort on failure."""
-    logging.info("Ejecutando: %s", " ".join(cmd))
-    result = subprocess.run(cmd)
-    if result.returncode != 0:
-        raise SystemExit(result.returncode)
+    logging.info("Ejecutando: %s", " ".join(str(c) for c in cmd))
+    try:
+        subprocess.run(cmd, check=True)
+    except FileNotFoundError as exc:
+        logging.error("Comando no encontrado: %s", cmd[0])
+        raise SystemExit(1) from exc
+    except subprocess.CalledProcessError as exc:
+        logging.error("El comando falló (%s): %s", exc.returncode, " ".join(exc.cmd))
+        raise SystemExit(exc.returncode) from exc
 
 
 def step_convert(doc: Path) -> None:
@@ -30,43 +35,59 @@ def step_convert(doc: Path) -> None:
         "--standalone",
         "--wrap=none",
     ]
-    run(cmd)
-    run([sys.executable, "scripts/limpiar_md.py", str(tmp_md)])
+    try:
+        run(cmd)
+        run([sys.executable, "scripts/limpiar_md.py", str(tmp_md)])
+    except Exception as exc:
+        logging.error("Fallo en la conversi\u00f3n: %s", exc)
+        raise
 
 
 def step_generate_index() -> None:
-    run([sys.executable, "scripts/generar_mapa_encabezados.py"])
-    run(
-        [
-            sys.executable,
-            "scripts/generar_index_desde_encabezados.py",
-            "--precheck",
-        ]
-    )
+    try:
+        run([sys.executable, "scripts/generar_mapa_encabezados.py"])
+        run(
+            [
+                sys.executable,
+                "scripts/generar_index_desde_encabezados.py",
+                "--precheck",
+            ]
+        )
+    except Exception as exc:
+        logging.error("Error al generar índices: %s", exc)
+        raise
 
 
 def step_ingest(cutoff: float) -> None:
-    run(
-        [
-            sys.executable,
-            "scripts/ingest_wiki_v2.py",
-            "--mapa",
-            "_fuentes/mapa_encabezados.yaml",
-            "--index",
-            "index_PlataformaBBDD.yaml",
-            "--fuente",
-            "_fuentes/tmp_full.md",
-            "--alias",
-            "_fuentes/alias_override.yaml",
-            "--cutoff",
-            str(cutoff),
-        ]
-    )
+    try:
+        run(
+            [
+                sys.executable,
+                "scripts/ingest_wiki_v2.py",
+                "--mapa",
+                "_fuentes/mapa_encabezados.yaml",
+                "--index",
+                "index_PlataformaBBDD.yaml",
+                "--fuente",
+                "_fuentes/tmp_full.md",
+                "--alias",
+                "_fuentes/alias_override.yaml",
+                "--cutoff",
+                str(cutoff),
+            ]
+        )
+    except Exception as exc:
+        logging.error("Error en la ingesta: %s", exc)
+        raise
 
 
 def step_sidebar() -> None:
-    run([sys.executable, "scripts/generar_sidebar.py", "--tolerant"])
-    run([sys.executable, "scripts/auditar_sidebar_vs_fs.py"])
+    try:
+        run([sys.executable, "scripts/generar_sidebar.py", "--tolerant"])
+        run([sys.executable, "scripts/auditar_sidebar_vs_fs.py"])
+    except Exception as exc:
+        logging.error("Error al generar el sidebar: %s", exc)
+        raise
 
 
 def main() -> None:
@@ -96,11 +117,22 @@ def main() -> None:
     )
 
     if args.command == "full":
-        run([sys.executable, "scripts/resetear_entorno.py"])
-        step_convert(args.doc)
-        step_generate_index()
-        step_ingest(args.cutoff)
-        step_sidebar()
+        if not args.doc.exists() or not args.doc.is_file():
+            parser.error(f"El archivo {args.doc} no existe")
+        if args.doc.suffix.lower() != ".docx":
+            parser.error("El documento debe tener extensi\u00f3n .docx")
+        if not 0 <= args.cutoff <= 1:
+            parser.error("--cutoff debe estar entre 0 y 1")
+
+        try:
+            run([sys.executable, "scripts/resetear_entorno.py"])
+            step_convert(args.doc)
+            step_generate_index()
+            step_ingest(args.cutoff)
+            step_sidebar()
+        except Exception as exc:
+            logging.error("Ejecución interrumpida: %s", exc)
+            raise SystemExit(1)
     elif args.command == "reset":
         run([sys.executable, "scripts/resetear_entorno.py"])
     else:
