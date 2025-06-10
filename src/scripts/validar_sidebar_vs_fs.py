@@ -1,41 +1,14 @@
 #!/usr/bin/env python
 """Verifica coherencia entre los enlaces de _sidebar.md y los archivos en wiki/."""
 
-import re
 import sys
-from pathlib import Path
 
-
-from utils.entorno import ROOT_DIR, WIKI_DIR
+from utils.entorno import ROOT_DIR
+from utils.wiki import get_sidebar_links, list_markdown_files
+from wiki_modular.config import SIDEBAR_FILE, WIKI_DIR
 
 ROOT = ROOT_DIR
-
-from wiki_modular.config import WIKI_DIR
-
-ROOT = Path(__file__).resolve().parent.parent
-
-SIDEBAR = WIKI_DIR / "_sidebar.md"
-
-
-def obtener_links() -> list[str]:
-    """Lista de enlaces a ``.md`` encontrados en ``_sidebar.md``."""
-    pat = re.compile(r"\(([^)]+\.md)\)")
-    links = []
-    for line in SIDEBAR.read_text(encoding="utf-8").splitlines():
-        m = pat.search(line)
-        if m:
-            links.append(m.group(1).lstrip("/"))
-    return links
-
-
-def obtener_archivos() -> list[str]:
-    """Devuelve todas las rutas ``.md`` que existen en ``wiki/``."""
-    files = []
-    for p in WIKI_DIR.rglob("*.md"):
-        if p.name == "README.md":
-            continue
-        files.append(str(p.relative_to(WIKI_DIR)).replace("\\", "/"))
-    return files
+SIDEBAR = SIDEBAR_FILE
 
 
 def main() -> int:
@@ -47,8 +20,8 @@ def main() -> int:
         )
         return 1
 
-    links = obtener_links()
-    files = obtener_archivos()
+    links = get_sidebar_links(SIDEBAR)
+    files = list_markdown_files(WIKI_DIR)
 
     faltantes = [l for l in links if l not in files]
     huerfanos = [f for f in files if f not in links]

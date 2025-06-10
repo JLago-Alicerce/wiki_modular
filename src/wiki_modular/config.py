@@ -1,8 +1,9 @@
 """Carga de configuraciones para rutas del proyecto."""
 from __future__ import annotations
 
-from pathlib import Path
 import os
+from pathlib import Path
+
 import yaml
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
@@ -15,6 +16,7 @@ _DEFAULTS = {
     "originales_dir": "_fuentes/_originales",
     "wiki_dir": "wiki",
     "assets_dir": "wiki/assets",
+    "sidebar_file": "wiki/_sidebar.md",
 }
 
 
@@ -32,20 +34,24 @@ CONFIG = _load(CONFIG_FILE)
 ORIGINALES_DIR: Path = CONFIG["originales_dir"]
 WIKI_DIR: Path = CONFIG["wiki_dir"]
 ASSETS_DIR: Path = CONFIG["assets_dir"]
+SIDEBAR_FILE: Path = CONFIG["sidebar_file"]
 
 
 def load_config(path: str | Path) -> None:
     """Cargar configuración desde ``path`` y actualizar constantes."""
-    global CONFIG_FILE, CONFIG, ORIGINALES_DIR, WIKI_DIR, ASSETS_DIR
+    global CONFIG_FILE, CONFIG, ORIGINALES_DIR, WIKI_DIR, ASSETS_DIR, SIDEBAR_FILE
     CONFIG_FILE = Path(path)
     CONFIG = _load(CONFIG_FILE)
     ORIGINALES_DIR = CONFIG["originales_dir"]
     WIKI_DIR = CONFIG["wiki_dir"]
     ASSETS_DIR = CONFIG["assets_dir"]
+    SIDEBAR_FILE = CONFIG["sidebar_file"]
+
 
 __all__ = [
     "ORIGINALES_DIR",
     "WIKI_DIR",
     "ASSETS_DIR",
+    "SIDEBAR_FILE",
     "load_config",
 ]
