@@ -63,7 +63,6 @@ def generar_indice(wiki_dir: Path) -> Dict[str, Dict[str, object]]:
         }
     return indice
 
-from wiki_modular.core.search import extraer_frontmatter, generar_indice
 
 
 

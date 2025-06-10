@@ -8,7 +8,14 @@ from pathlib import Path
 
 # Permitir ejecutar el script sin instalar el paquete
 ROOT_DIR = Path(__file__).resolve().parents[2]
-sys.path.append(str(ROOT_DIR / "src"))
+
+
+def add_src_to_path() -> None:
+    """Include the ``src`` directory in ``sys.path``."""
+    sys.path.append(str(ROOT_DIR / "src"))
+
+
+add_src_to_path()
 
 from scripts import procesar_nuevos as pn  # type: ignore
 
