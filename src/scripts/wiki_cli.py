@@ -7,7 +7,11 @@ import sys
 from pathlib import Path
 
 import wiki_modular.config as config
-from utils.entorno import run as exec_cmd, script_path
+from utils.entorno import run as exec_cmd, script_path, add_src_to_path
+
+add_src_to_path()
+
+from scripts import procesar_nuevos as pn  # noqa: E402
 
 
 def run(cmd: list[str]) -> None:
@@ -77,6 +81,23 @@ def step_sidebar() -> None:
     run([sys.executable, str(script_path("auditar_sidebar_vs_fs.py"))])
 
 
+def process_doc(path: Path, cutoff: float) -> None:
+    """Procesa ``path`` aplicando todos los pasos de la CLI."""
+    if path.suffix.lower() == ".pdf":
+        md = pn.convertir_pdf(path)
+        if md is None:
+            raise RuntimeError(f"No se pudo convertir {path.name}")
+        run([sys.executable, str(script_path("limpiar_md.py")), str(md)])
+    elif path.suffix.lower() == ".docx":
+        step_convert(path)
+    else:
+        raise ValueError(f"Extensión no soportada: {path.suffix}")
+
+    step_generate_index()
+    step_ingest(cutoff)
+    step_sidebar()
+
+
 def main() -> None:
     """Punto de entrada principal de la CLI unificada."""
     parser = argparse.ArgumentParser(
@@ -91,9 +112,9 @@ def main() -> None:
 
     full = sub.add_parser(
         "full",
-        help="Ejecutar flujo completo a partir de un .docx",
+        help="Ejecutar flujo completo para un archivo o carpeta",
     )
-    full.add_argument("doc", type=Path, help="Archivo .docx de entrada")
+    full.add_argument("doc", type=Path, help="Archivo .docx o directorio de entrada")
     full.add_argument(
         "--cutoff",
         type=float,
@@ -115,19 +136,24 @@ def main() -> None:
     )
 
     if args.command == "full":
-        if not args.doc.exists() or not args.doc.is_file():
-            parser.error(f"El archivo {args.doc} no existe")
-        if args.doc.suffix.lower() != ".docx":
-            parser.error("El documento debe tener extensi\u00f3n .docx")
         if not 0 <= args.cutoff <= 1:
             parser.error("--cutoff debe estar entre 0 y 1")
 
         try:
             run([sys.executable, str(script_path("resetear_entorno.py"))])
-            step_convert(args.doc)
-            step_generate_index()
-            step_ingest(args.cutoff)
-            step_sidebar()
+
+            if args.doc.is_dir():
+                files = sorted(args.doc.glob("*.docx")) + sorted(args.doc.glob("*.pdf"))
+                if not files:
+                    parser.error(f"No hay archivos procesables en {args.doc}")
+                for file in files:
+                    process_doc(file, args.cutoff)
+            else:
+                if not args.doc.exists() or not args.doc.is_file():
+                    parser.error(f"El archivo {args.doc} no existe")
+                if args.doc.suffix.lower() != ".docx":
+                    parser.error("El documento debe tener extensi\u00f3n .docx")
+                process_doc(args.doc, args.cutoff)
         except Exception as exc:
             logging.error("Ejecución interrumpida: %s", exc)
             raise SystemExit(1)
