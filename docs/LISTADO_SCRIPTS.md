@@ -24,3 +24,4 @@ A continuación se resumen las utilidades disponibles en la carpeta `scripts/`. 
 | `editor_markdown.py` | Editor web SimpleMDE con vista previa y opción "guardar y publicar". |
 
 | `exportar_modulo.py` | Convierte todos los `.md` de una carpeta en un PDF único utilizando Pandoc. |
+| `web_uploader.py` | Inicia un pequeño servidor para cargar `.docx` o `.md` mediante drag & drop. |
