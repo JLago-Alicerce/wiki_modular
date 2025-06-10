@@ -38,6 +38,7 @@ def build_fs_index() -> Dict[str, str]:
 
 
 def parse_sidebar_links() -> List[str]:
+    """Extrae todos los enlaces ``.md`` presentes en ``_sidebar.md``."""
     pat = re.compile(r"\(([^)]+\.md)\)")
     links = []
     for line in SIDEBAR.read_text(encoding="utf-8").splitlines():
@@ -48,6 +49,7 @@ def parse_sidebar_links() -> List[str]:
 
 
 def parse_internal_links(md: Path) -> List[str]:
+    """Devuelve enlaces internos ``.md`` encontrados en ``md``."""
     pat = re.compile(r"\]\(/([^\)]+\.md)\)")
     links = []
     for line in md.read_text(encoding="utf-8").splitlines():
@@ -57,20 +59,24 @@ def parse_internal_links(md: Path) -> List[str]:
 
 
 def buscar_coincidencia(slug: str, index: Dict[str, str]) -> str:
+    """Busca ``slug`` en ``index`` ignorando prefijos numéricos."""
     if slug in index:
         return index[slug]
     base = re.sub(r"^[0-9]+_", "", slug)
     for key, val in index.items():
+        # Comparar también sin la numeración inicial para tolerar rutas con
+        # prefijos tipo ``01_`` presentes en el sidebar o en disco.
         if re.sub(r"^[0-9]+_", "", key) == base:
             return val
     return ""
 
 
 def main() -> int:
+    """Valida referencias en la wiki y reporta enlaces rotos."""
     if not SIDEBAR.exists():
         print(
             "No se encontró _sidebar.md; ejecute "
-            "generar_sidebar_desde_index.py primero",
+            "generar_sidebar.py primero",
             file=sys.stderr,
         )
         return 1

@@ -9,14 +9,22 @@ import csv
 import sys
 from pathlib import Path
 
+
 from utils.entorno import ROOT_DIR, WIKI_DIR
 
 # --- Config ---
 ROOT = ROOT_DIR  # ..\Conocimiento_Tecnico_Navantia
+
+from wiki_modular.config import WIKI_DIR
+
+# --- Config ---
+ROOT = Path(__file__).resolve().parent.parent  # ..\Conocimiento_Tecnico_Navantia
+
 SIDEBAR = WIKI_DIR / "_sidebar.md"  # sidebar global
 
 
 def limpiar_path(ruta: str) -> str:
+    """Normaliza ``ruta`` a un slug comparable para la auditoría."""
     partes = []
     for seg in ruta.split("/"):
         if seg.lower().endswith(".md"):

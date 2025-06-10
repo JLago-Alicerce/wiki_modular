@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Reinicia y procesa todo el contenido de ``_fuentes/_originales``."""
+"""Reinicia y procesa todo el contenido de la carpeta de originales."""
 
 import logging
 import sys
@@ -13,6 +13,7 @@ add_src_to_path()
 
 
 def main() -> None:
+    """Ejecuta la limpieza y procesa todos los documentos originales."""
     logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
     # 1. Limpiar todo el entorno

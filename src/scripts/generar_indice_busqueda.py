@@ -8,13 +8,17 @@ Markdown y construye `search_index.json` con el contenido y metadatos.
 
 import argparse
 import json
+import re
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
+
 import yaml
 
+from wiki_modular import limpiar_slug
 
-def extraer_frontmatter(path: Path) -> Tuple[Dict[str, str], str]:
-    """Devuelve (metadata, cuerpo) del archivo Markdown."""
+
+def extraer_frontmatter(path: Path) -> Tuple[Dict[str, str], str, List[Dict[str, object]]]:
+    """Devuelve ``(metadata, cuerpo, encabezados)`` del Markdown."""
     texto = path.read_text(encoding="utf-8")
     if texto.startswith("---"):
         partes = texto.split("---", 2)
@@ -24,22 +28,47 @@ def extraer_frontmatter(path: Path) -> Tuple[Dict[str, str], str]:
             except yaml.YAMLError:
                 meta = {}
             cuerpo = partes[2].lstrip("\n")
-            return meta, cuerpo
-    return {}, texto
+        else:
+            meta = {}
+            cuerpo = texto
+    else:
+        meta = {}
+        cuerpo = texto
+
+    encabezados: List[Dict[str, object]] = []
+    pat = re.compile(r"^(#{2,6})\s+(.*)$")
+    for line in cuerpo.splitlines():
+        m = pat.match(line.strip())
+        if m:
+            level = len(m.group(1))
+            text = m.group(2).strip()
+            encabezados.append({
+                "level": level,
+                "text": text,
+                "slug": limpiar_slug(text),
+            })
+
+    return meta, cuerpo, encabezados
 
 
 def generar_indice(wiki_dir: Path) -> Dict[str, Dict[str, object]]:
+    """Genera el diccionario para ``search_index.json`` desde ``wiki_dir``."""
     indice: Dict[str, Dict[str, object]] = {}
     for md in wiki_dir.rglob("*.md"):
-        meta, cuerpo = extraer_frontmatter(md)
+        meta, cuerpo, encabezados = extraer_frontmatter(md)
         indice[str(md.relative_to(wiki_dir))] = {
             "metadata": meta,
             "content": cuerpo,
+            "headers": encabezados,
         }
     return indice
 
+from wiki_modular.core.search import extraer_frontmatter, generar_indice
+
+
 
 def main() -> None:
+    """CLI para crear ``search_index.json`` desde los Markdown de la wiki."""
     parser = argparse.ArgumentParser(description="Genera search_index.json")
     parser.add_argument("--wiki", default="wiki", help="Directorio raíz de la wiki")
     parser.add_argument("--output", default="search_index.json", help="Archivo JSON de salida")
