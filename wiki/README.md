@@ -28,3 +28,5 @@ proyectos para que pueda consultarse de forma rápida y coherente. Al
 estructurar la información en una única web local, es posible reutilizar
 contenido y mantener un histórico accesible sin depender de herramientas
 externas.
+
+Si necesitas información más detallada sobre cómo generar esta wiki, visita el [README principal](../README.md).
