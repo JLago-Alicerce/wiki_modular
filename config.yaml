@@ -1,0 +1,7 @@
+wiki_dir: wiki
+mapa_file: _fuentes/mapa_encabezados.yaml
+index_file: index_PlataformaBBDD.yaml
+fuente_md: _fuentes/tmp_full.md
+alias_file: _fuentes/alias_override.yaml
+suggestions: _fuentes/alias_suggestions.csv
+cutoff: 0.5

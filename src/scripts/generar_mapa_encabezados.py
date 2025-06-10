@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import argparse
 import re
 import sys
 from pathlib import Path
@@ -61,7 +62,20 @@ def generate_map_from_markdown(md_path: Path, yaml_path: Path) -> None:
         sys.exit(1)
 
 
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Genera mapa de encabezados")
+    parser.add_argument(
+        "--md", default="_fuentes/tmp_full.md", help="Markdown de entrada"
+    )
+    parser.add_argument(
+        "--out", default="_fuentes/mapa_encabezados.yaml", help="Archivo YAML de salida"
+    )
+    args = parser.parse_args()
+
+    md_path = Path(args.md)
+    out_path = Path(args.out)
+    generate_map_from_markdown(md_path, out_path)
+
+
 if __name__ == "__main__":
-    md_path = Path("_fuentes/tmp_full.md")
-    yaml_path = Path("_fuentes/mapa_encabezados.yaml")
-    generate_map_from_markdown(md_path, yaml_path)
+    main()

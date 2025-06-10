@@ -3,16 +3,21 @@
 Compara los enlaces de _sidebar.md con los .md reales en disco
 y genera un CSV con las discrepancias + propuesta de slug 'limpio'.
 """
-import re
-import unicodedata
 import csv
+import re
 import sys
+import unicodedata
 from pathlib import Path
 
+from wiki_modular.config import load_config
+
 # --- Config ---
-ROOT = Path(__file__).resolve().parent.parent  # ..\Conocimiento_Tecnico_Navantia
-WIKI_DIR = ROOT / "wiki"  # raíz de .md
-SIDEBAR = WIKI_DIR / "_sidebar.md"  # sidebar global
+CFG = load_config()
+ROOT = Path.cwd()
+WIKI_DIR = ROOT / CFG["wiki_dir"]
+SIDEBAR = Path(CFG["sidebar_file"])
+if not SIDEBAR.is_absolute():
+    SIDEBAR = ROOT / SIDEBAR
 
 
 def limpiar_path(ruta: str) -> str:

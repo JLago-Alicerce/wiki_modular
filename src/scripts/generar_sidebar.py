@@ -22,14 +22,18 @@ from typing import Any, Dict, List
 import yaml
 
 from wiki_modular import limpiar_slug, load_yaml
+from wiki_modular.config import load_config
 
 # --------------------------------------------------
 # Rutas de proyecto
 # --------------------------------------------------
-ROOT_DIR = Path(__file__).resolve().parent.parent
-WIKI_DIR = ROOT_DIR / "wiki"
-INDEX_FILE = ROOT_DIR / "index_PlataformaBBDD.yaml"
-SIDEBAR_FILE = WIKI_DIR / "_sidebar.md"
+CFG = load_config()
+ROOT_DIR = Path.cwd()
+WIKI_DIR = ROOT_DIR / CFG["wiki_dir"]
+INDEX_FILE = ROOT_DIR / CFG["index_file"]
+SIDEBAR_FILE = Path(CFG["sidebar_file"])
+if not SIDEBAR_FILE.is_absolute():
+    SIDEBAR_FILE = ROOT_DIR / SIDEBAR_FILE
 
 
 # --------------------------------------------------

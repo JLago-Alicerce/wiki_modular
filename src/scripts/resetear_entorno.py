@@ -1,21 +1,15 @@
 #!/usr/bin/env python
 """Limpia archivos generados para reiniciar la wiki desde cero."""
 
+import argparse
 import shutil
+import sys
 from datetime import datetime
 from pathlib import Path
 
+from wiki_modular.config import load_config
 
-RUTAS = [
-    Path("wiki"),
-    Path("_sidebar.md"),
-    Path("index_PlataformaBBDD.yaml"),
-    Path("mismatch_report.csv"),
-    Path("procesados.log"),
-    Path("_tmp"),
-    Path("_fuentes/tmp_full.md"),
-    Path("_fuentes/mapa_encabezados.yaml"),
-]
+RUTAS: list[Path] | None = None
 
 
 def eliminar(path: Path) -> None:
@@ -38,8 +32,33 @@ def eliminar(path: Path) -> None:
         print(f"[ ] No existe: {path}")
 
 
-def main() -> None:
-    wiki_dir = Path("wiki")
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description="Limpia entorno de la wiki")
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=Path("config.yaml"),
+        help="Archivo de configuraci\u00f3n",
+    )
+    if argv is None:
+        argv = []
+    args = parser.parse_args(argv)
+
+    cfg = load_config(args.config)
+    wiki_dir = Path(cfg["wiki_dir"])
+
+    global RUTAS
+    if RUTAS is None:
+        RUTAS = [
+            Path(cfg["wiki_dir"]),
+            Path(cfg["sidebar_file"]),
+            Path(cfg["index_file"]),
+            Path("mismatch_report.csv"),
+            Path("procesados.log"),
+            Path("_tmp"),
+            Path(cfg["fuente_md"]),
+            Path(cfg["mapa_file"]),
+        ]
     readme_backup = None
     readme_path = wiki_dir / "README.md"
     if readme_path.exists():
@@ -57,4 +76,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
