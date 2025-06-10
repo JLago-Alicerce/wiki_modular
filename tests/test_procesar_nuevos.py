@@ -73,6 +73,7 @@ def test_wiki_cli_full_flow(tmp_path, monkeypatch):
 
     assert names == [
         "resetear_entorno.py",
+        "normalizar_estilos_docx.py",
         "pandoc",
         "limpiar_md.py",
         "generar_mapa_encabezados.py",
@@ -81,5 +82,4 @@ def test_wiki_cli_full_flow(tmp_path, monkeypatch):
         "generar_sidebar.py",
         "auditar_sidebar_vs_fs.py",
     ]
-    assert len(calls) == 8
-
+    assert len(calls) == 9

@@ -18,9 +18,11 @@ def run(cmd: list[str]) -> None:
 def step_convert(doc: Path) -> None:
     """Convierte ``doc`` a Markdown y lo limpia."""
     tmp_md = Path("_fuentes/tmp_full.md")
+    norm_doc = doc.parent.parent / "_originales_normalizados" / doc.name
+    run([sys.executable, str(script_path("normalizar_estilos_docx.py")), str(doc)])
     cmd = [
         "pandoc",
-        str(doc),
+        str(norm_doc),
         "--from=docx",
         "--to=gfm",
         "--output=" + str(tmp_md),
