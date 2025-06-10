@@ -14,7 +14,9 @@ duplicadas; el modo tolerante omite esas comprobaciones.
 import sys
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).resolve().parents[2]))
+from utils.entorno import add_src_to_path, ROOT_DIR, WIKI_DIR
+
+add_src_to_path()
 
 import argparse
 from typing import Any, Dict, List
@@ -37,7 +39,9 @@ from wiki_modular.core.sidebar import (
 # --------------------------------------------------
 # Rutas de proyecto
 # --------------------------------------------------
+
 ROOT_DIR = Path(__file__).resolve().parent.parent
+
 INDEX_FILE = ROOT_DIR / "index_PlataformaBBDD.yaml"
 SIDEBAR_FILE = WIKI_DIR / "_sidebar.md"
 

@@ -5,9 +5,15 @@ import re
 import sys
 from pathlib import Path
 
+
+from utils.entorno import ROOT_DIR, WIKI_DIR
+
+ROOT = ROOT_DIR
+
 from wiki_modular.config import WIKI_DIR
 
 ROOT = Path(__file__).resolve().parent.parent
+
 SIDEBAR = WIKI_DIR / "_sidebar.md"
 
 

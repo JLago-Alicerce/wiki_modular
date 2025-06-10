@@ -9,6 +9,12 @@ from pathlib import Path
 
 import wiki_modular.config as config
 
+from utils.entorno import run
+
+
+from wiki_modular.config import ASSETS_DIR
+
+
 
 def run(cmd: list[str]) -> None:
     """Execute ``cmd`` and abort on failure."""
@@ -21,6 +27,7 @@ def run(cmd: list[str]) -> None:
     except subprocess.CalledProcessError as exc:
         logging.error("El comando falló (%s): %s", exc.returncode, " ".join(exc.cmd))
         raise SystemExit(exc.returncode) from exc
+
 
 
 def step_convert(doc: Path) -> None:
