@@ -16,7 +16,7 @@ secciones fáciles de explorar.
 
 ## Visualización
 
-Para acceder a la wiki simplemente abre el archivo `docs/index.html` ubicado en
+Para acceder a la wiki simplemente abre el archivo `index.html` ubicado en
 la raíz del proyecto. Este archivo carga todo el contenido de la carpeta `wiki/`
 mediante Docsify, ofreciendo una experiencia de navegación dinámica y
 liviana.
