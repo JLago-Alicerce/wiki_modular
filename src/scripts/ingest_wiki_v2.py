@@ -19,8 +19,9 @@ from pathlib import Path
 from wiki_modular.config import WIKI_DIR
 import yaml
 
-# Permitir ejecutar el script sin instalar el paquete
-sys.path.append(str(Path(__file__).resolve().parents[2]))
+from utils.entorno import add_src_to_path
+
+add_src_to_path()
 import argparse
 import logging
 

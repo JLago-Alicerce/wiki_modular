@@ -2,9 +2,12 @@
 """CLI unificada para las utilidades de wiki_modular."""
 import argparse
 import logging
-import subprocess
 import sys
 from pathlib import Path
+
+
+from utils.entorno import run
+
 
 from wiki_modular.config import ASSETS_DIR
 
@@ -20,6 +23,7 @@ def run(cmd: list[str]) -> None:
     except subprocess.CalledProcessError as exc:
         logging.error("El comando falló (%s): %s", exc.returncode, " ".join(exc.cmd))
         raise SystemExit(exc.returncode) from exc
+
 
 
 def step_convert(doc: Path) -> None:
