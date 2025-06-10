@@ -6,6 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from wiki_modular.config import ASSETS_DIR
+
 
 def run(cmd: list[str]) -> None:
     """Execute ``cmd`` and abort on failure."""
@@ -23,7 +25,7 @@ def step_convert(doc: Path) -> None:
         "--from=docx",
         "--to=gfm",
         "--output=" + str(tmp_md),
-        "--extract-media=wiki/assets",
+        f"--extract-media={ASSETS_DIR}",
         "--markdown-headings=atx",
         "--standalone",
         "--wrap=none",

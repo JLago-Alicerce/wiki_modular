@@ -17,6 +17,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+from wiki_modular.config import WIKI_DIR
 import yaml
 
 # Permitir ejecutar el script sin instalar el paquete
@@ -152,7 +153,7 @@ def main():
     )
     args = parser.parse_args()
 
-    wiki_path = Path("wiki")
+    wiki_path = WIKI_DIR
     mapa_file = Path(args.mapa)
     index_file = Path(args.index)
     tmp_file = Path(args.fuente)
