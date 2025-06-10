@@ -163,6 +163,7 @@ propuesto para facilitar su revisión.
 - `pipeline_codex.py`: alternativa a `wiki_cli.py` que pausa antes de ingerir para revisión manual.
 - `scripts/mover_huerfanos.py`: tras comparar el índice y el sidebar, mueve los archivos Markdown no referenciados a `wiki/_deprecated/`.
 - `utils/entorno.py`: centraliza la adición de `src/` al `PYTHONPATH` mediante `add_src_to_path()` y ofrece `run()` para lanzar otros scripts de forma consistente.
+- `scripts/editor_markdown.py`: abre un editor web con vista previa y un botón "guardar y publicar" para modificar archivos Markdown.
 
 ## Búsqueda en la wiki
 
@@ -172,9 +173,11 @@ plugin de búsqueda configurado en `index.html`.
 
 Para consultas más detalladas existe la página
 `buscar-avanzado.html`, que carga `search_index.json` mediante
-[Lunr.js](https://lunrjs.com/) y permite filtrar por `source_file`,
-`conversion_date` o el nivel de encabezado (`H2`, `H3`, etc.). El
-campo principal responde al momento de escribir para mostrar los
+[Lunr.js](https://lunrjs.com/). Este buscador permite filtrar por
+`source_file`, `conversion_date` o el nivel de encabezado (`H2`, `H3`,
+etc.) y muestra fragmentos de contexto con los términos resaltados.
+Al hacer clic se navega directamente a la sección correspondiente.
+El campo principal responde al momento de escribir para mostrar los
 resultados dinámicamente.
 
 ## Convención de nombres de ramas
