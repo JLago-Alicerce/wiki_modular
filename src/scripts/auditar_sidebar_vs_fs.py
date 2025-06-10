@@ -1,26 +1,22 @@
 #!/usr/bin/env python
+"""Audita enlaces del sidebar versus archivos reales.
+
+Compara los enlaces de ``_sidebar.md`` con los archivos ``.md`` presentes
+en la wiki y genera un CSV con las discrepancias más una propuesta de slug
+"limpio".
 """
-Compara los enlaces de _sidebar.md con los .md reales en disco
-y genera un CSV con las discrepancias + propuesta de slug 'limpio'.
-"""
-import re
-import unicodedata
 import csv
+import re
 import sys
+import unicodedata
 from pathlib import Path
 
+from utils.entorno import ROOT_DIR
+from utils.wiki import get_sidebar_links, list_markdown_files
+from wiki_modular.config import SIDEBAR_FILE, WIKI_DIR
 
-from utils.entorno import ROOT_DIR, WIKI_DIR
-
-# --- Config ---
-ROOT = ROOT_DIR  # ..\Conocimiento_Tecnico_Navantia
-
-from wiki_modular.config import WIKI_DIR
-
-# --- Config ---
-ROOT = Path(__file__).resolve().parent.parent  # ..\Conocimiento_Tecnico_Navantia
-
-SIDEBAR = WIKI_DIR / "_sidebar.md"  # sidebar global
+ROOT = ROOT_DIR
+SIDEBAR = SIDEBAR_FILE
 
 
 def limpiar_path(ruta: str) -> str:
@@ -57,24 +53,17 @@ def main() -> None:
         sys.exit(1)
 
     # --- 1) Lee enlaces del sidebar ---
-    pat_link = re.compile(r"\]\(([^)]+\.md)\)")
-    links = []
-    for line in SIDEBAR.read_text(encoding="utf8").splitlines():
-        m = pat_link.search(line)
-        if m:
-            link = m.group(1).lstrip("/")
-            # Ignore README entries as they are handled implicitly by Docsify
-            if Path(link).name.lower() == "readme.md":
-                continue
-            links.append(link)
+    links = [
+        l for l in get_sidebar_links(SIDEBAR) if Path(l).name.lower() != "readme.md"
+    ]
 
     # --- 2) Índice físico ---
     # Usa rutas relativas a WIKI_DIR para facilitar la comparación con los enlaces
     # del sidebar, que normalmente no incluyen el prefijo "wiki/".
     files = {
-        str(p.relative_to(WIKI_DIR)).replace("\\", "/").lower(): p
-        for p in WIKI_DIR.rglob("*.md")
-        if p.name.lower() != "readme.md"
+        f.lower(): WIKI_DIR / f
+        for f in list_markdown_files(WIKI_DIR)
+        if Path(f).name.lower() != "readme.md"
     }
 
     # --- 3) Compara ---

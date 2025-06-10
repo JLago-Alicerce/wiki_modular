@@ -1,3 +1,4 @@
 originales_dir: "_fuentes/_originales"
 wiki_dir: "wiki"
 assets_dir: "wiki/assets"
+sidebar_file: "wiki/_sidebar.md"
