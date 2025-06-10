@@ -24,7 +24,8 @@
      
   </head>
   <body>
-    
+
+    <nav class="breadcrumbs"></nav>
     <div id="app"></div>
     <script>
       window.$docsify = {
@@ -35,17 +36,80 @@
         subMaxLevel: 2,              // Niveles de encabezado mostrados en la barra lateral
         loadNavbar: false,           // Si se quiere usar un _navbar.md, cámbialo a true
         basePath: "wiki/",          // Ruta base para los archivos Markdown
-        homepage: "README.md",      // Página principal o portada
+        homepage: "dashboard.md",      // Página principal o portada
         search: "search_index.json", // Índice de búsqueda precalculado
         plugins: [
-          function (hook) {
+          function (hook, vm) {
+
+            var pageMeta = {};
+
             hook.beforeEach(function (markdown) {
-              var fmPattern = /^---\n[\s\S]*?\n---\n?/;
-              if (fmPattern.test(markdown)) {
-                return markdown.replace(fmPattern, "");
+              var fmPattern = /^---\n([\s\S]*?)\n---\n?/;
+              var match = fmPattern.exec(markdown);
+              pageMeta = {};
+              if (match) {
+                try {
+                  pageMeta = jsyaml.load(match[1]) || {};
+                } catch (e) {
+                  pageMeta = {};
+                }
+                markdown = markdown.replace(match[0], "");
               }
               return markdown;
             });
+
+
+            var container;
+            function updateBreadcrumbs() {
+              if (!container) return;
+              var path = vm.route.path.split("/").filter(Boolean);
+              var crumbs = [
+                '<a href="#/">Inicio</a>'
+              ];
+              var acc = "";
+              path.forEach(function (part) {
+                acc += "/" + part;
+                var title = decodeURIComponent(part.replace(/\.md$/, "")).replace(/_/g, " ");
+                crumbs.push('<a href="#'+acc+'">'+title+'</a>');
+              });
+              container.innerHTML = crumbs.join(" / ");
+            }
+
+            hook.ready(function () {
+              container = document.querySelector("nav.breadcrumbs");
+              updateBreadcrumbs();
+            });
+
+            hook.doneEach(updateBreadcrumbs);
+
+            hook.afterEach(function (html, next) {
+              var estado = "";
+              if (pageMeta.estado) {
+                estado = String(pageMeta.estado).toLowerCase();
+              } else if (vm.route && vm.route.file) {
+                var file = vm.route.file.toLowerCase();
+                if (file.includes("borrador")) estado = "borrador";
+                else if (file.includes("revision")) estado = "revision";
+                else if (file.includes("publicado")) estado = "publicado";
+              }
+              if (estado) {
+                var clases = {
+                  publicado: "estado-publicado",
+                  revision: "estado-revision",
+                  borrador: "estado-borrador",
+                };
+                var texto = estado.charAt(0).toUpperCase() + estado.slice(1);
+                var label =
+                  '<div class="estado-label ' +
+                  (clases[estado] || "") +
+                  '">' +
+                  texto +
+                  "</div>";
+                html = label + html;
+              }
+              next(html);
+            });
+
           },
         ],
       };
@@ -55,8 +119,10 @@
     
 
     <!-- Carga Docsify (versión fija) -->
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
     <script src="https://unpkg.com/docsify@4.12.1/lib/docsify.min.js"></script>
     <script src="https://unpkg.com/docsify/lib/plugins/search.min.js"></script>
+    <script src="copy-button.js"></script>
     <footer class="page-footer">Documentación técnica interna – ALTIA © 2025</footer>
   </body>
 </html>

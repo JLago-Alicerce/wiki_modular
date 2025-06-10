@@ -64,8 +64,6 @@ def generar_indice(wiki_dir: Path) -> Dict[str, Dict[str, object]]:
     return indice
 
 
-
-
 def main() -> None:
     """CLI para crear ``search_index.json`` desde los Markdown de la wiki."""
     parser = argparse.ArgumentParser(description="Genera search_index.json")

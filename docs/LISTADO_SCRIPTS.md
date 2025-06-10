@@ -21,5 +21,6 @@ A continuación se resumen las utilidades disponibles en la carpeta `scripts/`. 
 | `clean_orphaned_files.py` | Elimina los `.md` de `wiki/` que no aparecen enlazados en `_sidebar.md`. |
 | `pipeline_codex.py` | Automatiza el flujo completo permitiendo una pausa para revisar el índice antes de la ingesta. |
 | `wizard_publicacion.py` | Asistente interactivo que guía paso a paso desde la carga hasta la publicación. |
+| `editor_markdown.py` | Editor web SimpleMDE con vista previa y opción "guardar y publicar". |
 
 | `exportar_modulo.py` | Convierte todos los `.md` de una carpeta en un PDF único utilizando Pandoc. |
