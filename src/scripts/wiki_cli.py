@@ -2,11 +2,18 @@
 """CLI unificada para las utilidades de wiki_modular."""
 import argparse
 import logging
+import os
 import subprocess
 import sys
 from pathlib import Path
 
+import wiki_modular.config as config
+
+from utils.entorno import run
+
+
 from wiki_modular.config import ASSETS_DIR
+
 
 
 def run(cmd: list[str]) -> None:
@@ -22,6 +29,7 @@ def run(cmd: list[str]) -> None:
         raise SystemExit(exc.returncode) from exc
 
 
+
 def step_convert(doc: Path) -> None:
     """Convierte ``doc`` a Markdown y lo limpia."""
     tmp_md = Path("_fuentes/tmp_full.md")
@@ -31,7 +39,7 @@ def step_convert(doc: Path) -> None:
         "--from=docx",
         "--to=gfm",
         "--output=" + str(tmp_md),
-        f"--extract-media={ASSETS_DIR}",
+        f"--extract-media={config.ASSETS_DIR}",
         "--markdown-headings=atx",
         "--standalone",
         "--wrap=none",
@@ -90,6 +98,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Utilidades unificadas de wiki_modular"
     )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        help="Archivo de configuraci\u00f3n a utilizar",
+    )
     sub = parser.add_subparsers(dest="command")
 
     full = sub.add_parser(
@@ -107,6 +120,11 @@ def main() -> None:
     sub.add_parser("reset", help="Limpiar entorno de trabajo")
 
     args = parser.parse_args()
+
+    if args.config:
+        os.environ["WM_CONFIG"] = str(args.config)
+        config.load_config(args.config)
+
     logging.basicConfig(
         level=logging.INFO,
         format="[%(levelname)s] %(message)s",

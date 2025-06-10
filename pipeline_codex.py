@@ -5,11 +5,12 @@ Ejecuta de forma ordenada los pasos para generar la wiki desde un DOCX.
 """
 import argparse
 import logging
+import os
 import subprocess
 import sys
 from pathlib import Path
 
-from wiki_modular.config import ASSETS_DIR
+import wiki_modular.config as config
 
 
 def run(cmd: list[str]) -> int:
@@ -34,12 +35,23 @@ def main() -> None:
         default=0.5,
         help="Umbral fuzzy matching",
     )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        help="Archivo de configuraci\u00f3n a utilizar",
+    )
     args = parser.parse_args()
+
+    if args.config:
+        os.environ["WM_CONFIG"] = str(args.config)
+        config.load_config(args.config)
 
     logging.basicConfig(
         level=logging.INFO,
         format="[%(levelname)s] %(message)s",
     )
+
+    assets_dir = config.ASSETS_DIR
 
     steps = [
         (
@@ -50,7 +62,7 @@ def main() -> None:
                 "--from=docx",
                 "--to=gfm",
                 "--output=_fuentes/tmp_full.md",
-                f"--extract-media={ASSETS_DIR}",
+                f"--extract-media={assets_dir}",
                 "--markdown-headings=atx",
                 "--standalone",
                 "--wrap=none",
