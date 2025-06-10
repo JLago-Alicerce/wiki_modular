@@ -4,25 +4,10 @@
 import logging
 import sys
 
-
-# Permitir ejecutar el script sin instalar el paquete
-ROOT_DIR = Path(__file__).resolve().parents[2]
-
-
-def add_src_to_path() -> None:
-    """Include the ``src`` directory in ``sys.path``."""
-    sys.path.append(str(ROOT_DIR / "src"))
-
-
-add_src_to_path()
-
 from utils.entorno import add_src_to_path, run, script_path
-
-
 from scripts import procesar_nuevos as pn  # type: ignore
 
 add_src_to_path()
-
 
 
 def main() -> None:

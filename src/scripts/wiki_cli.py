@@ -9,24 +9,13 @@ from pathlib import Path
 
 import wiki_modular.config as config
 
-from utils.entorno import run
-
-
-from wiki_modular.config import ASSETS_DIR
-
+from utils.entorno import run as exec_cmd
 
 
 def run(cmd: list[str]) -> None:
-    """Execute ``cmd`` and abort on failure."""
-    logging.info("Ejecutando: %s", " ".join(str(c) for c in cmd))
-    try:
-        subprocess.run(cmd, check=True)
-    except FileNotFoundError as exc:
-        logging.error("Comando no encontrado: %s", cmd[0])
-        raise SystemExit(1) from exc
-    except subprocess.CalledProcessError as exc:
-        logging.error("El comando falló (%s): %s", exc.returncode, " ".join(exc.cmd))
-        raise SystemExit(exc.returncode) from exc
+    """Execute ``cmd`` using :func:`utils.entorno.run`."""
+    exec_cmd(cmd)
+
 
 
 

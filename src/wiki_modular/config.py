@@ -19,6 +19,7 @@ _DEFAULTS = {
 
 
 def _load(path: Path) -> dict[str, Path]:
+    """Load configuration from ``path`` and merge with defaults."""
     if path.exists():
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     else:
