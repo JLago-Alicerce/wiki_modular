@@ -22,4 +22,7 @@ dependencies = [
 packages = {find = {where = ["src"]}}
 py-modules = []
 
+[tool.isort]
+profile = "black"
+
 
