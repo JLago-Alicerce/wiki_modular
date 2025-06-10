@@ -10,6 +10,7 @@
   #search-form { margin:20px; }
   #results ul { list-style:none; padding:0; }
   #results li { margin-bottom:10px; }
+  mark { background: #fffb91; padding:0 2px; }
   </style>
 </head>
 <body>
@@ -30,29 +31,54 @@
 
   <script src="https://unpkg.com/lunr/lunr.js"></script>
   <script>
-    let idx; let headerIdx; let docs = []; let headers = [];
+    let idx; let headerIdx; let docs = []; let headers = []; let docMap = {};
+
+    function escapeRegExp(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function highlight(text, terms) {
+      terms.forEach(t => {
+        if (!t) return;
+        const re = new RegExp(escapeRegExp(t), 'gi');
+        text = text.replace(re, m => `<mark>${m}</mark>`);
+      });
+      return text;
+    }
+
+    function headerPosition(content, level, text) {
+      const re = new RegExp(`^#{${level}}\\s+${escapeRegExp(text)}\\s*$`, 'm');
+      return content.search(re);
+    }
 
     async function init() {
       const res = await fetch('search_index.json');
       const json = await res.json();
       docs = Object.entries(json).map(([id, info]) => {
         const meta = info.metadata || {};
-        return {
+        const doc = {
           id: id,
           url: 'index.html#/' + id.replace(/\.md$/, ''),
           content: info.content || '',
           source_file: meta.source_file || '',
           conversion_date: meta.conversion_date || ''
         };
+        docMap[id] = doc;
+        return doc;
       });
-      headers = Object.entries(json).flatMap(([id, info]) =>
-        (info.headers || []).map(h => ({
-          ref: id + '#' + h.slug,
-          header: h.text,
-          level: h.level,
-          url: 'index.html#/' + id.replace(/\.md$/, '') + '#' + h.slug
-        }))
-      );
+      headers = [];
+      Object.entries(json).forEach(([id, info]) => {
+        (info.headers || []).forEach(h => {
+          headers.push({
+            ref: id + '#' + h.slug,
+            header: h.text,
+            level: h.level,
+            url: 'index.html#/' + id.replace(/\.md$/, '') + '#' + h.slug,
+            doc: id,
+            pos: headerPosition(info.content || '', h.level, h.text)
+          });
+        });
+      });
 
       idx = lunr(function() {
         this.ref('id');
@@ -68,23 +94,70 @@
       });
     }
 
+    function getDocSnippet(doc, terms) {
+      const lower = doc.content.toLowerCase();
+      let pos = -1;
+      terms.forEach(t => {
+        const p = lower.indexOf(t.toLowerCase());
+        if (p !== -1 && (pos === -1 || p < pos)) pos = p;
+      });
+      if (pos === -1) pos = 0;
+      const start = Math.max(0, pos - 40);
+      const end = Math.min(doc.content.length, pos + 40);
+      let snippet = doc.content.slice(start, end).replace(/\n/g, ' ');
+      snippet = highlight(snippet, terms);
+      let anchor = '';
+      let headerTitle = '';
+      headers.forEach(h => {
+        if (h.doc === doc.id && h.pos !== -1 && h.pos <= pos) {
+          anchor = h.slug;
+          headerTitle = h.header;
+        }
+      });
+      return {
+        snippet: (start > 0 ? '...' : '') + snippet + (end < doc.content.length ? '...' : ''),
+        anchor: anchor,
+        header: headerTitle
+      };
+    }
+
+    function getHeaderSnippet(h, terms) {
+      const doc = docMap[h.doc];
+      const start = h.pos;
+      const end = Math.min(doc.content.length, start + 80);
+      let snippet = doc.content.slice(start, end).replace(/\n/g, ' ');
+      snippet = highlight(snippet, terms);
+      return (end < doc.content.length ? snippet + '...' : snippet);
+    }
+
     function doSearch() {
       const q = document.getElementById('query').value;
+      const terms = q.split(/\s+/).filter(Boolean);
       const source = document.getElementById('source').value.toLowerCase();
       const date = document.getElementById('date').value;
       const level = document.getElementById('level').value;
       let res = q ? idx.search(q) : docs.map(d => ({ ref: d.id }));
-      res = res.map(r => docs.find(d => d.id === r.ref));
+      res = res.map(r => docMap[r.ref]);
       res = res.filter(d => (!source || d.source_file.toLowerCase().includes(source)) &&
                             (!date || d.conversion_date === date));
       let headerRes = q ? headerIdx.search(q) : headers.map(h => ({ ref: h.ref }));
       headerRes = headerRes.map(r => headers.find(h => h.ref === r.ref));
       headerRes = headerRes.filter(h => (!level || String(h.level) === level));
 
-      const listDocs = res.map(d => `<li><a href="${d.url}">${d.id}</a>`+
-         ` <small>${d.source_file} - ${d.conversion_date}</small></li>`).join('');
-      const listHeaders = headerRes.map(h => `<li><a href="${h.url}">${h.header}</a>`+
-         ` <small>(H${h.level})</small></li>`).join('');
+      const listDocs = res.map(d => {
+        const info = getDocSnippet(d, terms);
+        const link = info.anchor ? `${d.url}#${info.anchor}` : d.url;
+        const headerText = info.header ? `<small>${info.header}</small>` : '';
+        return `<li><a href="${link}">${d.id}</a> <small>${d.source_file} - ${d.conversion_date}</small>`+
+               `${headerText}<div>${info.snippet}</div></li>`;
+      }).join('');
+
+      const listHeaders = headerRes.map(h => {
+        const snippet = getHeaderSnippet(h, terms);
+        return `<li><a href="${h.url}">${h.header}</a> <small>(H${h.level})</small>`+
+               `<div>${snippet}</div></li>`;
+      }).join('');
+
       const html = `<h3>Documentos</h3><ul>${listDocs}</ul><h3>Encabezados</h3><ul>${listHeaders}</ul>`;
       document.getElementById('results').innerHTML = html;
     }
@@ -93,6 +166,9 @@
     document.getElementById('query').addEventListener('input', doSearch);
     init();
   </script>
+
   <script src="theme.js"></script>
+  <script src="copy-button.js"></script>
+
 </body>
 </html>

@@ -1,3 +1,11 @@
+
+"""Helper utilities for managing the execution environment.
+
+This module centralizes project paths and subprocess helpers. Scripts can
+import the exported constants to locate files relative to the repository
+and use :func:`run` for executing commands with error handling.
+"""
+
 from __future__ import annotations
 import logging
 import subprocess
@@ -32,3 +40,4 @@ def run(cmd: list[str]) -> None:
     result = subprocess.run(cmd)
     if result.returncode != 0:
         raise RuntimeError(f"Comando fallido: {' '.join(map(str, cmd))}")
+
