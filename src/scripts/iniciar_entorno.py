@@ -3,13 +3,9 @@
 
 import logging
 import sys
-from pathlib import Path
-
-# Permitir ejecutar el script sin instalar el paquete
-ROOT_DIR = Path(__file__).resolve().parents[2]
-sys.path.append(str(ROOT_DIR / "src"))
 
 from utils.entorno import add_src_to_path, run, script_path
+
 from scripts import procesar_nuevos as pn  # type: ignore
 
 add_src_to_path()
