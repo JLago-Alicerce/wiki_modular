@@ -151,9 +151,11 @@ def main():
     if args.precheck:
         from subprocess import call
 
+        from utils.entorno import script_path
+
         cmd = [
             sys.executable,
-            "scripts/verificar_pre_ingesta.py",
+            str(script_path("verificar_pre_ingesta.py")),
             str(input_path),
             str(output_path),
         ]

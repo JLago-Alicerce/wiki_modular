@@ -6,7 +6,7 @@ La forma más sencilla de ejecutar todo el proceso es a través de
 existen utilidades para revisar el resultado antes de publicar.
 
 ```bash
-python scripts/wiki_cli.py full _fuentes/_originales/archivo.docx
+python src/scripts/wiki_cli.py full _fuentes/_originales/archivo.docx
 ```
 
 Con `full` se realiza la carga completa. Puede utilizar `reset` para vaciar
@@ -21,7 +21,7 @@ Otra alternativa interactiva es `wizard_publicacion.py`, que guía paso a
 paso y muestra una vista previa del Markdown:
 
 ```bash
-python scripts/wizard_publicacion.py
+python src/scripts/wizard_publicacion.py
 ```
 
 Los apartados siguientes describen el proceso manual si necesita ejecutar
@@ -34,7 +34,7 @@ los scripts por separado.
    Ejecute:
 
    ```bash
-   python scripts/resetear_entorno.py
+   python src/scripts/resetear_entorno.py
    ```
 
    Este script elimina la carpeta `wiki/`, los índices, el sidebar y los archivos temporales. Tras la limpieza se puede comenzar una ingesta desde cero.
@@ -47,7 +47,7 @@ los scripts por separado.
    pandoc _fuentes/_originales/archivo.docx \
      --from=docx --to=gfm --output=_fuentes/tmp_full.md \
      --extract-media=wiki/assets --markdown-headings=atx --standalone --wrap=none
-   python scripts/limpiar_md.py _fuentes/tmp_full.md
+   python src/scripts/limpiar_md.py _fuentes/tmp_full.md
    ```
    Este paso elimina los atributos `{width=..., height=...}` de las imágenes
    que Pandoc incorpora y que Docsify no interpreta correctamente.
@@ -55,8 +55,8 @@ los scripts por separado.
 3. **Generar mapa e índice**
 
    ```bash
-    python scripts/generar_mapa_encabezados.py
-   python scripts/generar_index_desde_encabezados.py --precheck --ignore-extra
+    python src/scripts/generar_mapa_encabezados.py
+   python src/scripts/generar_index_desde_encabezados.py --precheck --ignore-extra
    ```
    La opción `--ignore-extra` permite continuar cuando existen entradas en
    `index_PlataformaBBDD.yaml` que no aparecen en el mapa actual, lo cual es
@@ -65,7 +65,7 @@ los scripts por separado.
 4. **Ingestar la wiki**
 
    ```bash
-   python scripts/ingest_wiki_v2.py \
+   python src/scripts/ingest_wiki_v2.py \
      --mapa _fuentes/mapa_encabezados.yaml \
      --index index_PlataformaBBDD.yaml \
     --fuente _fuentes/tmp_full.md \
@@ -77,8 +77,8 @@ los scripts por separado.
 5. **Generar el sidebar y auditar**
 
    ```bash
-   python scripts/generar_sidebar.py --index index_PlataformaBBDD.yaml --out _sidebar.md --tolerant
-   python scripts/auditar_sidebar_vs_fs.py
+   python src/scripts/generar_sidebar.py --index index_PlataformaBBDD.yaml --out _sidebar.md --tolerant
+   python src/scripts/auditar_sidebar_vs_fs.py
    ```
 
 Con esto la wiki quedará creada en la carpeta `wiki/`.
@@ -88,17 +88,17 @@ Con esto la wiki quedará creada en la carpeta `wiki/`.
 Si desea incorporar nuevos `.docx` o `.pdf` sin borrar la wiki existente, copie los archivos en `_fuentes/_originales` y ejecute:
 
 ```bash
-python scripts/procesar_nuevos.py
+python src/scripts/procesar_nuevos.py
 ```
 
 El script detecta documentos no procesados, aplica automáticamente la misma cadena de scripts anterior y actualiza la wiki conservando el contenido ya publicado.
 Si tiene varios archivos pendientes puede copiarlos juntos y ejecutar el comando una sola vez; se procesarán de forma secuencial manteniendo el índice existente.
 Los PDF se convertirán directamente a Markdown. Con la opción `--ocr` se intentará extraer texto mediante `pytesseract` cuando sea necesario. Los fallidos se registrarán en `errores_pdf.csv`.
-Si necesita una recarga completa, ejecute previamente `python scripts/resetear_entorno.py` o use `python scripts/procesar_nuevos.py --clean`.
+Si necesita una recarga completa, ejecute previamente `python src/scripts/resetear_entorno.py` o use `python src/scripts/procesar_nuevos.py --clean`.
 
 ## Utilidades adicionales
 
-- `scripts/web_uploader.py` permite cargar documentos mediante una pequeña
+- `src/scripts/web_uploader.py` permite cargar documentos mediante una pequeña
   interfaz web con drag & drop.
-- `scripts/editor_markdown.py` abre un editor con vista previa para modificar
+- `src/scripts/editor_markdown.py` abre un editor con vista previa para modificar
   los `.md` antes de publicarlos.

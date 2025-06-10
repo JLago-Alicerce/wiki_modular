@@ -20,6 +20,7 @@ from typing import Dict
 
 from pdfminer.high_level import extract_text
 
+from utils.entorno import script_path
 from wiki_modular.config import ASSETS_DIR, ORIGINALES_DIR, WIKI_DIR
 
 ORIG_DIR = ORIGINALES_DIR
@@ -39,11 +40,11 @@ PIPELINE = [
         "--standalone",
         "--wrap=none",
     ],
-    lambda _doc: [sys.executable, "scripts/limpiar_md.py", "_fuentes/tmp_full.md"],
-    lambda _doc: [sys.executable, "scripts/generar_mapa_encabezados.py"],
+    lambda _doc: [sys.executable, str(script_path("limpiar_md.py")), "_fuentes/tmp_full.md"],
+    lambda _doc: [sys.executable, str(script_path("generar_mapa_encabezados.py"))],
     lambda _doc: [
         sys.executable,
-        "scripts/generar_index_desde_encabezados.py",
+        str(script_path("generar_index_desde_encabezados.py")),
         "--precheck",
         "--ignore-extra",
         "--output",
@@ -51,7 +52,7 @@ PIPELINE = [
     ],
     lambda _doc: [
         sys.executable,
-        "scripts/ingest_wiki_v2.py",
+        str(script_path("ingest_wiki_v2.py")),
         "--mapa",
         "_fuentes/mapa_encabezados.yaml",
         "--index",
@@ -63,8 +64,8 @@ PIPELINE = [
         "--cutoff",
         "0.5",
     ],
-    lambda _doc: [sys.executable, "scripts/generar_sidebar.py", "--tolerant"],
-    lambda _doc: [sys.executable, "scripts/auditar_sidebar_vs_fs.py"],
+    lambda _doc: [sys.executable, str(script_path("generar_sidebar.py")), "--tolerant"],
+    lambda _doc: [sys.executable, str(script_path("auditar_sidebar_vs_fs.py"))],
 ]
 
 
@@ -179,7 +180,7 @@ def main() -> None:
 
     if args.clean:
         logging.info("Limpiando entorno previo")
-        rc = subprocess.run([sys.executable, "scripts/resetear_entorno.py"]).returncode
+        rc = subprocess.run([sys.executable, str(script_path("resetear_entorno.py"))]).returncode
         if rc != 0:
             raise RuntimeError("resetear_entorno.py fallo")
 

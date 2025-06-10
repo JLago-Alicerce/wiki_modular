@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 import wiki_modular.config as config
-from utils.entorno import run as exec_cmd
+from utils.entorno import run as exec_cmd, script_path
 
 
 def run(cmd: list[str]) -> None:
@@ -31,7 +31,7 @@ def step_convert(doc: Path) -> None:
     ]
     try:
         run(cmd)
-        run([sys.executable, "scripts/limpiar_md.py", str(tmp_md)])
+        run([sys.executable, str(script_path("limpiar_md.py")), str(tmp_md)])
     except Exception as exc:
         logging.error("Fallo en la conversi\u00f3n: %s", exc)
         raise
@@ -39,11 +39,11 @@ def step_convert(doc: Path) -> None:
 
 def step_generate_index() -> None:
     """Genera mapa de encabezados e índice maestro."""
-    run([sys.executable, "scripts/generar_mapa_encabezados.py"])
+    run([sys.executable, str(script_path("generar_mapa_encabezados.py"))])
     run(
         [
             sys.executable,
-            "scripts/generar_index_desde_encabezados.py",
+            str(script_path("generar_index_desde_encabezados.py")),
             "--precheck",
         ]
     )
@@ -54,7 +54,7 @@ def step_ingest(cutoff: float) -> None:
     run(
         [
             sys.executable,
-            "scripts/ingest_wiki_v2.py",
+            str(script_path("ingest_wiki_v2.py")),
             "--mapa",
             "_fuentes/mapa_encabezados.yaml",
             "--index",
@@ -71,8 +71,8 @@ def step_ingest(cutoff: float) -> None:
 
 def step_sidebar() -> None:
     """Genera el sidebar y ejecuta la auditoría básica."""
-    run([sys.executable, "scripts/generar_sidebar.py", "--tolerant"])
-    run([sys.executable, "scripts/auditar_sidebar_vs_fs.py"])
+    run([sys.executable, str(script_path("generar_sidebar.py")), "--tolerant"])
+    run([sys.executable, str(script_path("auditar_sidebar_vs_fs.py"))])
 
 
 def main() -> None:
@@ -121,7 +121,7 @@ def main() -> None:
             parser.error("--cutoff debe estar entre 0 y 1")
 
         try:
-            run([sys.executable, "scripts/resetear_entorno.py"])
+            run([sys.executable, str(script_path("resetear_entorno.py"))])
             step_convert(args.doc)
             step_generate_index()
             step_ingest(args.cutoff)
@@ -130,7 +130,7 @@ def main() -> None:
             logging.error("Ejecución interrumpida: %s", exc)
             raise SystemExit(1)
     elif args.command == "reset":
-        run([sys.executable, "scripts/resetear_entorno.py"])
+        run([sys.executable, str(script_path("resetear_entorno.py"))])
     else:
         parser.print_help()
 

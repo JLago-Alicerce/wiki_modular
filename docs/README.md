@@ -24,12 +24,12 @@ Si prefiere ejecutar todos los pasos de forma automática puede utilizar la
 interfaz unificada:
 
 ```bash
-python scripts/wiki_cli.py full _fuentes/_originales/archivo.docx
+python src/scripts/wiki_cli.py full _fuentes/_originales/archivo.docx
 ```
 
 El comando `full` limpiará el entorno, convertirá el documento, generará los
 índices, realizará la ingesta y validará el resultado. También existe
-`python scripts/wiki_cli.py reset` para borrar la wiki e índices antes de una
+`python src/scripts/wiki_cli.py reset` para borrar la wiki e índices antes de una
 nueva carga.
 
 Otra alternativa es `pipeline_codex.py`, que ejecuta los mismos pasos pero se
@@ -45,13 +45,13 @@ permite avanzar y retroceder por cada etapa y ahora muestra una
 previsualización del Markdown antes de publicar:
 
 ```bash
-python scripts/wizard_publicacion.py
+python src/scripts/wizard_publicacion.py
 ```
 
 > **Nota**: si quiere reconstruir la wiki desde cero antes de procesar nuevos documentos, ejecute:
 >
 > ```bash
-> python scripts/resetear_entorno.py
+> python src/scripts/resetear_entorno.py
 > ```
 >
 > Esto limpia la carpeta `wiki/`, los índices y archivos temporales para evitar conflictos.
@@ -62,7 +62,7 @@ python scripts/wizard_publicacion.py
 pandoc _fuentes/_originales/archivo.docx \
   --from=docx --to=gfm --output=_fuentes/tmp_full.md \
   --extract-media=wiki/assets --markdown-headings=atx --standalone --wrap=none
-python scripts/limpiar_md.py _fuentes/tmp_full.md
+python src/scripts/limpiar_md.py _fuentes/tmp_full.md
 ```
 Este paso elimina los atributos `{width=..., height=...}` que Pandoc añade a las
 imágenes y que Docsify no interpreta.
@@ -70,8 +70,8 @@ imágenes y que Docsify no interpreta.
 2. Generar mapa de encabezados y el índice:
 
 ```bash
-python scripts/generar_mapa_encabezados.py
-python scripts/generar_index_desde_encabezados.py --precheck --ignore-extra
+python src/scripts/generar_mapa_encabezados.py
+python src/scripts/generar_index_desde_encabezados.py --precheck --ignore-extra
 ```
 
 Si `index_PlataformaBBDD.yaml` ya existe, el script añadirá las nuevas secciones
@@ -93,7 +93,7 @@ secciones:
 3. Ingestar la wiki:
 
 ```bash
-python scripts/ingest_wiki_v2.py \
+python src/scripts/ingest_wiki_v2.py \
   --mapa _fuentes/mapa_encabezados.yaml \
   --index index_PlataformaBBDD.yaml \
   --fuente _fuentes/tmp_full.md \
@@ -105,33 +105,33 @@ python scripts/ingest_wiki_v2.py \
 4. Generar el sidebar (puede personalizar las rutas con `--index` y `--out`):
 
 ```bash
-python scripts/generar_sidebar.py --index index_PlataformaBBDD.yaml --out _sidebar.md --tolerant
+python src/scripts/generar_sidebar.py --index index_PlataformaBBDD.yaml --out _sidebar.md --tolerant
 ```
 
 5. Auditar enlaces vs. archivos:
 
 ```bash
-python scripts/auditar_sidebar_vs_fs.py
+python src/scripts/auditar_sidebar_vs_fs.py
 ```
 
 Para comprobar que todos los ficheros de `wiki/` aparecen enlazados y que no
 existen enlaces rotos, puede ejecutarse:
 
 ```bash
-python scripts/validar_sidebar_vs_fs.py
+python src/scripts/validar_sidebar_vs_fs.py
 ```
 
 6. Generar el índice de búsqueda:
 
 ```bash
-python scripts/generar_indice_busqueda.py
+python src/scripts/generar_indice_busqueda.py
 ```
 
 Si prefiere automatizar la detección y el procesado de nuevos `.docx` o `.pdf`, puede
 utilizar:
 
 ```bash
-python scripts/procesar_nuevos.py --clean
+python src/scripts/procesar_nuevos.py --clean
 ```
 
 El indicador `--clean` ejecuta `resetear_entorno.py` para garantizar que la
@@ -153,25 +153,25 @@ para ver el formato detallado y algunos ejemplos de uso. Además, los títulos
 sin coincidencia se anotan en `_fuentes/alias_suggestions.csv` junto con el slug
 propuesto para facilitar su revisión.
 
-## Utilidades
+-## Utilidades
 
-- `scripts/limpiar_slug.py`: muestra en consola la versión normalizada de los argumentos recibidos.
-- `scripts/verificar_pre_ingesta.py`: comprueba consistencia entre el mapa y el índice. Con `--ignore-extra` sólo advierte por títulos faltantes.
-- `scripts/validar_sidebar_vs_fs.py`: asegura que `_sidebar.md` está sincronizado con los ficheros de la carpeta `wiki/`.
-- `scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
-- `scripts/generar_indice_busqueda.py`: crea `search_index.json` a partir de los Markdown de `wiki/`.
-- `scripts/clean_orphaned_files.py`: borra los `.md` que no estén enlazados en `_sidebar.md`.
-- `scripts/comparar_versiones.py`: genera un diff lateral entre la versión
+- `src/scripts/limpiar_slug.py`: muestra en consola la versión normalizada de los argumentos recibidos.
+- `src/scripts/verificar_pre_ingesta.py`: comprueba consistencia entre el mapa y el índice. Con `--ignore-extra` sólo advierte por títulos faltantes.
+- `src/scripts/validar_sidebar_vs_fs.py`: asegura que `_sidebar.md` está sincronizado con los ficheros de la carpeta `wiki/`.
+- `src/scripts/resetear_entorno.py`: elimina wiki, índices y archivos temporales para empezar de cero.
+- `src/scripts/generar_indice_busqueda.py`: crea `search_index.json` a partir de los Markdown de `wiki/`.
+- `src/scripts/clean_orphaned_files.py`: borra los `.md` que no estén enlazados en `_sidebar.md`.
+- `src/scripts/comparar_versiones.py`: genera un diff lateral entre la versión
   actual de un `.md` y una copia previa desde un backup o `git`.
-- `scripts/web_uploader.py`: lanza un servidor sencillo para cargar `.docx` o `.md` mediante drag & drop.
+- `src/scripts/web_uploader.py`: lanza un servidor sencillo para cargar `.docx` o `.md` mediante drag & drop.
 - `pipeline_codex.py`: alternativa a `wiki_cli.py` que pausa antes de ingerir para revisión manual.
-- `scripts/mover_huerfanos.py`: tras comparar el índice y el sidebar, mueve los archivos Markdown no referenciados a `wiki/_deprecated/`.
+- `src/scripts/mover_huerfanos.py`: tras comparar el índice y el sidebar, mueve los archivos Markdown no referenciados a `wiki/_deprecated/`.
 - `utils/entorno.py`: centraliza la adición de `src/` al `PYTHONPATH` mediante `add_src_to_path()` y ofrece `run()` para lanzar otros scripts de forma consistente.
-- `scripts/editor_markdown.py`: abre un editor web con vista previa y un botón "guardar y publicar" para modificar archivos Markdown.
+- `src/scripts/editor_markdown.py`: abre un editor web con vista previa y un botón "guardar y publicar" para modificar archivos Markdown.
 
 ## Búsqueda en la wiki
 
-Ejecuta `python scripts/generar_indice_busqueda.py` tras la ingesta para
+Ejecuta `python src/scripts/generar_indice_busqueda.py` tras la ingesta para
 generar `search_index.json`. Este archivo lo utiliza Docsify a través del
 plugin de búsqueda configurado en `index.html`.
 

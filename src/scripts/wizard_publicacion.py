@@ -13,7 +13,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-from scripts.preview_md import preview_markdown
+from preview_md import preview_markdown
+from utils.entorno import script_path
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 
@@ -75,9 +76,9 @@ class Wizard:
                 "--standalone",
                 "--wrap=none",
             ],
-            [sys.executable, "scripts/limpiar_md.py", "_fuentes/tmp_full.md"],
-            [sys.executable, "scripts/generar_mapa_encabezados.py"],
-            [sys.executable, "scripts/generar_index_desde_encabezados.py"],
+            [sys.executable, str(script_path("limpiar_md.py")), "_fuentes/tmp_full.md"],
+            [sys.executable, str(script_path("generar_mapa_encabezados.py"))],
+            [sys.executable, str(script_path("generar_index_desde_encabezados.py"))],
         ]
         for cmd in steps:
             rc = self.run_cmd(cmd)
@@ -110,7 +111,7 @@ class Wizard:
         cmds = [
             [
                 sys.executable,
-                "scripts/ingest_wiki_v2.py",
+                str(script_path("ingest_wiki_v2.py")),
                 "--mapa",
                 "_fuentes/mapa_encabezados.yaml",
                 "--index",
@@ -120,10 +121,10 @@ class Wizard:
                 "--alias",
                 "_fuentes/alias_override.yaml",
             ],
-            [sys.executable, "scripts/generar_sidebar.py"],
-            [sys.executable, "scripts/validar_sidebar_vs_fs.py"],
-            [sys.executable, "scripts/clean_orphaned_files.py"],
-            [sys.executable, "scripts/generar_indice_busqueda.py"],
+            [sys.executable, str(script_path("generar_sidebar.py"))],
+            [sys.executable, str(script_path("validar_sidebar_vs_fs.py"))],
+            [sys.executable, str(script_path("clean_orphaned_files.py"))],
+            [sys.executable, str(script_path("generar_indice_busqueda.py"))],
         ]
         for cmd in cmds:
             rc = self.run_cmd(cmd)

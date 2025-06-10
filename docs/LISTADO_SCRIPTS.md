@@ -1,6 +1,6 @@
 # Listado de scripts
 
-A continuación se resumen las utilidades disponibles en la carpeta `scripts/`. Cada entrada indica brevemente para qué se emplea el archivo.
+A continuación se resumen las utilidades disponibles en la carpeta `src/scripts/`. Cada entrada indica brevemente para qué se emplea el archivo.
 
 | Script | Descripción |
 | ------ | ----------- |
