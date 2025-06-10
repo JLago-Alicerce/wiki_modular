@@ -8,16 +8,32 @@
 
 :root {
   --color-primary: #003366;
-  --color-bg: #f5f5f5;
-  --color-sidebar-bg: #f5f5f5; /* lighter background for better logo contrast */
+  --color-background: #f5f5f5;
+  --color-sidebar-bg: #f5f5f5;
+  --color-text: #333;
+  --color-border: #ccc;
+  --color-code-bg: #f0f0f0;
+  --color-code-text: #000;
   /* Use Open Sans if available, otherwise fall back to system fonts */
   --font-base: 'Open Sans', sans-serif;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #66b0ff;
+    --color-background: #1f1f1f;
+    --color-sidebar-bg: #2b2b2b;
+    --color-text: #ddd;
+    --color-border: #555;
+    --color-code-bg: #2c2c2c;
+    --color-code-text: #fff;
+  }
+}
+
 body {
   font-family: var(--font-base);
-  background: var(--color-bg);
-  color: #333;
+  background: var(--color-background);
+  color: var(--color-text);
   margin: 0;
 }
 
@@ -26,33 +42,16 @@ body {
   margin: 0 auto;
 }
 
-h1 {
-  font-size: 1.8rem;
-  margin-top: 1rem;
-  border-bottom: 1px solid #ccc;
+h1, h2, h3, h4 {
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: 0.25rem;
+  color: var(--color-text);
 }
 
-h2 {
-  font-size: 1.6rem;
-  margin-top: 1.2rem;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 0.25rem;
-}
-
-h3 {
-  font-size: 1.3rem;
-  margin-top: 1rem;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 0.25rem;
-}
-
-h4 {
-  font-size: 1.1rem;
-  margin-top: 0.8rem;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 0.25rem;
-}
+h1 { font-size: 1.8rem; margin-top: 1rem; }
+h2 { font-size: 1.6rem; margin-top: 1.2rem; }
+h3 { font-size: 1.3rem; margin-top: 1rem; }
+h4 { font-size: 1.1rem; margin-top: 0.8rem; }
 
 /* Header with logo */
 
@@ -60,11 +59,11 @@ h4 {
 .app-name {
   display: flex;
   align-items: center;
-  padding: 1rem 1rem 1rem 24px; /* left padding for title */
+  padding: 1rem 1rem 1rem 24px;
   color: var(--color-primary);
   font-weight: bold;
   text-decoration: none;
-  line-height: 1; /* keep text close to logo */
+  line-height: 1;
 }
 
 .app-name::before {
@@ -82,9 +81,9 @@ h4 {
   top: 0;
   max-height: 100vh;
   overflow-y: auto;
-  width: 320px; /* slightly wider sidebar */
+  width: 320px;
   background: var(--color-sidebar-bg);
-  z-index: 1100; /* keep menu above other elements */
+  z-index: 1100;
 }
 
 /* Active item in sidebar */
@@ -99,7 +98,6 @@ h4 {
 }
 
 /* Indent nested links */
-/* Indentation and spacing for nested links */
 .sidebar-nav ul ul > li > a {
   padding-left: 1.5em;
 }
@@ -118,39 +116,20 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 260px;
-  }
+/* Code blocks */
+.markdown-section pre,
+.markdown-section code {
+  font-family: 'Courier New', Courier, monospace;
 }
 
-@media (max-width: 480px) {
-  .sidebar {
-    width: 220px;
-  }
-  .app-name {
-    justify-content: center;
-    padding-left: 24px;
-  }
-  .app-name::before {
-    width: 30px;
-    height: 30px;
-    margin-right: 4px;
-  }
-  h1 {
-    font-size: 1.6rem;
-  }
-  h2 {
-    font-size: 1.4rem;
-  }
-  h3 {
-    font-size: 1.2rem;
-  }
-  h4 {
-    font-size: 1rem;
-  }
+.markdown-section pre {
+  background: var(--color-code-bg);
+  color: var(--color-code-text);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
 }
+
 
 /* Ensure hamburger icon is visible above content */
 .sidebar-toggle {
@@ -176,6 +155,11 @@ a:hover {
   .sidebar-toggle {
     display: block;
   }
+
+.markdown-section pre > code {
+  background: none;
+  padding: 0;
+
 }
 
 /* Table styling according to ALTIA guidelines */
@@ -184,6 +168,7 @@ a:hover {
   font-size: 15px;
   border-collapse: collapse;
   width: 100%;
+
   background-color: #f5f5f5;
   color: #333;
   display: block;
@@ -194,23 +179,26 @@ a:hover {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   white-space: pre;
-}
+=======
+  background-color: var(--color-background);
+  color: var(--color-text);
 
+}
 
 .markdown-section th {
   background-color: #e0e0e0;
   font-weight: bold;
   padding: 8px 12px;
-  border: 1px solid #ddd;
-  color: #333;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
   line-height: 1.4;
   vertical-align: top;
 }
 
 .markdown-section td {
   padding: 8px 12px;
-  border: 1px solid #ddd;
-  color: #333;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
   line-height: 1.4;
   vertical-align: top;
 }
@@ -220,7 +208,6 @@ a:hover {
 }
 
 /* Remove left highlight from cells if any */
-/* No internal vertical lines on first column */
 .markdown-section td:first-child,
 .markdown-section th:first-child {
   border-left: none;
@@ -260,7 +247,6 @@ a:hover {
 .markdown-section img::before,
 .markdown-section img::after {
   content: none !important;
-
 }
 
 /* Footer for all pages */
@@ -269,4 +255,35 @@ a:hover {
   color: #888;
   font-size: 12px;
   margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 260px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 220px;
+  }
+  .app-name {
+    justify-content: center;
+    padding-left: 24px;
+  }
+  .app-name::before {
+    width: 30px;
+    height: 30px;
+    margin-right: 4px;
+  }
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+  h3 { font-size: 1.2rem; }
+  h4 { font-size: 1rem; }
+}
+
+/* Ensure hamburger icon is visible above content */
+.sidebar-toggle {
+  z-index: 1200;
 }
