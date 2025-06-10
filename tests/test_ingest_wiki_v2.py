@@ -52,6 +52,11 @@ def test_limpiar_nombre_archivo_basic():
     assert len(ingest.limpiar_nombre_archivo(long)) == 128
 
 
+def test_limpiar_nombre_archivo_toc():
+    cleaned = ingest.limpiar_nombre_archivo("#_Toc12345 Introducción")
+    assert cleaned == "Introduccion"
+
+
 def test_main_generates_frontmatter(tmp_path, monkeypatch):
     mapa = [{"titulo": "Intro", "start_line": 1, "h_level": 1}]
     mapa_file = tmp_path / "mapa.yaml"
