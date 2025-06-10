@@ -16,6 +16,7 @@ def run(cmd: list[str]) -> None:
 
 
 def step_convert(doc: Path) -> None:
+    """Convierte ``doc`` a Markdown y lo limpia."""
     tmp_md = Path("_fuentes/tmp_full.md")
     cmd = [
         "pandoc",
@@ -33,6 +34,7 @@ def step_convert(doc: Path) -> None:
 
 
 def step_generate_index() -> None:
+    """Genera mapa de encabezados e índice maestro."""
     run([sys.executable, "scripts/generar_mapa_encabezados.py"])
     run(
         [
@@ -44,6 +46,7 @@ def step_generate_index() -> None:
 
 
 def step_ingest(cutoff: float) -> None:
+    """Fragmenta la wiki utilizando ``cutoff`` para fuzzy matching."""
     run(
         [
             sys.executable,
@@ -63,11 +66,13 @@ def step_ingest(cutoff: float) -> None:
 
 
 def step_sidebar() -> None:
+    """Genera el sidebar y ejecuta la auditoría básica."""
     run([sys.executable, "scripts/generar_sidebar.py", "--tolerant"])
     run([sys.executable, "scripts/auditar_sidebar_vs_fs.py"])
 
 
 def main() -> None:
+    """Punto de entrada principal de la CLI unificada."""
     parser = argparse.ArgumentParser(
         description="Utilidades unificadas de wiki_modular"
     )

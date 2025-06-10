@@ -29,6 +29,7 @@ def extraer_frontmatter(path: Path) -> Tuple[Dict[str, str], str]:
 
 
 def generar_indice(wiki_dir: Path) -> Dict[str, Dict[str, object]]:
+    """Genera el diccionario para ``search_index.json`` desde ``wiki_dir``."""
     indice: Dict[str, Dict[str, object]] = {}
     for md in wiki_dir.rglob("*.md"):
         meta, cuerpo = extraer_frontmatter(md)
@@ -40,6 +41,7 @@ def generar_indice(wiki_dir: Path) -> Dict[str, Dict[str, object]]:
 
 
 def main() -> None:
+    """CLI para crear ``search_index.json`` desde los Markdown de la wiki."""
     parser = argparse.ArgumentParser(description="Genera search_index.json")
     parser.add_argument("--wiki", default="wiki", help="Directorio raíz de la wiki")
     parser.add_argument("--output", default="search_index.json", help="Archivo JSON de salida")

@@ -67,6 +67,7 @@ PIPELINE = [
 
 
 def load_log() -> Dict[str, str]:
+    """Carga ``procesados.log`` y devuelve un mapa nombre→fecha."""
     processed = {}
     if LOG_FILE.exists():
         for line in LOG_FILE.read_text(encoding="utf-8").splitlines():
@@ -79,6 +80,7 @@ def load_log() -> Dict[str, str]:
 
 
 def append_log(filename: str) -> None:
+    """Registra ``filename`` en :data:`procesados.log`."""
     entry = {"file": filename, "processed_at": datetime.now().isoformat()}
     with LOG_FILE.open("a", encoding="utf-8") as f:
         f.write(json.dumps(entry) + "\n")
@@ -155,6 +157,7 @@ def run_pipeline(doc: Path, *, skip_pandoc: bool = False) -> None:
 
 
 def main() -> None:
+    """Procesa PDFs y DOCX nuevos aplicando toda la tubería."""
     parser = argparse.ArgumentParser(
         description="Procesa automáticamente nuevos .docx o .pdf"
     )

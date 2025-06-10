@@ -16,6 +16,7 @@ index_data = yaml.safe_load(index_file.read_text(encoding="utf-8"))
 
 # Normalizador básico
 def normalizar(texto):
+    """Devuelve ``texto`` en ASCII y en minúsculas."""
     import unicodedata
     texto = unicodedata.normalize('NFKD', texto)
     return texto.encode('ascii', 'ignore').decode('ascii').lower().strip()

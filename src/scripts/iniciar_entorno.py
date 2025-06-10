@@ -22,6 +22,7 @@ def run(cmd: list[str]) -> None:
 
 
 def main() -> None:
+    """Ejecuta la limpieza y procesa todos los documentos originales."""
     logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
     # 1. Limpiar todo el entorno

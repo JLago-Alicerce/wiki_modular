@@ -121,6 +121,7 @@ def append_suggestion(path: Path, titulo: str, slug: str) -> None:
 
 
 def main():
+    """CLI que fragmenta ``tmp_full.md`` aplicando el mapa e índice."""
     parser = argparse.ArgumentParser(
         description="Fragmenta tmp_full.md según mapa e índice."
     )
