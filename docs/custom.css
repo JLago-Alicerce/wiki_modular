@@ -241,3 +241,44 @@ a:hover {
   font-size: 12px;
   margin-top: 2rem;
 }
+
+/* Floating table of contents */
+#dynamic-toc {
+  position: fixed;
+  top: 100px;
+  right: 0;
+  width: 250px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  border-left: 1px solid #ddd;
+  font-size: 0.9rem;
+  z-index: 1050;
+}
+
+#dynamic-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#dynamic-toc li {
+  margin: 0.2rem 0;
+}
+
+#dynamic-toc a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+#dynamic-toc a.active {
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  #dynamic-toc {
+    display: none;
+  }
+}
+
