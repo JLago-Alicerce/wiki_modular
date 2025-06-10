@@ -35,6 +35,7 @@ logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
 
 def main():
+    """CLI que fragmenta ``tmp_full.md`` aplicando el mapa e índice."""
     parser = argparse.ArgumentParser(
         description="Fragmenta tmp_full.md según mapa e índice."
     )

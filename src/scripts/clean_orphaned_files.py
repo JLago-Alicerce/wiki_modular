@@ -9,6 +9,7 @@ SIDEBAR = WIKI_DIR / "_sidebar.md"
 
 
 def obtener_links() -> set[str]:
+    """Devuelve los enlaces Markdown listados en ``_sidebar.md``."""
     if not SIDEBAR.exists():
         return set()
     pat = re.compile(r"\(([^)]+\.md)\)")
@@ -21,6 +22,7 @@ def obtener_links() -> set[str]:
 
 
 def obtener_archivos() -> set[str]:
+    """Enumera todos los archivos Markdown reales en ``wiki/``."""
     files = set()
     for p in WIKI_DIR.rglob("*.md"):
         if p.name == "README.md":
@@ -30,8 +32,11 @@ def obtener_archivos() -> set[str]:
 
 
 def main() -> None:
+    """Elimina archivos sin referencia en ``_sidebar.md``."""
     links = obtener_links()
     files = obtener_archivos()
+    # Identificar rutas presentes en el sistema de archivos pero no en el
+    # sidebar para considerarlas huérfanas.
     orphans = [f for f in files if f not in links]
     for rel in orphans:
         path = WIKI_DIR / rel

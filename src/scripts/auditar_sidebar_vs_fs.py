@@ -17,6 +17,7 @@ SIDEBAR = WIKI_DIR / "_sidebar.md"  # sidebar global
 
 
 def limpiar_path(ruta: str) -> str:
+    """Normaliza ``ruta`` a un slug comparable para la auditoría."""
     partes = []
     for seg in ruta.split("/"):
         if seg.lower().endswith(".md"):

@@ -12,6 +12,7 @@ SIDEBAR = WIKI_DIR / "_sidebar.md"
 
 
 def obtener_links() -> list[str]:
+    """Lista de enlaces a ``.md`` encontrados en ``_sidebar.md``."""
     pat = re.compile(r"\(([^)]+\.md)\)")
     links = []
     for line in SIDEBAR.read_text(encoding="utf-8").splitlines():
@@ -22,6 +23,7 @@ def obtener_links() -> list[str]:
 
 
 def obtener_archivos() -> list[str]:
+    """Devuelve todas las rutas ``.md`` que existen en ``wiki/``."""
     files = []
     for p in WIKI_DIR.rglob("*.md"):
         if p.name == "README.md":
@@ -31,6 +33,7 @@ def obtener_archivos() -> list[str]:
 
 
 def main() -> int:
+    """Verifica que los enlaces del sidebar coincidan con el filesystem."""
     if not SIDEBAR.exists():
         print(
             "No se encontró _sidebar.md; ejecute generar_sidebar.py primero",

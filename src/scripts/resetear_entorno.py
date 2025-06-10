@@ -41,7 +41,10 @@ def eliminar(path: Path) -> None:
 
 
 def main() -> None:
-    wiki_dir = WIKI_DIR
+
+    """Elimina artefactos generados para recomenzar desde cero."""
+    wiki_dir = Path("wiki")
+
     readme_backup = None
     readme_path = wiki_dir / "README.md"
     if readme_path.exists():

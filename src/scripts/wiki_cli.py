@@ -23,6 +23,7 @@ def run(cmd: list[str]) -> None:
 
 
 def step_convert(doc: Path) -> None:
+    """Convierte ``doc`` a Markdown y lo limpia."""
     tmp_md = Path("_fuentes/tmp_full.md")
     cmd = [
         "pandoc",
@@ -44,53 +45,48 @@ def step_convert(doc: Path) -> None:
 
 
 def step_generate_index() -> None:
-    try:
-        run([sys.executable, "scripts/generar_mapa_encabezados.py"])
-        run(
-            [
-                sys.executable,
-                "scripts/generar_index_desde_encabezados.py",
-                "--precheck",
-            ]
-        )
-    except Exception as exc:
-        logging.error("Error al generar índices: %s", exc)
-        raise
+
+    """Genera mapa de encabezados e índice maestro."""
+    run([sys.executable, "scripts/generar_mapa_encabezados.py"])
+    run(
+        [
+            sys.executable,
+            "scripts/generar_index_desde_encabezados.py",
+            "--precheck",
+        ]
+    )
 
 
 def step_ingest(cutoff: float) -> None:
-    try:
-        run(
-            [
-                sys.executable,
-                "scripts/ingest_wiki_v2.py",
-                "--mapa",
-                "_fuentes/mapa_encabezados.yaml",
-                "--index",
-                "index_PlataformaBBDD.yaml",
-                "--fuente",
-                "_fuentes/tmp_full.md",
-                "--alias",
-                "_fuentes/alias_override.yaml",
-                "--cutoff",
-                str(cutoff),
-            ]
-        )
-    except Exception as exc:
-        logging.error("Error en la ingesta: %s", exc)
-        raise
+    """Fragmenta la wiki utilizando ``cutoff`` para fuzzy matching."""
+    run(
+        [
+            sys.executable,
+            "scripts/ingest_wiki_v2.py",
+            "--mapa",
+            "_fuentes/mapa_encabezados.yaml",
+            "--index",
+            "index_PlataformaBBDD.yaml",
+            "--fuente",
+            "_fuentes/tmp_full.md",
+            "--alias",
+            "_fuentes/alias_override.yaml",
+            "--cutoff",
+            str(cutoff),
+        ]
+    )
 
 
 def step_sidebar() -> None:
-    try:
-        run([sys.executable, "scripts/generar_sidebar.py", "--tolerant"])
-        run([sys.executable, "scripts/auditar_sidebar_vs_fs.py"])
-    except Exception as exc:
-        logging.error("Error al generar el sidebar: %s", exc)
-        raise
+    """Genera el sidebar y ejecuta la auditoría básica."""
+    run([sys.executable, "scripts/generar_sidebar.py", "--tolerant"])
+    run([sys.executable, "scripts/auditar_sidebar_vs_fs.py"])
+
+
 
 
 def main() -> None:
+    """Punto de entrada principal de la CLI unificada."""
     parser = argparse.ArgumentParser(
         description="Utilidades unificadas de wiki_modular"
     )

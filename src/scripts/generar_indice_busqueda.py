@@ -10,10 +10,42 @@ import argparse
 import json
 from pathlib import Path
 
+from typing import Dict, Tuple
+import yaml
+
+
+def extraer_frontmatter(path: Path) -> Tuple[Dict[str, str], str]:
+    """Devuelve (metadata, cuerpo) del archivo Markdown."""
+    texto = path.read_text(encoding="utf-8")
+    if texto.startswith("---"):
+        partes = texto.split("---", 2)
+        if len(partes) >= 3:
+            try:
+                meta = yaml.safe_load(partes[1]) or {}
+            except yaml.YAMLError:
+                meta = {}
+            cuerpo = partes[2].lstrip("\n")
+            return meta, cuerpo
+    return {}, texto
+
+
+def generar_indice(wiki_dir: Path) -> Dict[str, Dict[str, object]]:
+    """Genera el diccionario para ``search_index.json`` desde ``wiki_dir``."""
+    indice: Dict[str, Dict[str, object]] = {}
+    for md in wiki_dir.rglob("*.md"):
+        meta, cuerpo = extraer_frontmatter(md)
+        indice[str(md.relative_to(wiki_dir))] = {
+            "metadata": meta,
+            "content": cuerpo,
+        }
+    return indice
+
 from wiki_modular.core.search import extraer_frontmatter, generar_indice
 
 
+
 def main() -> None:
+    """CLI para crear ``search_index.json`` desde los Markdown de la wiki."""
     parser = argparse.ArgumentParser(description="Genera search_index.json")
     parser.add_argument("--wiki", default="wiki", help="Directorio raíz de la wiki")
     parser.add_argument("--output", default="search_index.json", help="Archivo JSON de salida")

@@ -6,6 +6,7 @@ from pathlib import Path
 
 
 def main() -> None:
+    """Combina los ``.md`` de una carpeta en un único PDF."""
     parser = argparse.ArgumentParser(description="Exportar carpeta de Markdown a PDF")
     parser.add_argument("carpeta", type=Path, help="Ruta de la carpeta con .md")
     parser.add_argument(

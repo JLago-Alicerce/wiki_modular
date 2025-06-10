@@ -18,6 +18,7 @@ CSV_REPORT = ROOT_DIR / "orphaned_files.csv"
 
 
 def is_under(path: Path, parent: Path) -> bool:
+    """Indica si ``path`` está dentro de ``parent``."""
     try:
         path.relative_to(parent)
         return True
@@ -26,6 +27,7 @@ def is_under(path: Path, parent: Path) -> bool:
 
 
 def paths_from_index(index_data):
+    """Obtiene las rutas esperadas a partir del índice YAML."""
     paths = set()
     for section in index_data.get("secciones", []):
         slug = section.get("slug", limpiar_slug(section.get("titulo", "")))
@@ -40,11 +42,13 @@ def paths_from_index(index_data):
 
 
 def paths_from_sidebar(text: str):
+    """Extrae rutas ``.md`` desde el contenido de ``_sidebar.md``."""
     pat = re.compile(r"\(([^)]+\.md)\)")
     return {m.group(1).lstrip("/").lower() for m in pat.finditer(text)}
 
 
 def collect_fs_paths():
+    """Construye un mapa slug→Path para todos los ``.md`` en la wiki."""
     fs_paths = {}
     for p in WIKI_DIR.rglob("*.md"):
         rel = p.relative_to(WIKI_DIR).as_posix()
@@ -57,6 +61,7 @@ def collect_fs_paths():
 
 
 def move_orphans(orphan_paths):
+    """Mueve los archivos huérfanos a ``_deprecated`` y registra el cambio."""
     DEPRECATED_DIR.mkdir(exist_ok=True)
     rows = []
     for rel, p in orphan_paths.items():
@@ -64,6 +69,7 @@ def move_orphans(orphan_paths):
         base = dest.stem
         ext = dest.suffix
         i = 1
+        # Asegurar nombre único si ya existe en _deprecated
         while dest.exists():
             dest = dest.with_name(f"{base}_{i}{ext}")
             i += 1
@@ -73,6 +79,7 @@ def move_orphans(orphan_paths):
 
 
 def main() -> None:
+    """Localiza archivos no referenciados y los mueve a ``_deprecated``."""
     index_paths = set()
     if INDEX_FILE.exists():
         try:
