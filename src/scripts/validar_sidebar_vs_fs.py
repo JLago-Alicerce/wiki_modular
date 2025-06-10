@@ -5,8 +5,9 @@ import re
 import sys
 from pathlib import Path
 
+from wiki_modular.config import WIKI_DIR
+
 ROOT = Path(__file__).resolve().parent.parent
-WIKI_DIR = ROOT / "wiki"
 SIDEBAR = WIKI_DIR / "_sidebar.md"
 
 

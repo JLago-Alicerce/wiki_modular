@@ -5,9 +5,11 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 
+from wiki_modular.config import WIKI_DIR
+
 
 RUTAS = [
-    Path("wiki"),
+    WIKI_DIR,
     Path("_sidebar.md"),
     Path("index_PlataformaBBDD.yaml"),
     Path("mismatch_report.csv"),
@@ -39,8 +41,10 @@ def eliminar(path: Path) -> None:
 
 
 def main() -> None:
+
     """Elimina artefactos generados para recomenzar desde cero."""
     wiki_dir = Path("wiki")
+
     readme_backup = None
     readme_path = wiki_dir / "README.md"
     if readme_path.exists():

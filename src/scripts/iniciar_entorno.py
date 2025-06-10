@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Reinicia y procesa todo el contenido de ``_fuentes/_originales``."""
+"""Reinicia y procesa todo el contenido de la carpeta de originales."""
 
 import logging
 import subprocess

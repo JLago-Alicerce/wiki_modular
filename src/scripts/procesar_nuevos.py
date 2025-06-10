@@ -20,7 +20,9 @@ from typing import Dict
 
 from pdfminer.high_level import extract_text
 
-ORIG_DIR = Path('_fuentes/_originales')
+from wiki_modular.config import ASSETS_DIR, ORIGINALES_DIR, WIKI_DIR
+
+ORIG_DIR = ORIGINALES_DIR
 LOG_FILE = Path('procesados.log')
 PDF_ERRORS = Path('errores_pdf.csv')
 
@@ -32,7 +34,7 @@ PIPELINE = [
         "--from=docx",
         "--to=gfm",
         "--output=_fuentes/tmp_full.md",
-        "--extract-media=wiki/assets",
+        f"--extract-media={ASSETS_DIR}",
         "--markdown-headings=atx",
         "--standalone",
         "--wrap=none",
@@ -148,7 +150,7 @@ def run_pipeline(doc: Path, *, skip_pandoc: bool = False) -> None:
         # auditoría no tiene sentido. Se omite el paso restante para evitar
         # detener el flujo por un error innecesario.
         if "generar_sidebar.py" in cmd[-1]:
-            sidebar = Path("wiki/_sidebar.md")
+            sidebar = WIKI_DIR / "_sidebar.md"
             if sidebar.exists():
                 text = sidebar.read_text(encoding="utf-8")
                 if "](" not in text:
