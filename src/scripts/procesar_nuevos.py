@@ -20,7 +20,9 @@ from typing import Dict
 
 from pdfminer.high_level import extract_text
 
-ORIG_DIR = Path('_fuentes/_originales')
+from wiki_modular.config import ASSETS_DIR, ORIGINALES_DIR, WIKI_DIR
+
+ORIG_DIR = ORIGINALES_DIR
 LOG_FILE = Path('procesados.log')
 PDF_ERRORS = Path('errores_pdf.csv')
 
@@ -32,7 +34,7 @@ PIPELINE = [
         "--from=docx",
         "--to=gfm",
         "--output=_fuentes/tmp_full.md",
-        "--extract-media=wiki/assets",
+        f"--extract-media={ASSETS_DIR}",
         "--markdown-headings=atx",
         "--standalone",
         "--wrap=none",
@@ -67,6 +69,7 @@ PIPELINE = [
 
 
 def load_log() -> Dict[str, str]:
+    """Carga ``procesados.log`` y devuelve un mapa nombre→fecha."""
     processed = {}
     if LOG_FILE.exists():
         for line in LOG_FILE.read_text(encoding="utf-8").splitlines():
@@ -79,6 +82,7 @@ def load_log() -> Dict[str, str]:
 
 
 def append_log(filename: str) -> None:
+    """Registra ``filename`` en :data:`procesados.log`."""
     entry = {"file": filename, "processed_at": datetime.now().isoformat()}
     with LOG_FILE.open("a", encoding="utf-8") as f:
         f.write(json.dumps(entry) + "\n")
@@ -146,7 +150,7 @@ def run_pipeline(doc: Path, *, skip_pandoc: bool = False) -> None:
         # auditoría no tiene sentido. Se omite el paso restante para evitar
         # detener el flujo por un error innecesario.
         if "generar_sidebar.py" in cmd[-1]:
-            sidebar = Path("wiki/_sidebar.md")
+            sidebar = WIKI_DIR / "_sidebar.md"
             if sidebar.exists():
                 text = sidebar.read_text(encoding="utf-8")
                 if "](" not in text:
@@ -155,6 +159,7 @@ def run_pipeline(doc: Path, *, skip_pandoc: bool = False) -> None:
 
 
 def main() -> None:
+    """Procesa PDFs y DOCX nuevos aplicando toda la tubería."""
     parser = argparse.ArgumentParser(
         description="Procesa automáticamente nuevos .docx o .pdf"
     )

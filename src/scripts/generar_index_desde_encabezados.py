@@ -100,6 +100,7 @@ def generar_indice(input_file: Path, output_file: Path) -> dict:
 
 
 def main():
+    """CLI para construir el índice a partir del mapa de encabezados."""
     parser = argparse.ArgumentParser(
         description="Genera índice YAML desde mapa de encabezados."
     )

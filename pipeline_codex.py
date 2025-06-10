@@ -9,6 +9,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from wiki_modular.config import ASSETS_DIR
+
 
 def run(cmd: list[str]) -> int:
     """Execute a command and return its exit code."""
@@ -48,7 +50,7 @@ def main() -> None:
                 "--from=docx",
                 "--to=gfm",
                 "--output=_fuentes/tmp_full.md",
-                "--extract-media=wiki/assets",
+                f"--extract-media={ASSETS_DIR}",
                 "--markdown-headings=atx",
                 "--standalone",
                 "--wrap=none",
