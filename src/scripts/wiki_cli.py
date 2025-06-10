@@ -2,17 +2,11 @@
 """CLI unificada para las utilidades de wiki_modular."""
 import argparse
 import logging
-import subprocess
 import sys
 from pathlib import Path
 
+from utils.entorno import run
 
-def run(cmd: list[str]) -> None:
-    """Execute ``cmd`` and abort on failure."""
-    logging.info("Ejecutando: %s", " ".join(cmd))
-    result = subprocess.run(cmd)
-    if result.returncode != 0:
-        raise SystemExit(result.returncode)
 
 
 def step_convert(doc: Path) -> None:

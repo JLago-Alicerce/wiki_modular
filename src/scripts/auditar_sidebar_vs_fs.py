@@ -9,9 +9,10 @@ import csv
 import sys
 from pathlib import Path
 
+from utils.entorno import ROOT_DIR, WIKI_DIR
+
 # --- Config ---
-ROOT = Path(__file__).resolve().parent.parent  # ..\Conocimiento_Tecnico_Navantia
-WIKI_DIR = ROOT / "wiki"  # raíz de .md
+ROOT = ROOT_DIR  # ..\Conocimiento_Tecnico_Navantia
 SIDEBAR = WIKI_DIR / "_sidebar.md"  # sidebar global
 
 

@@ -8,9 +8,9 @@ from pathlib import Path
 from typing import Dict, List
 
 from wiki_modular import limpiar_slug
+from utils.entorno import ROOT_DIR, WIKI_DIR
 
-ROOT = Path(__file__).resolve().parent.parent
-WIKI_DIR = ROOT / "wiki"
+ROOT = ROOT_DIR
 SIDEBAR = WIKI_DIR / "_sidebar.md"
 
 

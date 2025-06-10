@@ -5,8 +5,9 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-WIKI_DIR = ROOT / "wiki"
+from utils.entorno import ROOT_DIR, WIKI_DIR
+
+ROOT = ROOT_DIR
 SIDEBAR = WIKI_DIR / "_sidebar.md"
 
 

@@ -2,7 +2,6 @@
 """Reinicia y procesa todo el contenido de ``_fuentes/_originales``."""
 
 import logging
-import subprocess
 import sys
 from pathlib import Path
 
@@ -10,22 +9,18 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.append(str(ROOT_DIR / "src"))
 
+from utils.entorno import add_src_to_path, run, script_path
 from scripts import procesar_nuevos as pn  # type: ignore
 
+add_src_to_path()
 
-def run(cmd: list[str]) -> None:
-    """Execute ``cmd`` aborting on error."""
-    logging.info("Ejecutando: %s", " ".join(cmd))
-    result = subprocess.run(cmd)
-    if result.returncode != 0:
-        raise RuntimeError(f"Comando fallido: {' '.join(cmd)}")
 
 
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
     # 1. Limpiar todo el entorno
-    reset_script = Path(__file__).resolve().parent / "resetear_entorno.py"
+    reset_script = script_path("resetear_entorno.py")
     run([sys.executable, str(reset_script)])
 
     orig_dir = pn.ORIG_DIR
@@ -48,7 +43,7 @@ def main() -> None:
         pn.run_pipeline(docx)
 
     # 4. Generar índice de búsqueda
-    idx_script = Path(__file__).resolve().parent / "generar_indice_busqueda.py"
+    idx_script = script_path("generar_indice_busqueda.py")
     run([sys.executable, str(idx_script)])
 
 
