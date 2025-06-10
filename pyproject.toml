@@ -16,10 +16,16 @@ dependencies = [
     "pdfminer.six>=20250506",
     "pdf2image>=1.16.3",
     "pytesseract>=0.3.10",
+    "markdown2>=2.4.0",
+    "streamlit>=1.32",
+    "Flask>=3.0",
 ]
 
 [tool.setuptools]
 packages = {find = {where = ["src"]}}
 py-modules = []
+
+[tool.isort]
+profile = "black"
 
 
